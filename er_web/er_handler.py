@@ -6,17 +6,26 @@ import efficient_rhythms
 
 from .midi_to_mp4 import midi_to_mp4
 
+TEMP_DIR = os.path.join(
+    os.path.dirname((os.path.realpath(__file__))), "static/temp_files"
+)
+
+
+def init_temp_dir():
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
+    # TODO delete old files
+
 
 def temp_path(suffix):
     return tempfile.mkstemp(
         suffix=suffix,
-        dir=os.path.join(
-            os.path.dirname((os.path.realpath(__file__))), "static/temp_files"
-        ),
+        dir=TEMP_DIR,
     )[1]
 
 
 def make_music(form):
+    init_temp_dir()
     user_settings = {}
     for field in form:
         try:
@@ -33,7 +42,6 @@ def make_music(form):
     if non_empty:
         temp_m4a = temp_path(".m4a")
         midi_to_mp4(temp_mid, temp_m4a)
-    os.remove(temp_mid)
     if non_empty:
         return os.path.join("temp_files", os.path.basename(temp_m4a))
     return None
