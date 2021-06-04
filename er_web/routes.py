@@ -13,19 +13,19 @@ from . import globals
 @app.route("/", methods=("GET", "POST"))
 def submit():
     errors = []
-    m4a_path = None
+    ogg_path = None
     form = forms.ERForm()
     # there is a dict of field names/values in form.data
     # NB it contains "csrf_token" and possibly other things
     if form.validate_on_submit():
         errors.clear()
         try:
-            m4a_path = er_handler.make_music(form)
+            ogg_path = er_handler.make_music(form)
         except efficient_rhythms.er_exceptions.ErMakeException as exc:  # TODO handle build errors
             exc_str = traceback.format_exc()
             errors.append(exc_str)
         else:
-            if m4a_path is None:
+            if ogg_path is None:
                 errors.append(
                     "Midi file is empty! Nothing to write. "
                     "(Check your settings and try again.)"
@@ -37,7 +37,7 @@ def submit():
             max_priority_dict=globals.MAX_PRIORITY_DICT,
             categories=globals.CATEGORIES,
             errors=errors,
-            m4a_path=m4a_path,
+            ogg_path=ogg_path,
         )
         return flask.redirect("/")
     return flask.render_template(
@@ -47,7 +47,7 @@ def submit():
         max_priority_dict=globals.MAX_PRIORITY_DICT,
         categories=globals.CATEGORIES,
         errors=errors,
-        m4a_path=m4a_path,
+        ogg_path=ogg_path,
     )
 
 

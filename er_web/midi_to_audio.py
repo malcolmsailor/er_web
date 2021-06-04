@@ -77,7 +77,8 @@ class FfmpegError(Exception):
     pass
 
 
-def wav_to_mp4(outf, output_path):
+def convert_from_wav(outf, output_path):
+    # output format will be determined by the extension of output_path
     p = subprocess.Popen(
         # "-y" to overwrite output files without asking
         ["ffmpeg", "-y", "-i", "-", output_path],
@@ -88,13 +89,13 @@ def wav_to_mp4(outf, output_path):
         raise FfmpegError()
 
 
-def midi_to_mp4(midi_path, mp4_path):
-    f = io.BytesIO()
+def midi_to_audio(midi_path, out_path):
+    wav_file = io.BytesIO()
     # TODO rather than writing than re-opening mido object, just pass it
     # through directly
-    midi_to_wav(midi_path, out_path=f)
-    wav_to_mp4(f, mp4_path)
-    f.close()
+    midi_to_wav(midi_path, out_path=wav_file)
+    convert_from_wav(wav_file, out_path)
+    wav_file.close()
 
 
 if __name__ == "__main__":
@@ -104,8 +105,8 @@ if __name__ == "__main__":
     outf = io.BytesIO()
     midi_to_wav(MIDI_FILE, out_path=outf)
     # midi_to_wav(MIDI_FILE, out_path=outf)
-    # wav_to_mp4(OUT_PATH, OUT_PATH.replace(".wav", ".mp4"))
-    wav_to_mp4(outf, OUT_PATH.replace(".wav", ".mp4"))
+    # convert_from_wav(OUT_PATH, OUT_PATH.replace(".wav", ".mp4"))
+    convert_from_wav(outf, OUT_PATH.replace(".wav", ".mp4"))
     outf.close()
 
     # l = midi_to_list(MIDI_FILE)

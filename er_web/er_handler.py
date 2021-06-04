@@ -4,7 +4,7 @@ import tempfile
 import efficient_rhythms
 
 
-from .midi_to_mp4 import midi_to_mp4
+from .midi_to_audio import midi_to_audio
 
 TEMP_DIR = os.path.join(
     os.path.dirname((os.path.realpath(__file__))), "static/temp_files"
@@ -40,8 +40,8 @@ def make_music(form):
     temp_mid = temp_path(".mid")
     non_empty = efficient_rhythms.write_er_midi(settings, pattern, temp_mid)
     if non_empty:
-        temp_m4a = temp_path(".m4a")
-        midi_to_mp4(temp_mid, temp_m4a)
+        temp_ogg = temp_path(".ogg")
+        midi_to_audio(temp_mid, temp_ogg)
     if non_empty:
-        return os.path.join("temp_files", os.path.basename(temp_m4a))
+        return os.path.join("temp_files", os.path.basename(temp_ogg))
     return None

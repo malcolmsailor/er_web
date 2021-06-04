@@ -6,9 +6,9 @@
 {% if errors %}
   <div id="py-error">{{ errors }}</div>
 {% endif %}
-{% if m4a_path %}
+{% if ogg_path %}
   <audio controls>
-    <source src="{{ url_for( 'static', filename=m4a_path) }}" type="audio/mp4">
+    <source src="{{ url_for( 'static', filename=ogg_path) }}" type="audio/mp4">
     Your browser does not support the audio element.
   </audio>
 {% endif %}
