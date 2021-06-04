@@ -1,0 +1,34 @@
+{% set priority = attr_dict[field.id]['priority'] %}
+<div class="field-div" data-priority-level="{{ priority }}" 
+id="{{ field.id }}-div" 
+style="display:{{ 'none' if priority > 1 else 'block' }}">
+  {{ field.label }} 
+  {# <span class="tooltip" id="{{ field.id }}-tooltip">
+    ?
+    <span class="tooltiptext" id="{{ field.id }}-tooltiptext">
+      {{ attr_dict[field.id]["doc"] }}
+    </span>
+  </span> #}
+  {% if field.type == "SelectField" %}
+    {% set n_choices = field.choices|length %}
+    {{ field(size=n_choices) }}
+  {% else %}
+    {{ field() }}
+  {% endif %}
+  <button class="field-help-button" id="{{ field.id }}-help-button" 
+      type="button" onClick="toggleHelp('{{ field.id }}')">
+    Show help
+  </button>
+  <div class="field-help-div" id="{{ field.id }}-help-div" 
+      style="display:none;">
+    {{ attr_dict[field.id]["doc"] }}
+  </div>
+  {% if field.errors %}
+  <ul class="error-list">
+    {% for error in field.errors %}
+    <li class="error-item">ERROR: {{ error }}</li>
+    {% endfor %}
+  </ul>
+
+  {% endif %}
+</div>

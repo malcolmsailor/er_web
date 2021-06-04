@@ -1,0 +1,40 @@
+.error-item, .error-header {
+  color: red;
+}
+
+/* .field-help-div {
+  display: none;
+} */
+
+.field-div {
+  margin-top: 10px;
+}
+
+.field-help-div {
+  padding: 5px;
+  font-style: italic;
+}
+
+/* copied from W3, to replace */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+/*  */

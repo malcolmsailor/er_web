@@ -1,0 +1,23 @@
+<div class="category-div" id="{{ category }}-div">
+  <fieldset class="category-fieldset" id="{{ category }}-fieldset">
+    <legend class="category-legend">{{ category }}</legend>
+    <div class="num-hidden-div" id="{{ category }}-num-hidden">
+      <button id="{{ category }}-less-button" type="button" 
+          onClick="show_less('{{ category }}-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="{{ category }}-num-hidden-text"></span>
+      <button id="{{ category }}-more-button" type="button" 
+          onClick="show_more('{{ category }}-div')">
+        Show more fields
+      </button>
+    </div>
+    {# {% for field in form if field.widget.input_type != 'hidden' %}  #}
+    {% for field in form if 
+      field.id in attr_dict and 
+      attr_dict[field.id]["category"] == category 
+    %}
+      {% include "form-field.jinja" %}
+    {% endfor %}
+  </fieldset>
+</div>

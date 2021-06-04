@@ -1,0 +1,5 @@
+*.code-workspace
+.vscode
+temp_wav
+__pycache__
+er_web/static/temp_files

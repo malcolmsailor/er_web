@@ -1,0 +1,31 @@
+<!doctype html>
+<head>
+  <script type=text/javascript src="{{ url_for('static', filename='er_web.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='er_web.css') }}">
+</head>
+{% if errors %}
+  <div id="py-error">{{ errors }}</div>
+{% endif %}
+{% if m4a_path %}
+  <audio controls>
+    <source src="{{ url_for( 'static', filename=m4a_path) }}" type="audio/mp4">
+    Your browser does not support the audio element.
+  </audio>
+{% endif %}
+<div class="form-wrapper">
+  <form method="POST" action="">
+    {{ form.csrf_token }}
+    {{ form.submit }}
+    {# <p>{{ form.fields["seed"].label }}</p> #}
+    {% if form.errors %}
+      <div class="error-header">See errors below</div>
+    {% endif %}
+    {% for category in categories %}
+      {% include "form-category.jinja" %}
+    {% endfor %}
+    {{ form.submit }}
+  </form>
+</div>
+<script type=text/javascript>
+  const MAX_PRIORITY_DICT = {{ max_priority_dict|tojson }}
+</script>
