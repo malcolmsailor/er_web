@@ -118,7 +118,25 @@ function show_less(div_id) {
     update_priorities();
 }
 
+var shareableLink;
 
+function getShareableLink() {
+    const changedFields = document.getElementsByClassName('changed-field');
+    var query = Array.prototype.map.call(changedFields,
+        function (field) { return field.id + '=' + field.value; }
+    ).join('&');
+    var url = window.location.href.split("?")[0];
+    return encodeURI(url + "?" + query);
+}
+
+function updateShareableLink() {
+    shareableLink = getShareableLink();
+    document.getElementById('shareable-link').innerHTML = shareableLink;
+}
+
+function initShareableLink() {
+    document.getElementById('shareable-link').innerHTML = window.location.href;
+}
 
 // according to Mozilla docs, `false` boolean (for optional `useCapture` arg) 
 // should be included for maximum browser compatability
@@ -134,9 +152,11 @@ function update_field(field) {
             : field.value == DEFAULT_FIELD_VALUES[field.id]
     );
     if (values_match) {
-        container.classList.remove("changed-field");
+        container.classList.remove("changed-field-div");
+        field.classList.remove("changed-field");
     } else {
-        container.classList.add("changed-field");
+        container.classList.add("changed-field-div");
+        field.classList.add("changed-field");
     }
 }
 
@@ -144,12 +164,28 @@ function init_field_colors() {
     for (let i = 0; i < SettingInputFields.length; i++) {
         var inputField = SettingInputFields[i];
         inputField.addEventListener('change', function (event) { update_field(event.target) });
+        inputField.addEventListener('change', updateShareableLink, false);
         update_field(inputField);
     }
 }
 
+// function copyLink() {
+// doesn't work --- link would have to be an input element
+//     var link = document.getElementById('shareable-link');
+//     link.select();
+//     link.setSelectionRange(0, 99999); /* For mobile devices */
+//     document.execCommand("copy");
+//     console.log("HI!");
+//     alert("Link copied to clipboard");
+// }
+
+document.addEventListener('DOMContentLoaded', initShareableLink, false);
 document.addEventListener('DOMContentLoaded', init_field_colors, false);
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('top-submit').addEventListener('click', polite, false);
     document.getElementById('bottom-submit').addEventListener('click', polite, false);
+    // document.getElementById('shareable-link').addEventListener('click', copyLink, false);
 }, false);
+
+
+

@@ -10,30 +10,21 @@ from . import globals
 
 @app.route("/", methods=("GET", "POST"))
 def submit():
-    form = forms.ERForm()
+    form = forms.ERForm(flask.request.args)
     # there is a dict of field names/values in form.data
     # NB it contains "csrf_token" and possibly other things
+    succeeded = False
+    error = None
     if form.validate_on_submit():
         try:
-            ogg_path = er_handler.make_music(form)
-            error = None
+            midi_path, ogg_path = er_handler.make_music(form)
+            succeeded = True
         except Exception as exc:  # TODO handle build errors
             exc_str = traceback.format_exc()
-            ogg_path = None
             error = exc_str
-        empty = ogg_path is None
-        return flask.render_template(
-            "form.jinja",
-            form=form,
-            attr_dict=globals.ATTR_DICT,
-            max_priority_dict=globals.MAX_PRIORITY_DICT,
-            categories=globals.CATEGORIES,
-            default_field_values=globals.DEFAULT_FIELD_VALUES,
-            error=error,
-            empty=empty,
-            ogg_path=ogg_path,
-        )
-        return flask.redirect("/")
+    if not succeeded:
+        midi_path, ogg_path = None, None
+    empty = ogg_path is None
     return flask.render_template(
         "form.jinja",
         form=form,
@@ -41,9 +32,10 @@ def submit():
         max_priority_dict=globals.MAX_PRIORITY_DICT,
         categories=globals.CATEGORIES,
         default_field_values=globals.DEFAULT_FIELD_VALUES,
-        error=None,
-        empty=False,
-        ogg_path=None,
+        error=error,
+        empty=empty,
+        ogg_path=ogg_path,
+        midi_path=midi_path,
     )
 
 

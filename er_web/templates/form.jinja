@@ -28,11 +28,23 @@ let me know if you have any issues at
   </div>
 {% endif %}
 {% if ogg_path %}
+<div id='audio-controls-div'>
   <audio controls>
     <source src="{{ url_for( 'static', filename=ogg_path) }}" type="audio/ogg">
     Your browser does not support the audio element.
   </audio>
+</div>
+<div id='downloads-div'>
+  <a href="{{ url_for( 'static', filename=midi_path) }}">Download midi</a>
+  <a href="{{ url_for( 'static', filename=ogg_path) }}">Download audio</a>
+</div>
 {% endif %}
+<div class="shareable-link-div">
+<p>Shareable link: 
+  <span id="shareable-link">
+  </span>
+</p>
+</div>
 <div class="form-wrapper">
   <form method="POST" action="">
     {{ form.csrf_token }}
