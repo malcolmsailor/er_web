@@ -3,29 +3,53 @@
   <script type=text/javascript src="{{ url_for('static', filename='er_web.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='er_web.css') }}">
 </head>
-{% if errors %}
-  <div id="py-error">{{ errors }}</div>
+<h1>Efficient Rhythms</h1>
+<p>Welcome to an early version of this page. As you can see, the page is 
+presently almost wholly unformatted. Please feel free to play around and 
+let me know if you have any issues at 
+<a href="mailto:malcolm.sailor@gmail.com">malcolm.sailor@gmail.com</a></p>
+<button type="button" onclick="getElementById('issues-div').style.display = 'block'">Known current issues</button>
+<div id="issues-div" style="display: none;">
+  <ul>
+    <li>Help docs mention settings that only apply to the shell version of the app.</li>
+    <li>Links in help docs to fields that are currently hidden do nothing. (Ideally, they should reveal the linked-to field, and this reveal should persist through refreshes of the page.)</li>
+    <li>Error messages do not print out type (e.g., set `max_consec_seg_from_same_choir` to 0.5)</li>
+  </ul>
+</div>
+
+{% if error %}
+  <div id="py-error">
+    <p>There was a bug in the code. 
+     <a href="mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body={{ error | urlencode }}">
+      Please click here to email me the below traceback.
+    </a>
+  </p>
+    {{ error }}
+  </div>
 {% endif %}
 {% if ogg_path %}
   <audio controls>
-    <source src="{{ url_for( 'static', filename=ogg_path) }}" type="audio/mp4">
+    <source src="{{ url_for( 'static', filename=ogg_path) }}" type="audio/ogg">
     Your browser does not support the audio element.
   </audio>
 {% endif %}
 <div class="form-wrapper">
   <form method="POST" action="">
     {{ form.csrf_token }}
-    {{ form.submit }}
-    {# <p>{{ form.fields["seed"].label }}</p> #}
+    {{ form.submit(id="top-submit") }}
     {% if form.errors %}
       <div class="error-header">See errors below</div>
     {% endif %}
     {% for category in categories %}
       {% include "form-category.jinja" %}
     {% endfor %}
-    {{ form.submit }}
+    {{ form.submit(id="bottom-submit") }}
   </form>
 </div>
+<div id="please-wait-div">
+  <p>Please wait while the script executes...</p>
+</div>
 <script type=text/javascript>
+  const DEFAULT_FIELD_VALUES = {{ default_field_values|tojson }}
   const MAX_PRIORITY_DICT = {{ max_priority_dict|tojson }}
 </script>

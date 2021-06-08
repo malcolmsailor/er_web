@@ -11,9 +11,9 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
   </span> #}
   {% if field.type == "SelectField" %}
     {% set n_choices = field.choices|length %}
-    {{ field(size=n_choices) }}
+    {{ field(class_="er_setting", size=n_choices) }}
   {% else %}
-    {{ field() }}
+    {{ field(class_="er_setting") }}
   {% endif %}
   <button class="field-help-button" id="{{ field.id }}-help-button" 
       type="button" onClick="toggleHelp('{{ field.id }}')">
@@ -21,7 +21,7 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
   </button>
   <div class="field-help-div" id="{{ field.id }}-help-div" 
       style="display:none;">
-    {{ attr_dict[field.id]["doc"] }}
+    {{ attr_dict[field.id]["doc"] | markdown }}
   </div>
   {% if field.errors %}
   <ul class="error-list">

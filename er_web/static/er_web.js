@@ -1,7 +1,36 @@
+function polite() {
+    document.getElementById("please-wait-div").style.display = "block";
+}
+
 const MIN_PRIORITY = 0;
 const INIT_PRIORITY = 1;
 const MAX_PRIORITY = 5; // TODO choose an appropriate value
-var categoryPriorities = {};
+var categoryPriorities;
+
+function update_priorities() {
+    sessionStorage.setItem("categoryPriorities", JSON.stringify(categoryPriorities));
+}
+
+function init_priorities() {
+    if (sessionStorage.getItem("categoryPriorities")) {
+        categoryPriorities = JSON.parse(sessionStorage.getItem("categoryPriorities"));
+        var categoryDivs = document.getElementsByClassName("category-div");
+        for (let i = 0; i < categoryDivs.length; i++) {
+            const categoryDiv = categoryDivs[i];
+            refresh_priority(categoryDiv.id);
+        }
+        console.log(categoryPriorities);
+        return;
+    }
+    var categoryDivs = document.getElementsByClassName("category-div");
+    categoryPriorities = {}
+    for (let i = 0; i < categoryDivs.length; i++) {
+        const categoryDiv = categoryDivs[i];
+        categoryPriorities[categoryDiv.id] = INIT_PRIORITY;
+        refresh_num_hidden(categoryDiv);
+    }
+    update_priorities();
+}
 
 function toggleHelp(field_id) {
     var button = document.getElementById(field_id + "-help-button");
@@ -78,6 +107,7 @@ function show_more(div_id) {
         categoryPriorities[div_id] + 1, MAX_PRIORITY_DICT[div_id.slice(0, -4)]
     );
     refresh_priority(div_id);
+    update_priorities();
 }
 
 function show_less(div_id) {
@@ -85,17 +115,41 @@ function show_less(div_id) {
         categoryPriorities[div_id] - 1, MIN_PRIORITY
     );
     refresh_priority(div_id);
+    update_priorities();
 }
 
-function init_priorities() {
-    var categoryDivs = document.getElementsByClassName("category-div");
-    for (let i = 0; i < categoryDivs.length; i++) {
-        const categoryDiv = categoryDivs[i];
-        categoryPriorities[categoryDiv.id] = INIT_PRIORITY;
-        refresh_num_hidden(categoryDiv);
-    }
-}
+
 
 // according to Mozilla docs, `false` boolean (for optional `useCapture` arg) 
 // should be included for maximum browser compatability
 document.addEventListener('DOMContentLoaded', init_priorities, false);
+
+var SettingInputFields = document.getElementsByClassName("er_setting");
+
+function update_field(field) {
+    const container = document.getElementById(field.id + "-div");
+    var values_match = (
+        field.type == "checkbox"
+            ? field.checked == (DEFAULT_FIELD_VALUES[field.id] == "y")
+            : field.value == DEFAULT_FIELD_VALUES[field.id]
+    );
+    if (values_match) {
+        container.classList.remove("changed-field");
+    } else {
+        container.classList.add("changed-field");
+    }
+}
+
+function init_field_colors() {
+    for (let i = 0; i < SettingInputFields.length; i++) {
+        var inputField = SettingInputFields[i];
+        inputField.addEventListener('change', function (event) { update_field(event.target) });
+        update_field(inputField);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', init_field_colors, false);
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('top-submit').addEventListener('click', polite, false);
+    document.getElementById('bottom-submit').addEventListener('click', polite, false);
+}, false);

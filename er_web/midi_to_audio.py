@@ -1,57 +1,70 @@
 import io
 import math
 import numpy as np
+from scipy import signal
 import wave
 import subprocess
+
+import malsynth
 
 from .midi_to_list import midi_to_list
 
 SAMPLE_RATE = 44100
 
 TYPE = 1
+TRACK = 2
+CHANNEL = 3
 PITCH = 4
 ONSET = 5
 RELEASE = 6
 VELOCITY = 7
+OTHER = 8
 
 
-def pitch_to_hz(pitch):
-    return 440.0 * (2 ** ((pitch - 69) / 12.0))
-
-
-def get_array(midi_list, sample_rate, onset_dur=0.005, release_dur=0.005):
-    # onset and release envelopes eliminate "clicking" when sine waves
-    # come immediately on/off
-    onset_dur = int(sample_rate * onset_dur)
-    onset_envelope = np.linspace(0, 1, onset_dur)
-    release_dur = int(sample_rate * release_dur)
-    release_envelope = np.linspace(1, 0, release_dur)
-
+def get_array(midi_list, sample_rate, final_release_dur=1):
+    synths = {}
+    synth_assignments = {}
     total_dur = midi_list[-1][RELEASE]
     if total_dur is None:
         assert midi_list[-1][TYPE] == "end_of_track"
         total_dur = midi_list[-1][ONSET]
+    total_dur += final_release_dur
 
     t = np.linspace(
-        0, total_dur, int(math.ceil(total_dur) * sample_rate), False
+        0, total_dur, int(math.ceil(total_dur * sample_rate)), False
     )
+
     out = np.zeros_like(t)
 
-    const_factor = 2 * np.pi
+    # synth = malsynth.FollowSquare(
+    #     # sample_rate=sample_rate, attack=0.01, decay=0.2, sustain=0
+    #     oscillators=[malsynth.Oscillator(), malsynth.Oscillator(detune=0.5)],
+    #     sample_rate=sample_rate,
+    #     attack=0.01,
+    #     decay=0.25,
+    #     sustain=0,
+    # )
 
     for event in midi_list:
+        if event[TYPE] == "program_change":
+            program = event[OTHER]["program"]
+            program %= len(malsynth.synths)  # TODO remove
+            # synth_assignments[(event[TRACK], event[CHANNEL])] = synths[program]
+            if program not in synths:
+                synths[program] = malsynth.synths[program](sample_rate)
+            synth_assignments[event[TRACK]] = synths[program]  # TODO remove
+
         if event[TYPE] != "note":
             continue
-        start_i = np.searchsorted(t, event[ONSET])
-        end_i = np.searchsorted(t, event[RELEASE])
-        note = np.sin(
-            t[start_i:end_i] * pitch_to_hz(event[PITCH]) * const_factor
-        ) * (event[VELOCITY] / 127)
-        note[:onset_dur] *= onset_envelope
-        note[-release_dur:] *= release_envelope
-        out[start_i:end_i] += note
-
-    out /= np.max(out)
+        # synth_assignments[(event[TRACK], event[CHANNEL])](
+        synth_assignments[event[TRACK]](  # TODO remove
+            t, out, event[PITCH], event[ONSET], event[RELEASE], event[VELOCITY]
+        )
+    # it seems that the output needs to be on a half-closed interval [0, 1)
+    # (rather than [0, 1]), or there are clicks and pops in the output (from
+    # overflow?). In fact we seem to need to give a generous buffer (e.g.,
+    # when I used np.max(out) * 1.01, there were still artefacts.)
+    out /= np.max(out) * 1.1
 
     return out
 
@@ -101,16 +114,7 @@ def midi_to_audio(midi_path, out_path):
 if __name__ == "__main__":
     MIDI_FILE = "/Users/Malcolm/Google Drive/python/efficient_rhythms/output_midi/effrhy355.mid"
     OUT_PATH = "read_midi.wav"
-    # outf = "foo"
     outf = io.BytesIO()
     midi_to_wav(MIDI_FILE, out_path=outf)
-    # midi_to_wav(MIDI_FILE, out_path=outf)
-    # convert_from_wav(OUT_PATH, OUT_PATH.replace(".wav", ".mp4"))
     convert_from_wav(outf, OUT_PATH.replace(".wav", ".mp4"))
     outf.close()
-
-    # l = midi_to_list(MIDI_FILE)
-    # # for item in l:
-    # #     print(item)
-    # a = get_array(l, SAMPLE_RATE)
-    # write_mono_wav(a, OUT_PATH, SAMPLE_RATE)

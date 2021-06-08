@@ -6,9 +6,9 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 )
 
-import validators
+import er_web.validators as validators
 
-
+# TODO update this test
 def process_er_constants():
     items = ("OCTAVE0 * A", "-FIFTH", "MAJOR_SCALE+7")
     try:

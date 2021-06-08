@@ -20,11 +20,11 @@ def comp_(x, y, op, op_str, seq=False):
 
 
 def min_(x, min_x):
-    comp_(x, min_x, operator.le, "greater than or equal to")
+    comp_(x, min_x, operator.lt, "greater than or equal to")
 
 
 def max_(x, max_x):
-    comp_(x, max_x, operator.ge, "less than or equal to")
+    comp_(x, max_x, operator.gt, "less than or equal to")
 
 
 # er_const_splitter = re.compile(r"( ?[*/+-]+ ?)")
@@ -118,7 +118,7 @@ def validate_field(type_hint, val_dict, form, field):
                 _validate_type(sub_type_hint, sub_val)
 
     try:
-        print(field.data, type(field.data))
+        # print(field.data, type(field.data))
         if not field.data:
             val = None
         else:
@@ -129,10 +129,15 @@ def validate_field(type_hint, val_dict, form, field):
                     # maybe it's an allowed math expression
                     val = safe_eval.safe_eval(field.data)
                 except (AssertionError, ValueError):
-                    # if neither of these parse, let's try it as a string
-                    val = field.data
-        print(val, type(val))
-        print(type_hint)
+                    try:
+                        # maybe it's a sequence with the external brackets/
+                        # parentheses missing
+                        val = ast.literal_eval("(" + field.data + ")")
+                    except ValueError:
+                        # if none of these parse, let's try it as a string
+                        val = field.data
+        # print(val, type(val))
+        # print(type_hint)
         _validate_type(type_hint, val)
         for criterion, args in val_dict.items():
             # TODO I wonder if there is a better way of fetching the function?

@@ -1,6 +1,8 @@
 import os
 import tempfile
 
+import wtforms
+
 import efficient_rhythms
 
 
@@ -28,10 +30,15 @@ def make_music(form):
     init_temp_dir()
     user_settings = {}
     for field in form:
+        if field.id in ("submit", "csrf_token"):
+            continue
         try:
             user_settings[field.id] = field.validated_data
         except AttributeError:
-            pass
+            if isinstance(field, (wtforms.SelectField, wtforms.BooleanField)):
+                user_settings[field.id] = field.data
+            else:
+                raise
     # user_settings = form.data.copy()
     # del user_settings["submit"]
     # del user_settings["csrf_token"]
