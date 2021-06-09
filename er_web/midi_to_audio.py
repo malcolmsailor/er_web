@@ -108,6 +108,7 @@ def midi_to_audio(midi_path, out_path):
     # through directly
     midi_to_wav(midi_path, out_path=wav_file)
     convert_from_wav(wav_file, out_path)
+    convert_from_wav(wav_file, out_path.replace("ogg", "mp3"))
     wav_file.close()
 
 

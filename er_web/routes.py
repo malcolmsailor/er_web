@@ -17,14 +17,14 @@ def submit():
     error = None
     if form.validate_on_submit():
         try:
-            seed, midi_path, ogg_path = er_handler.make_music(form)
+            seed, midi_path, audio_path = er_handler.make_music(form)
             succeeded = True
         except Exception as exc:  # TODO handle build errors
             exc_str = traceback.format_exc()
             error = exc_str
     if not succeeded:
-        seed, midi_path, ogg_path = None, None, None
-    empty = ogg_path is None
+        seed, midi_path, audio_path = None, None, None
+    empty = audio_path is None
     return flask.render_template(
         "base.jinja",
         form=form,
@@ -34,7 +34,7 @@ def submit():
         default_field_values=globals_.DEFAULT_FIELD_VALUES,
         error=error,
         empty=empty,
-        ogg_path=ogg_path,
+        audio_path=audio_path,
         midi_path=midi_path,
         seed=seed,
     )
