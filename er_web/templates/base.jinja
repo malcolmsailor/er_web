@@ -1,0 +1,34 @@
+<!doctype html>
+<head>
+  <script type=text/javascript src="{{ url_for('static', filename='er_web.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='er_web.css') }}">
+</head>
+<div id="container">
+  <div id="header">
+    <h1>Efficient Rhythms</h1>
+    <p>Welcome to an early version of this page. Please feel free to play around and 
+    let me know if you have any issues at 
+    <a href="mailto:malcolm.sailor@gmail.com">malcolm.sailor@gmail.com</a></p>
+    <button type="button" onclick="getElementById('issues-div').style.display = 'block'">Known current issues</button>
+    <div id="issues-div" style="display: none;">
+      <ul>
+        <li>Help docs mention settings that only apply to the shell version of the app.</li>
+        <li>Links in help docs to fields that are currently hidden do nothing. (Ideally, they should reveal the linked-to field, and this reveal should persist through refreshes of the page.)</li>
+        <li>Error messages do not print out type (e.g., set `max_consec_seg_from_same_choir` to 0.5)</li>
+      </ul>
+    </div>
+    {% if form.is_submitted() %}
+      {% include "output.jinja" %}
+    {% endif %}
+  </div> {# end header div #}
+  {% include "form.jinja" %}
+  <div id="please-wait-div">
+    <p>Please wait while the script executes...</p>
+    <div class="loader"></div>
+  </div>
+</div> {# end container div #}
+<script type=text/javascript>
+  const DEFAULT_FIELD_VALUES = {{ default_field_values|tojson }}
+  const MAX_PRIORITY_DICT = {{ max_priority_dict|tojson }}
+</script>

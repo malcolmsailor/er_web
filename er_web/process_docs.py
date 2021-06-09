@@ -1,6 +1,6 @@
 import re
 
-from . import globals
+from . import globals_
 
 
 field_re = re.compile(r"`(\w+)`")
@@ -8,14 +8,14 @@ field_repl = '<code><a href="#{other_field}-div">{other_field}</a></code>'
 
 
 def add_links():
-    for field_name in globals.ATTR_DICT:
-        doc = globals.ATTR_DICT[field_name]["doc"]
+    for field_name in globals_.ATTR_DICT:
+        doc = globals_.ATTR_DICT[field_name]["doc"]
         other_fields = set(re.findall(field_re, doc))
         if not other_fields:
             continue
         for other_field in other_fields:
             if (
-                other_field not in globals.ATTR_DICT
+                other_field not in globals_.ATTR_DICT
                 or other_field == field_name
             ):
                 # TODO remove these extraneous fields?
@@ -28,4 +28,4 @@ def add_links():
             )
             # print(doc)
             # breakpoint()
-        globals.ATTR_DICT[field_name]["doc"] = doc
+        globals_.ATTR_DICT[field_name]["doc"] = doc

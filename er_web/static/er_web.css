@@ -1,22 +1,302 @@
-.error-item, .error-header {
-  color: red;
+/* Some styling based on https://milligram.io/ */
+
+.html {
+  box-sizing: border-box;
+  font-size: 50.5%;
+}
+
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  color: #232323;
+  margin: 0.2rem;
+}
+
+#container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#audio-controls-div {
+  margin: 1rem 0.2rem;;
+}
+
+a, .a-button {
+  color: #729cb1;
+  text-decoration: underline;
+}
+
+a:hover, .a-button:hover,
+a:focus, .a-button:focus {
+  color:#4a6782;
+  outline: none;
+}
+
+.error-list {
+  width: 50%;
+  margin: 1rem auto;
+}
+.error-item {
+  color: #F44336;
+}
+
+#py-error-text, #form-error-text {
+  color: #F44336;
+  font-weight: bold;
+}
+
+#traceback {
+  font-family: monospace;
+  margin: 0 2rem;
+}
+
+#traceback p {
+  margin: 0;
+}
+
+.help-button {
+  color: #009688;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.help-button:hover {
+  color: #07c3ab;
+}
+
+.small-button,
+.button,
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  background-color: #009688;
+  border: 0.1rem solid #009688;
+  border-radius: .4rem;
+  color: #fff;
+}
+
+.small-button:hover,
+.button:hover,
+button:hover,
+button:focus,
+input[type='button']:hover,
+input[type='button']:focus,
+input[type='reset']:hover,
+input[type='submit']:hover,
+input[type='submit']:focus {
+  background-color: #07c3ab;
+  border-color: #07c3ab;
+  color: #fff;
+  outline: 0;
+}
+
+#show-shareable-link {
+  background-color: initial;
+  border: initial;
+}
+
+input[type='color'],
+input[type='date'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='email'],
+input[type='month'],
+input[type='number'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='text'],
+input[type='url'],
+input[type='week'],
+input:not([type]),
+textarea,
+select {
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: 0.1rem solid #d1d1d1;
+  border-radius: .4rem;
+  width: 50%;
+}
+
+input[type='color']:focus,
+input[type='date']:focus,
+input[type='datetime']:focus,
+input[type='datetime-local']:focus,
+input[type='email']:focus,
+input[type='month']:focus,
+input[type='number']:focus,
+input[type='password']:focus,
+input[type='search']:focus,
+input[type='tel']:focus,
+input[type='text']:focus,
+input[type='url']:focus,
+input[type='week']:focus,
+input:not([type]):focus,
+textarea:focus,
+select:focus {
+  outline: 0;
+  box-shadow: 0px 0px 1px 1px #009688d6;
+}
+
+select {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%23d1d1d1" d="M0,0l6,8l6-8"/></svg>') center right no-repeat;
+  padding-right: 3.0rem;
+}
+
+select:focus {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%23009688" d="M0,0l6,8l6-8"/></svg>');
+}
+
+select[multiple] {
+  background: none;
+  height: auto;
+}
+
+
+
+h1 {
+  font-weight: 300;
+  margin-bottom: 1.0rem;
+  margin-top: 0;
+  color:#009688;
+  font-size: 2.6rem;
+  line-height: 1.2;
 }
 
 /* .field-help-div {
   display: none;
 } */
 
+.category-fieldset, .num-hidden-div, .output-div {
+  border: 0.12rem solid #009688;
+  border-radius: .4rem;
+}
+
+.category-fieldset, .output-div {
+  margin: 2rem 0.25rem;
+  position: relative;
+}
+
+.output-div {
+}
+
+.category-legend, .output-label {
+  position: absolute;
+  top: -.8rem;
+  background-color: white;
+  color: #009688;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  padding: 0rem 0.25rem;
+  display: block;
+  border: none;
+}
+
+.output-label {
+  margin: 0 0.5rem;
+  font-weight: normal;
+}
+
+#audio-controls-div, #downloads-div {
+  display: inline-block;
+}
+
+#dl-midi-div, #dl-ogg-div {
+  padding: 0.5rem 2rem;
+}
+
+#seed-display-div {
+  margin: 0rem 1rem 1rem 1rem;
+}
+
+#seed-display-div p {
+  margin: 0.3rem;
+}
+
+#seed-display-help {
+  font-size: 0.8rem;
+}
+
+.num-hidden-div {
+  position: absolute;
+  top: -1rem;
+  right: 1rem;
+  padding: .2rem .5rem;
+  background-color: white;
+  font-size: .9rem;
+}
+
+.output-div h2 {
+  color: #009688;
+  font-size: 1.2rem;
+  padding: 0rem 0.25rem;
+  display: block;
+  border: none;
+}
+
 .field-div {
   margin-top: 10px;
 }
 
+.help-container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 .field-help-div {
-  padding: 5px;
-  font-style: italic;
+  font-size: .9rem;
+  text-align: justify;
+}
+
+label {
+  display: inline-block;
+  min-width: 25%;
+  text-align: right;
 }
 
 .changed-field-div label {
-  color: blue;
+  color: #2196F3;
+}
+
+/* copied from W3, to replace */
+.small-button {
+/*   position: relative; */
+  font-size: 0.8em;
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  line-height: 0.8rem;
+  text-align:center;
+  vertical-align: text-top;
+  transition: 0s;
+  font-weight: bold;
+}
+
+.tooltip {
+  font-size: 0.8rem;
+  visibility: hidden;
+  width: 120px;
+  background-color: #808080c2;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  font-weight: normal;
+}
+
+.small-button:hover .tooltip, .help-button:hover .tooltip {
+  visibility: visible;
+  transition-delay: 0.3s;
+}
+
+
+
+.field-help-div {
+  padding:0px;
+  margin: 1rem;
 }
 
 #please-wait-div {
@@ -27,38 +307,104 @@
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  background-color: white;
-  border: 2px solid black;
+  background-color: #009688;
+  border-radius: 1rem;
+  color: white;
+  text-align: center;
+
 }
 
 #please-wait-div p {
-  color: green;
-  font-size: 2em;
-  margin: 0.6em;
+  font-size: 2rem;
+  margin: 1.0rem;
+  margin-bottom: 0rem;
+}
+
+.loader {
+  margin: 1rem auto;
+  border: 0.3rem solid #f3f3f3;
+  border-top: 0.3rem solid #00a999;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 
-/* copied from W3, to replace */
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
+/* checkbox styles based on http://jsfiddle.net/maxshuty/2cs0dj54/ */
+input[type="checkbox"] {
   position: absolute;
-  z-index: 1;
+  opacity: 0;
+  z-index: -1;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-/*  */
+/* Don't believe I'm using this */
+/* Text color for the label */
+/* input[type="checkbox"]+span {
+  cursor: pointer;
+  font: 16px sans-serif;
+  color: black;
+} */
 
+/* Checkbox un-checked style */
+input[type="checkbox"]+span:before {
+  content: '';
+  border: 1px solid #232323;
+  border-radius: 4px;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: -2px;
+}
+
+input[type="checkbox"]:checked+span:before {
+  /* NOTE: Replace the url with a path to an SVG of a checkmark to get a checkmark icon */
+  background-image: url('glyphs/ios-checkmark.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  /* The size of the checkmark icon, you may/may not need this */
+  background-size: 25px;
+  background-color: #a5dcd7;
+  color: white;
+}
+
+/* Adding a dotted border around the active tabbed-into checkbox */
+input[type="checkbox"]:focus+span:before,
+input[type="checkbox"]:not(:disabled)+span:hover:before {
+  /* Visible in the full-color space */
+  box-shadow: 0px 0px 0px 1px #009688;
+
+  /* Visible in Windows high-contrast themes
+     box-shadow will be hidden in these modes and
+     transparency will not be hidden in high-contrast
+     thus box-shadow will not show but the outline will
+     providing accessibility */
+  outline-color: transparent;
+  outline-width: 1px;
+  outline-style: dotted;
+}
+
+#top-submit {
+
+}
+
+#show-shareable-link-div {
+  float: right;
+}
+
+#shareable-link-div {
+  text-align: right;
+  overflow-wrap: break-word;
+}
+
+#shareable-link {
+  margin: 0.2rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  max-width: 100%;
+}

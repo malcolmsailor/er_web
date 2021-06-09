@@ -1,0 +1,2527 @@
+<!doctype html>
+<head>
+  <script type=text/javascript src="/static/er_web.js"></script>
+  <link rel="stylesheet" href="/static/er_web.css">
+</head>
+<h1>Efficient Rhythms</h1>
+<p>Welcome to an early version of this page. As you can see, the page is 
+presently almost wholly unformatted. Please feel free to play around and 
+let me know if you have any issues at 
+<a href="mailto:malcolm.sailor@gmail.com">malcolm.sailor@gmail.com</a></p>
+<button type="button" onclick="getElementById('issues-div').style.display = 'block'">Known current issues</button>
+<div id="issues-div" style="display: none;">
+  <ul>
+    <li>Help docs mention settings that only apply to the shell version of the app.</li>
+    <li>Links in help docs to fields that are currently hidden do nothing. (Ideally, they should reveal the linked-to field, and this reveal should persist through refreshes of the page.)</li>
+    <li>Error messages do not print out type (e.g., set `max_consec_seg_from_same_choir` to 0.5)</li>
+    <li>Shareable links do not persist across form submits</li>
+  </ul>
+</div>
+
+
+
+<div class="shareable-link-div">
+<p>Shareable link: 
+  <span id="shareable-link">
+  </span>
+</p>
+</div>
+<div class="form-wrapper">
+  <form method="POST" action="">
+    <input id="csrf_token" name="csrf_token" type="hidden" value="ImQ4MjM2Y2Q4ZTJlZmQ5YTRmY2VmMzMzMTMzZTljNmQwMjM2M2Y3NjMi.YL_zNQ.8vnnnA7ds4ETlpWzsmcJm1G5Wnc">
+    <input id="top-submit" name="submit" type="submit" value="Submit">
+    
+    
+      <div class="category-div" id="global-div">
+  <fieldset class="category-fieldset" id="global-fieldset">
+    <legend class="category-legend">global</legend>
+    <div class="num-hidden-div" id="global-num-hidden">
+      <button id="global-less-button" type="button" 
+          onClick="show_less('global-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="global-num-hidden-text"></span>
+      <button id="global-more-button" type="button" 
+          onClick="show_more('global-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="seed-div" 
+style="display:block">
+  <label for="seed">seed</label> 
+  
+  
+    <input class="er_setting" id="seed" name="seed" type="text" value="">
+  
+  <button class="field-help-button" id="seed-help-button" 
+      type="button" onClick="toggleHelp('seed')">
+    Show help
+  </button>
+  <div class="field-help-div" id="seed-help-div" 
+      style="display:none;">
+    <p>int. Seed for random number generation.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="tet-div" 
+style="display:none">
+  <label for="tet">tet</label> 
+  
+  
+    <input class="er_setting" id="tet" name="tet" type="text" value="12">
+  
+  <button class="field-help-button" id="tet-help-button" 
+      type="button" onClick="toggleHelp('tet')">
+    Show help
+  </button>
+  <div class="field-help-div" id="tet-help-div" 
+      style="display:none;">
+    <p>int. Specifies equal division of the octave.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="num_voices-div" 
+style="display:block">
+  <label for="num_voices">num_voices</label> 
+  
+  
+    <input class="er_setting" id="num_voices" name="num_voices" type="text" value="3">
+  
+  <button class="field-help-button" id="num_voices-help-button" 
+      type="button" onClick="toggleHelp('num_voices')">
+    Show help
+  </button>
+  <div class="field-help-div" id="num_voices-help-div" 
+      style="display:none;">
+    <p>int. The number of "voices" (or "parts") to be created. If <code>existing_voices</code> below is passed, then <code>num_voices</code> specifies the number of <em>new</em> voices to be added, and doesn't include the <code>existing_voices</code> taken from the provided midi file.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="num_reps_super_pattern-div" 
+style="display:none">
+  <label for="num_reps_super_pattern">num_reps_super_pattern</label> 
+  
+  
+    <input class="er_setting" id="num_reps_super_pattern" name="num_reps_super_pattern" type="text" value="2">
+  
+  <button class="field-help-button" id="num_reps_super_pattern-help-button" 
+      type="button" onClick="toggleHelp('num_reps_super_pattern')">
+    Show help
+  </button>
+  <div class="field-help-div" id="num_reps_super_pattern-help-div" 
+      style="display:none;">
+    <p>int. Number of times to repeat the complete "super pattern".</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="pattern_len-div" 
+style="display:block">
+  <label for="pattern_len">pattern_len</label> 
+  
+  
+    <input class="er_setting" id="pattern_len" name="pattern_len" type="text" value="2">
+  
+  <button class="field-help-button" id="pattern_len-help-button" 
+      type="button" onClick="toggleHelp('pattern_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="pattern_len-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. Indicates the length of the "basic pattern" in beats. If a single number, all voices have the same length; if a sequence, sets the length for each voice individually.  If <code>pattern_len</code> is 0 or negative, it will be assigned the length of the complete harmonic progression (determined by <code><a href="#harmony_len-div">harmony_len</a></code> and <code><a href="#num_harmonies-div">num_harmonies</a></code>).</p>
+<p>If <code>cont_rhythms != "none"</code>, then this argument must consist of a single number.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="rhythm_len-div" 
+style="display:block">
+  <label for="rhythm_len">rhythm_len</label> 
+  
+  
+    <input class="er_setting" id="rhythm_len" name="rhythm_len" type="text" value="">
+  
+  <button class="field-help-button" id="rhythm_len-help-button" 
+      type="button" onClick="toggleHelp('rhythm_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="rhythm_len-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. Indicates the length of the rhythmic pattern to be generated. If not passed, then will be assigned the value of <code><a href="#pattern_len-div">pattern_len</a></code>. If a single number, all voices have the same length; if a sequence, sets the length for each voice individually.  The use of <code>rhythm_len</code> is to make repeated rhythmic patterns that are shorter than <code><a href="#pattern_len-div">pattern_len</a></code>. If <code>rhythm_len</code> does not divide <code><a href="#pattern_len-div">pattern_len</a></code> evenly (e.g., if <code>rhythm_len == 3</code> and <code>pattern_len == 8</code>), then the final repetition of <code>rhythm_len</code> will be truncated. Similarly, if <code>rhythm_len</code> is longer than <code><a href="#pattern_len-div">pattern_len</a></code>, it will be truncated; in this case, one may as well not pass any value of <code>rhythm_len</code>, since in the absence of a value, <code>rhythm_len</code> is assigned the value of <code><a href="#pattern_len-div">pattern_len</a></code>.</p>
+<p>If <code>cont_rhythms != "none"</code>, then this argument must consist of a single number, which must be the same as the value of <code><a href="#pattern_len-div">pattern_len</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="num_harmonies-div" 
+style="display:block">
+  <label for="num_harmonies">num_harmonies</label> 
+  
+  
+    <input class="er_setting" id="num_harmonies" name="num_harmonies" type="text" value="4">
+  
+  <button class="field-help-button" id="num_harmonies-help-button" 
+      type="button" onClick="toggleHelp('num_harmonies')">
+    Show help
+  </button>
+  <div class="field-help-div" id="num_harmonies-help-div" 
+      style="display:none;">
+    <p>int. The number of harmonies in the pattern. If not passed, the length of <code><a href="#foot_pcs-div">foot_pcs</a></code> will be assigned to this setting. If <code><a href="#foot_pcs-div">foot_pcs</a></code> is not passed either, will be set to a default value of 4.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="time_sig-div" 
+style="display:none">
+  <label for="time_sig">time_sig</label> 
+  
+  
+    <input class="er_setting" id="time_sig" name="time_sig" type="text" value="">
+  
+  <button class="field-help-button" id="time_sig-help-button" 
+      type="button" onClick="toggleHelp('time_sig')">
+    Show help
+  </button>
+  <div class="field-help-div" id="time_sig-help-div" 
+      style="display:none;">
+    <p>an optional tuple of form (int, int). The integers are the numerator and denominator of a time signature, respectively. The time signature will be written to the midi output file and used if exporting notation with Verovio. If no time signature is passed, the script will do its best to infer an appropriate time signature from the other settings.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="harmony_len-div" 
+style="display:block">
+  <label for="harmony_len">harmony_len</label> 
+  
+  
+    <input class="er_setting" id="harmony_len" name="harmony_len" type="text" value="4">
+  
+  <button class="field-help-button" id="harmony_len-help-button" 
+      type="button" onClick="toggleHelp('harmony_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="harmony_len-help-div" 
+      style="display:none;">
+    <p>a number, or a looping sequence of numbers (see above). If a sequence of numbers, the harmonies will cycle through the sequence until <code><a href="#num_harmonies-div">num_harmonies</a></code> is reached. That is, the first harmony will have the length of the first number in the sequence, the second harmony of the second, and so on. (Unlike <code><a href="#pattern_len-div">pattern_len</a></code> or <code><a href="#rhythm_len-div">rhythm_len</a></code>, there is no way of assigning different harmony_lengths to different voices.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="truncate_patterns-div" 
+style="display:none">
+  <label for="truncate_patterns">truncate_patterns</label> 
+  
+  
+    <input class="er_setting" id="truncate_patterns" name="truncate_patterns" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="truncate_patterns-help-button" 
+      type="button" onClick="toggleHelp('truncate_patterns')">
+    Show help
+  </button>
+  <div class="field-help-div" id="truncate_patterns-help-div" 
+      style="display:none;">
+    <p>bool. If True, then repetitions of any values in <code><a href="#pattern_len-div">pattern_len</a></code> which are not factors of the maximum value in <code><a href="#pattern_len-div">pattern_len</a></code> will be truncated at the maximum value. For example, if voice 0 has <code>pattern_len = 3</code> and voice 1 has <code>pattern_len = 5</code>, every second repetition of the pattern in voice 0 will be truncated after two beats.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="max_super_pattern_len-div" 
+style="display:none">
+  <label for="max_super_pattern_len">max_super_pattern_len</label> 
+  
+  
+    <input class="er_setting" id="max_super_pattern_len" name="max_super_pattern_len" type="text" value="">
+  
+  <button class="field-help-button" id="max_super_pattern_len-help-button" 
+      type="button" onClick="toggleHelp('max_super_pattern_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_super_pattern_len-help-div" 
+      style="display:none;">
+    <p>number. If positive, the super pattern will be truncated if it reaches this length.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="voice_ranges-div" 
+style="display:none">
+  <label for="voice_ranges">voice_ranges</label> 
+  
+  
+    <input class="er_setting" id="voice_ranges" name="voice_ranges" type="text" value="CONTIGUOUS_OCTAVES * OCTAVE3 * C">
+  
+  <button class="field-help-button" id="voice_ranges-help-button" 
+      type="button" onClick="toggleHelp('voice_ranges')">
+    Show help
+  </button>
+  <div class="field-help-div" id="voice_ranges-help-div" 
+      style="display:none;">
+    <p>a sequence of 2-tuples. Each tuple is of form (lowest_note, highest_note). <code>er_constants.py</code> provides a number of useful values for this purpose. The sequence must be at least <code><a href="#num_voices-div">num_voices</a></code> length. (If it is longer, excess items will be ignored.) It is not enforced that the sequence be in ascending order but I haven't extensively tested what happens if it is not.  Note that if <code><a href="#constrain_voice_leading_to_ranges-div">constrain_voice_leading_to_ranges</a></code> is False, than these ranges will only be enforced for the initial pattern. See also <code><a href="#hard_bounds-div">hard_bounds</a></code>.</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html. See also the note above on specifying pitches and intervals.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="hard_bounds-div" 
+style="display:none">
+  <label for="hard_bounds">hard_bounds</label> 
+  
+  
+    <input class="er_setting" id="hard_bounds" name="hard_bounds" type="text" value="((&#39;OCTAVE0 * A&#39;, &#39;OCTAVE8 * C&#39;),)">
+  
+  <button class="field-help-button" id="hard_bounds-help-button" 
+      type="button" onClick="toggleHelp('hard_bounds')">
+    Show help
+  </button>
+  <div class="field-help-div" id="hard_bounds-help-div" 
+      style="display:none;">
+    <p>a per-voice sequence of 2-tuples.  Each tuple is of form (lowest_note, highest_note). (See the note above on specifying pitches and intervals.) This setting determines a lower and upper bound that will be enforced regardless of the setting of <code><a href="#constrain_voice_leading_to_ranges-div">constrain_voice_leading_to_ranges</a></code>. The default values are the lowest and highest notes of an 88-key piano, respectively. See also <code><a href="#voice_ranges-div">voice_ranges</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="voice_order_str-div" 
+style="display:none">
+  <label for="voice_order_str">voice_order_str</label> 
+  
+  
+    <input class="er_setting" id="voice_order_str" name="voice_order_str" type="text" value="usual">
+  
+  <button class="field-help-button" id="voice_order_str-help-button" 
+      type="button" onClick="toggleHelp('voice_order_str')">
+    Show help
+  </button>
+  <div class="field-help-div" id="voice_order_str-help-div" 
+      style="display:none;">
+    <p>string. If "reverse", voices will be generated from highest to lowest. Otherwise, they are generated from lowest to highest.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="allow_voice_crossings-div" 
+style="display:none">
+  <label for="allow_voice_crossings">allow_voice_crossings</label> 
+  
+  
+    <input class="er_setting" id="allow_voice_crossings" name="allow_voice_crossings" type="text" value="True">
+  
+  <button class="field-help-button" id="allow_voice_crossings-help-button" 
+      type="button" onClick="toggleHelp('allow_voice_crossings')">
+    Show help
+  </button>
+  <div class="field-help-div" id="allow_voice_crossings-help-div" 
+      style="display:none;">
+    <p>bool, or a per-voice sequence of bools. This could be used, for example, to forbid voice-crossings in the bass voice, but not in the other voices.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="scale_and_chord-div">
+  <fieldset class="category-fieldset" id="scale_and_chord-fieldset">
+    <legend class="category-legend">scale_and_chord</legend>
+    <div class="num-hidden-div" id="scale_and_chord-num-hidden">
+      <button id="scale_and_chord-less-button" type="button" 
+          onClick="show_less('scale_and_chord-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="scale_and_chord-num-hidden-text"></span>
+      <button id="scale_and_chord-more-button" type="button" 
+          onClick="show_more('scale_and_chord-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="foot_pcs-div" 
+style="display:block">
+  <label for="foot_pcs">foot_pcs</label> 
+  
+  
+    <input class="er_setting" id="foot_pcs" name="foot_pcs" type="text" value="[0, 5, 10, 3]">
+  
+  <button class="field-help-button" id="foot_pcs-help-button" 
+      type="button" onClick="toggleHelp('foot_pcs')">
+    Show help
+  </button>
+  <div class="field-help-div" id="foot_pcs-help-div" 
+      style="display:none;">
+    <p>sequence of numbers. In this script, we call the main bass pitch of each chord its "foot". The main bass pitch is a little like the "root" of a chord, except that the main bass pitch doesn't have to be the root of a chord (as in the case of inverted chords). <code>foot_pcs</code> specifies the "foots" of each harmony. These are the pitch-classes that will correspond to <code>0</code> in each item of <code><a href="#scales-div">scales</a></code> and <code><a href="#chords-div">chords</a></code>.</p>
+<p>For example, if <code>foot_pcs == [2, 4]</code> and <code>chords == [[0, 4, 7], [0, 3, 8]]</code>, then the actually realized chords will have pitch-classes <code>[2, 6, 9]</code> and <code>[4, 7, 0]</code>, respectively (assuming <code>tet == 12</code>). (In music-theoretic terms, the chords will be a D major triad followed by a first- inversion C major triad.)</p>
+<p>If <code>foot_pcs</code> is shorter than <code><a href="#num_harmonies-div">num_harmonies</a></code>, it is looped through until the necessary length is obtained.</p>
+<p>If not passed, or passed an empty sequence, <code><a href="#num_harmonies-div">num_harmonies</a></code> foots will be generated randomly.</p>
+<p>Note that if <code><a href="#interval_cycle-div">interval_cycle</a></code> below is non-empty, all items in this sequence past the first are ignored.</p>
+<p>(See the note above on specifying pitches and intervals.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="interval_cycle-div" 
+style="display:none">
+  <label for="interval_cycle">interval_cycle</label> 
+  
+  
+    <input class="er_setting" id="interval_cycle" name="interval_cycle" type="text" value="">
+  
+  <button class="field-help-button" id="interval_cycle-help-button" 
+      type="button" onClick="toggleHelp('interval_cycle')">
+    Show help
+  </button>
+  <div class="field-help-div" id="interval_cycle-help-div" 
+      style="display:none;">
+    <p>number, or sequence of numbers. Specifies a foot-pc interval cycle beginning on the first pitch-class of <code><a href="#foot_pcs-div">foot_pcs</a></code> (or on a randomly chosen pitch-class, if <code><a href="#foot_pcs-div">foot_pcs</a></code> is not passed). For example, if <code>foot_pcs == [0]</code>, and
+                - <code>interval_cycle == 3</code>, the foot pitch-classes will be 0, 3,
+                    6...
+                - <code>interval_cycle == [3, -2]</code>, the foot pitch-classes will be
+                    0, 3, 1, 4, 2... (See the note above on specifying pitches and intervals.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="scales-div" 
+style="display:block">
+  <label for="scales">scales</label> 
+  
+  
+    <input class="er_setting" id="scales" name="scales" type="text" value="[NATURAL_MINOR_SCALE]">
+  
+  <button class="field-help-button" id="scales-help-button" 
+      type="button" onClick="toggleHelp('scales')">
+    Show help
+  </button>
+  <div class="field-help-div" id="scales-help-div" 
+      style="display:none;">
+    <p>a sequence of sequences of numbers. Each subsequence specifies a scale. Scales should always be specified starting from pitch-class 0; they will then be transposed to the appropriate pitch-classes according to the settings <code><a href="#foot_pcs-div">foot_pcs</a></code> or <code><a href="#interval_cycle-div">interval_cycle</a></code>.</p>
+<p>If <code><a href="#foot_pcs-div">foot_pcs</a></code> has fewer items than <code>scales</code>, then the excess items in <code>scales</code> will be ignored.</p>
+<p>If <code><a href="#foot_pcs-div">foot_pcs</a></code> has more items than <code>scales</code>, then <code>scales</code> will be looped through.</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html. See also the note above on specifying pitches and intervals.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="chords-div" 
+style="display:block">
+  <label for="chords">chords</label> 
+  
+  
+    <input class="er_setting" id="chords" name="chords" type="text" value="[MINOR_TRIAD]">
+  
+  <button class="field-help-button" id="chords-help-button" 
+      type="button" onClick="toggleHelp('chords')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chords-help-div" 
+      style="display:none;">
+    <p>a sequence of sequences of numbers. Each subsequence specifies a chord. Scales should always be specified starting from pitch-class 0; they will then be transposed to the appropriate pitch-classes according to the settings <code><a href="#foot_pcs-div">foot_pcs</a></code> or <code><a href="#interval_cycle-div">interval_cycle</a></code>.</p>
+<p>If <code><a href="#foot_pcs-div">foot_pcs</a></code> has fewer items than <code>chords</code>, then the excess items in <code>chords</code> will be ignored.</p>
+<p>If <code><a href="#foot_pcs-div">foot_pcs</a></code> has more items than <code>chords</code>, then <code>chords</code> will be looped through.</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html. See also the note above on specifying pitches and intervals.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="voice_leading-div">
+  <fieldset class="category-fieldset" id="voice_leading-fieldset">
+    <legend class="category-legend">voice_leading</legend>
+    <div class="num-hidden-div" id="voice_leading-num-hidden">
+      <button id="voice_leading-less-button" type="button" 
+          onClick="show_less('voice_leading-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="voice_leading-num-hidden-text"></span>
+      <button id="voice_leading-more-button" type="button" 
+          onClick="show_more('voice_leading-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="parallel_voice_leading-div" 
+style="display:none">
+  <label for="parallel_voice_leading">parallel_voice_leading</label> 
+  
+  
+    <input class="er_setting" id="parallel_voice_leading" name="parallel_voice_leading" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="parallel_voice_leading-help-button" 
+      type="button" onClick="toggleHelp('parallel_voice_leading')">
+    Show help
+  </button>
+  <div class="field-help-div" id="parallel_voice_leading-help-div" 
+      style="display:none;">
+    <p>bool. If <code>True</code>, then the voice-leading between harmonies is conducted in pure (generic) parallel motion.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="parallel_direction-div" 
+style="display:none">
+  <label for="parallel_direction">parallel_direction</label> 
+  
+  
+    <input class="er_setting" id="parallel_direction" name="parallel_direction" type="text" value="0">
+  
+  <button class="field-help-button" id="parallel_direction-help-button" 
+      type="button" onClick="toggleHelp('parallel_direction')">
+    Show help
+  </button>
+  <div class="field-help-div" id="parallel_direction-help-div" 
+      style="display:none;">
+    <p>int. Only has an effect if <code><a href="#parallel_voice_leading-div">parallel_voice_leading</a></code> is True. Governs the direction of the parallel voice-leading:
+                - if positive, the motion is always upwards
+                - if negative, the motion is always downwards
+                - if 0, then the motion is either upwards or downwards,
+                    depending on which is shorter.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="voice_lead_chord_tones-div" 
+style="display:block">
+  <label for="voice_lead_chord_tones">voice_lead_chord_tones</label> 
+  
+  
+    <input checked class="er_setting" id="voice_lead_chord_tones" name="voice_lead_chord_tones" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="voice_lead_chord_tones-help-button" 
+      type="button" onClick="toggleHelp('voice_lead_chord_tones')">
+    Show help
+  </button>
+  <div class="field-help-div" id="voice_lead_chord_tones-help-div" 
+      style="display:none;">
+    <p>bool. If True, then chord-tones on each harmony are voice-led to chord-tones on the next harmony, and non-chord-tones to non-chord-tones. So, if moving from a C major chord to an F major chord, the pitch-class C will be mapped to one of the pitch-classes (F, A, C), the pitch-class E will be mapped to one of the two remaining pitch-classes of the F major chord, and the pitch-class G will be mapped to the remaining pitch-class of the F major chord. A similar mapping will be made among the non-chord tones of the scale.</p>
+<p>Setting this parameter to True will greatly reduce the script's ability to find voice-leading solutions (especially in combination with <code>allow_flexible_voice_leading == False</code>). Note also that it will often lead to at least some relatively large voice-leading motions.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="preserve_foot_in_bass-div" 
+style="display:block">
+  <label for="preserve_foot_in_bass">preserve_foot_in_bass</label> 
+  
+  
+    
+    <select class="er_setting" id="preserve_foot_in_bass" name="preserve_foot_in_bass" size="3"><option selected value="lowest">lowest</option><option value="all">all</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="preserve_foot_in_bass-help-button" 
+      type="button" onClick="toggleHelp('preserve_foot_in_bass')">
+    Show help
+  </button>
+  <div class="field-help-div" id="preserve_foot_in_bass-help-div" 
+      style="display:none;">
+    <p>string. Controls whether the occurrences of the foot in the bass are "preserved" when voice-leading the initial pattern to subsequent harmonies. For example, if the first two harmonies are C major followed by F major, should a C in the bass on the first chord be voice-led to an F in the bass on the second chord, preserving the foot, or should it be voice-led to a C (which would be more efficient, in the sense of moving a smaller interval, a unison, rather than a fourth or fifth).</p>
+<p>Note that if this settings is not "none", otherwise forbidden intervals may occur.</p>
+<p>Possible values:
+                "lowest": only the lowest sounding occurrences of
+                    the foot on each harmony are preserved (so if, e.g.,
+                    C2 and C3 both occur, only C2 will
+                    be preserved when voice-led to the next chord, while
+                    C3 will proceed by efficient voice-leading like all
+                    other pitches).
+                "all": all occurrences of the foot of each harmony
+                    are preserved.
+                "none": the foot is voice-led like any other pitch.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="extend_bass_range_for_foots-div" 
+style="display:none">
+  <label for="extend_bass_range_for_foots">extend_bass_range_for_foots</label> 
+  
+  
+    <input class="er_setting" id="extend_bass_range_for_foots" name="extend_bass_range_for_foots" type="text" value="0">
+  
+  <button class="field-help-button" id="extend_bass_range_for_foots-help-button" 
+      type="button" onClick="toggleHelp('extend_bass_range_for_foots')">
+    Show help
+  </button>
+  <div class="field-help-div" id="extend_bass_range_for_foots-help-div" 
+      style="display:none;">
+    <p>number. If non-zero, permits transposition of the foot lower than the normal range of the bass voice, in order to maintain the foot as the lowest sounding pitch during a given harmony. Specifically, if the lowest sounding occurrences of the foot during a given harmony are not the lowest sounding pitch during that harmony, then they will be transposed an octave downwards, provided that this transposition lies within this extended range.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="constrain_voice_leading_to_ranges-div" 
+style="display:none">
+  <label for="constrain_voice_leading_to_ranges">constrain_voice_leading_to_ranges</label> 
+  
+  
+    <input class="er_setting" id="constrain_voice_leading_to_ranges" name="constrain_voice_leading_to_ranges" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="constrain_voice_leading_to_ranges-help-button" 
+      type="button" onClick="toggleHelp('constrain_voice_leading_to_ranges')">
+    Show help
+  </button>
+  <div class="field-help-div" id="constrain_voice_leading_to_ranges-help-div" 
+      style="display:none;">
+    <p>bool. If False, then after the initial pattern is complete, the voices may exceed their ranges, if the most efficient voice-leading requires it. (For example, if the highest pitch of a voice's range is G, but a subsequent efficient voice-leading requires G-sharp, the voice will be allowed to ascend to G-sharp, rather than enforcing a less-efficient voice-leading).</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="allow_flexible_voice_leading-div" 
+style="display:none">
+  <label for="allow_flexible_voice_leading">allow_flexible_voice_leading</label> 
+  
+  
+    <input class="er_setting" id="allow_flexible_voice_leading" name="allow_flexible_voice_leading" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="allow_flexible_voice_leading-help-button" 
+      type="button" onClick="toggleHelp('allow_flexible_voice_leading')">
+    Show help
+  </button>
+  <div class="field-help-div" id="allow_flexible_voice_leading-help-div" 
+      style="display:none;">
+    <p>bool. If True, then the voice-leading (i.e., the mapping of pitches from one harmony to the next) will be allowed to change mid-harmony. (So that, for example, the pitch C5 might at first be mapped to D5 by the initial voice-leading, but after the script reaches an impasse, a new voice-leading will be chosen, which might map C5 to B4.) Setting to True will greatly expand the script's ability to find voice-leading solutions; however, it may tend to destroy the audible sense of "pattern".</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="vl_maintain_consonance-div" 
+style="display:none">
+  <label for="vl_maintain_consonance">vl_maintain_consonance</label> 
+  
+  
+    <input checked class="er_setting" id="vl_maintain_consonance" name="vl_maintain_consonance" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="vl_maintain_consonance-help-button" 
+      type="button" onClick="toggleHelp('vl_maintain_consonance')">
+    Show help
+  </button>
+  <div class="field-help-div" id="vl_maintain_consonance-help-div" 
+      style="display:none;">
+    <p>bool. If False, then after the initial pattern is complete, voice-leadings will not be checked for consonance. (See the settings under "Consonance and dissonance settings" below.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="vl_maintain_limit_intervals-div" 
+style="display:none">
+  <label for="vl_maintain_limit_intervals">vl_maintain_limit_intervals</label> 
+  
+  
+    
+    <select class="er_setting" id="vl_maintain_limit_intervals" name="vl_maintain_limit_intervals" size="3"><option value="all">all</option><option selected value="across_harmonies">across_harmonies</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="vl_maintain_limit_intervals-help-button" 
+      type="button" onClick="toggleHelp('vl_maintain_limit_intervals')">
+    Show help
+  </button>
+  <div class="field-help-div" id="vl_maintain_limit_intervals-help-div" 
+      style="display:none;">
+    <p>string. Determines when and whether, after the initial pattern is complete, voice-leadings will be allowed to exceed limit intervals.  (See settings <code><a href="#max_interval-div">max_interval</a></code>, <code><a href="#max_interval_for_non_chord_tones-div">max_interval_for_non_chord_tones</a></code>, <code><a href="#min_interval-div">min_interval</a></code>, <code><a href="#min_interval_for_non_chord_tones-div">min_interval_for_non_chord_tones</a></code>.)</p>
+<p>Possible values:
+                "all": limit intervals are always maintained.
+                "across_harmonies": limit intervals are maintained when voice-
+                    leading from one harmony to another, but not when voice-
+                    leading within a single harmony. (Maintaining the limit
+                    intervals within a single harmony when a pattern is
+                    repeated on that harmony can lead the script to switch
+                    to a different voice-leading abruptly for the repetition,
+                    which may not be desired.)
+                "none": limit intervals are never maintained.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="vl_maintain_forbidden_intervals-div" 
+style="display:none">
+  <label for="vl_maintain_forbidden_intervals">vl_maintain_forbidden_intervals</label> 
+  
+  
+    <input checked class="er_setting" id="vl_maintain_forbidden_intervals" name="vl_maintain_forbidden_intervals" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="vl_maintain_forbidden_intervals-help-button" 
+      type="button" onClick="toggleHelp('vl_maintain_forbidden_intervals')">
+    Show help
+  </button>
+  <div class="field-help-div" id="vl_maintain_forbidden_intervals-help-div" 
+      style="display:none;">
+    <p>bool. If False, then after the initial pattern is complete, voice-leadings will be permitted to contain forbidden intervals.  (See <code><a href="#forbidden_interval_classes-div">forbidden_interval_classes</a></code>, <code><a href="#forbidden_interval_modulo-div">forbidden_interval_modulo</a></code>.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="vl_maintain_prohibit_parallels-div" 
+style="display:none">
+  <label for="vl_maintain_prohibit_parallels">vl_maintain_prohibit_parallels</label> 
+  
+  
+    <input checked class="er_setting" id="vl_maintain_prohibit_parallels" name="vl_maintain_prohibit_parallels" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="vl_maintain_prohibit_parallels-help-button" 
+      type="button" onClick="toggleHelp('vl_maintain_prohibit_parallels')">
+    Show help
+  </button>
+  <div class="field-help-div" id="vl_maintain_prohibit_parallels-help-div" 
+      style="display:none;">
+    <p>bool. If False, then after the initial pattern is complete, voice-leadings will be permitted to contain prohibited parallel intervals. (See <code><a href="#prohibit_parallels-div">prohibit_parallels</a></code>.)</p>
+<pre><code>    Most chord tone settings only have an effect if &lt;code&gt;&lt;a href="#chord_tone_selection-div"&gt;chord_tone_selection&lt;/a&gt;&lt;/code&gt;
+    is `True`. Only &lt;code&gt;&lt;a href="#force_chord_tone-div"&gt;force_chord_tone&lt;/a&gt;&lt;/code&gt; applies irrespective of
+    &lt;code&gt;&lt;a href="#chord_tone_selection-div"&gt;chord_tone_selection&lt;/a&gt;&lt;/code&gt;.
+</code></pre>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="chord_tones-div">
+  <fieldset class="category-fieldset" id="chord_tones-fieldset">
+    <legend class="category-legend">chord_tones</legend>
+    <div class="num-hidden-div" id="chord_tones-num-hidden">
+      <button id="chord_tones-less-button" type="button" 
+          onClick="show_less('chord_tones-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="chord_tones-num-hidden-text"></span>
+      <button id="chord_tones-more-button" type="button" 
+          onClick="show_more('chord_tones-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="chord_tone_and_foot_disable-div" 
+style="display:block">
+  <label for="chord_tone_and_foot_disable">chord_tone_and_foot_disable</label> 
+  
+  
+    <input class="er_setting" id="chord_tone_and_foot_disable" name="chord_tone_and_foot_disable" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="chord_tone_and_foot_disable-help-button" 
+      type="button" onClick="toggleHelp('chord_tone_and_foot_disable')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tone_and_foot_disable-help-div" 
+      style="display:none;">
+    <p>bool. If True, disables all chord-tone and foot specific behavior. Specifically, disables <code><a href="#chord_tone_selection-div">chord_tone_selection</a></code>, <code><a href="#chord_tones_no_diss_treatment-div">chord_tones_no_diss_treatment</a></code>, <code><a href="#force_chord_tone-div">force_chord_tone</a></code>, <code><a href="#force_foot_in_bass-div">force_foot_in_bass</a></code>, <code><a href="#max_interval_for_non_chord_tones-div">max_interval_for_non_chord_tones</a></code>, <code><a href="#min_interval_for_non_chord_tones-div">min_interval_for_non_chord_tones</a></code>, <code><a href="#voice_lead_chord_tones-div">voice_lead_chord_tones</a></code>, <code><a href="#preserve_foot_in_bass-div">preserve_foot_in_bass</a></code>, <code><a href="#extend_bass_range_for_foots-div">extend_bass_range_for_foots</a></code></p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="chord_tone_selection-div" 
+style="display:block">
+  <label for="chord_tone_selection">chord_tone_selection</label> 
+  
+  
+    <input checked class="er_setting" id="chord_tone_selection" name="chord_tone_selection" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="chord_tone_selection-help-button" 
+      type="button" onClick="toggleHelp('chord_tone_selection')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tone_selection-help-div" 
+      style="display:none;">
+    <p>boolean. If True, then the script will select whether each note should be assigned a chord-tone according to a probabilistic function (some of whose parameters can be set below). Note that even if this setting is True, however, and a particular note is assigned to be a chord-tone, if all chord-tones fail to satisfy the various conditions (e.g., <code><a href="#max_interval-div">max_interval</a></code>, etc.), the algorithm will try to find a non-chord-tone that works.
+                - Note that not all chord tone behavior is controlled
+                    by this setting, however. Some settings (such as those
+                    that begin "force_chord_tone") apply regardless. To disable
+                    all chord tone behavior entirely, use
+                    <code><a href="#chord_tone_and_foot_disable-div">chord_tone_and_foot_disable</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="chord_tone_prob_func-div" 
+style="display:none">
+  <label for="chord_tone_prob_func">chord_tone_prob_func</label> 
+  
+  
+    <input class="er_setting" id="chord_tone_prob_func" name="chord_tone_prob_func" type="text" value="linear">
+  
+  <button class="field-help-button" id="chord_tone_prob_func-help-button" 
+      type="button" onClick="toggleHelp('chord_tone_prob_func')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tone_prob_func-help-div" 
+      style="display:none;">
+    <p>string. If <code><a href="#chord_tone_selection-div">chord_tone_selection</a></code> is True, then the probability of the next note being a nonchord tone falls following each nonchord tone. This parameter controls how it falls. It can take the following values:
+                "quadratic"
+                "linear"</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="max_n_between_chord_tones-div" 
+style="display:none">
+  <label for="max_n_between_chord_tones">max_n_between_chord_tones</label> 
+  
+  
+    <input class="er_setting" id="max_n_between_chord_tones" name="max_n_between_chord_tones" type="text" value="4">
+  
+  <button class="field-help-button" id="max_n_between_chord_tones-help-button" 
+      type="button" onClick="toggleHelp('max_n_between_chord_tones')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_n_between_chord_tones-help-div" 
+      style="display:none;">
+    <p>int. Controls after how many non-chord tones the probability of the following note being a chord tone rises to 1. For example, if <code><a href="#chord_tone_prob_func-div">chord_tone_prob_func</a></code> is <code>"linear"</code>, <code><a href="#min_prob_chord_tone-div">min_prob_chord_tone</a></code> is 0.5, and <code>max_n_between_chord_tones</code> is 2,
+                - after a chord tone, the probability of a chord tone will be
+                    0.5
+                - after one non-chord tone, the probability of a chord tone will
+                    be 0.75
+                - after two non-chord tones, the probability of a chord tone
+                    will be 1</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="min_prob_chord_tone-div" 
+style="display:none">
+  <label for="min_prob_chord_tone">min_prob_chord_tone</label> 
+  
+  
+    <input class="er_setting" id="min_prob_chord_tone" name="min_prob_chord_tone" type="text" value="0.25">
+  
+  <button class="field-help-button" id="min_prob_chord_tone-help-button" 
+      type="button" onClick="toggleHelp('min_prob_chord_tone')">
+    Show help
+  </button>
+  <div class="field-help-div" id="min_prob_chord_tone-help-div" 
+      style="display:none;">
+    <p>float. Sets the probability of a chord tone immediately following another chord tone. See <code><a href="#max_n_between_chord_tones-div">max_n_between_chord_tones</a></code> for an example.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="try_to_force_non_chord_tones-div" 
+style="display:none">
+  <label for="try_to_force_non_chord_tones">try_to_force_non_chord_tones</label> 
+  
+  
+    <input class="er_setting" id="try_to_force_non_chord_tones" name="try_to_force_non_chord_tones" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="try_to_force_non_chord_tones-help-button" 
+      type="button" onClick="toggleHelp('try_to_force_non_chord_tones')">
+    Show help
+  </button>
+  <div class="field-help-div" id="try_to_force_non_chord_tones-help-div" 
+      style="display:none;">
+    <p>boolean. If True, then if the chord-tone probability function returns false, the script will try to force the pitch to be a non-chord tone. If False, then it is selected from the entire scale (chord tones and non-chord tones). Even if True, however, if all non-chord tones fail, the algorithm will try to find a chord-tone that works.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="len_to_force_chord_tone-div" 
+style="display:none">
+  <label for="len_to_force_chord_tone">len_to_force_chord_tone</label> 
+  
+  
+    <input class="er_setting" id="len_to_force_chord_tone" name="len_to_force_chord_tone" type="text" value="1">
+  
+  <button class="field-help-button" id="len_to_force_chord_tone-help-button" 
+      type="button" onClick="toggleHelp('len_to_force_chord_tone')">
+    Show help
+  </button>
+  <div class="field-help-div" id="len_to_force_chord_tone-help-div" 
+      style="display:none;">
+    <p>int. If <code><a href="#chord_tone_selection-div">chord_tone_selection</a></code> is True, then notes of this value or longer will be forced to be chord tones. To disable, set to 0.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="scale_chord_tone_prob_by_dur-div" 
+style="display:none">
+  <label for="scale_chord_tone_prob_by_dur">scale_chord_tone_prob_by_dur</label> 
+  
+  
+    <input checked class="er_setting" id="scale_chord_tone_prob_by_dur" name="scale_chord_tone_prob_by_dur" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="scale_chord_tone_prob_by_dur-help-button" 
+      type="button" onClick="toggleHelp('scale_chord_tone_prob_by_dur')">
+    Show help
+  </button>
+  <div class="field-help-div" id="scale_chord_tone_prob_by_dur-help-div" 
+      style="display:none;">
+    <p>bool. If True, and <code><a href="#chord_tone_selection-div">chord_tone_selection</a></code> is True, then the probability of a note being a chord-tone is scaled by the duration of that note, so that longer notes are more likely to be chord-tones.  Specifically, the probability of a note being a chord tone is linearly interpolated between what it would have been otherwise and 1, according to where the duration lies in the range set by <code><a href="#scale_chord_tone_neutral_dur-div">scale_chord_tone_neutral_dur</a></code> and <code><a href="#len_to_force_chord_tone-div">len_to_force_chord_tone</a></code>. (Whether the probability of notes shorter than <code><a href="#scale_chord_tone_neutral_dur-div">scale_chord_tone_neutral_dur</a></code> is reduced depends upon <code><a href="#scale_short_chord_tones_down-div">scale_short_chord_tones_down</a></code>.) Thus if this setting is True, then <code><a href="#len_to_force_chord_tone-div">len_to_force_chord_tone</a></code> must have a non-zero value.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="scale_chord_tone_neutral_dur-div" 
+style="display:none">
+  <label for="scale_chord_tone_neutral_dur">scale_chord_tone_neutral_dur</label> 
+  
+  
+    <input class="er_setting" id="scale_chord_tone_neutral_dur" name="scale_chord_tone_neutral_dur" type="text" value="0.5">
+  
+  <button class="field-help-button" id="scale_chord_tone_neutral_dur-help-button" 
+      type="button" onClick="toggleHelp('scale_chord_tone_neutral_dur')">
+    Show help
+  </button>
+  <div class="field-help-div" id="scale_chord_tone_neutral_dur-help-div" 
+      style="display:none;">
+    <p>number. If <code><a href="#scale_chord_tone_prob_by_dur-div">scale_chord_tone_prob_by_dur</a></code> is True, then this setting determines the note duration where chord-tone probability is left unchanged; notes of duration longer than this will have their chord-tone probability increased, and notes shorter will have their chord-tone probability decreased if <code><a href="#scale_short_chord_tones_down-div">scale_short_chord_tones_down</a></code> is True.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="scale_short_chord_tones_down-div" 
+style="display:none">
+  <label for="scale_short_chord_tones_down">scale_short_chord_tones_down</label> 
+  
+  
+    <input class="er_setting" id="scale_short_chord_tones_down" name="scale_short_chord_tones_down" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="scale_short_chord_tones_down-help-button" 
+      type="button" onClick="toggleHelp('scale_short_chord_tones_down')">
+    Show help
+  </button>
+  <div class="field-help-div" id="scale_short_chord_tones_down-help-div" 
+      style="display:none;">
+    <p>bool. See <code><a href="#scale_chord_tone_prob_by_dur-div">scale_chord_tone_prob_by_dur</a></code> and <code><a href="#scale_chord_tone_neutral_dur-div">scale_chord_tone_neutral_dur</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="chord_tone_before_rests-div" 
+style="display:none">
+  <label for="chord_tone_before_rests">chord_tone_before_rests</label> 
+  
+  
+    <input class="er_setting" id="chord_tone_before_rests" name="chord_tone_before_rests" type="text" value="0.26">
+  
+  <button class="field-help-button" id="chord_tone_before_rests-help-button" 
+      type="button" onClick="toggleHelp('chord_tone_before_rests')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tone_before_rests-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. If chord_tone_selection is true, then rests of this length or greater will always be preceded by a chord tone. To disable, assign a value of 0.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="chord_tones_no_diss_treatment-div" 
+style="display:none">
+  <label for="chord_tones_no_diss_treatment">chord_tones_no_diss_treatment</label> 
+  
+  
+    <input class="er_setting" id="chord_tones_no_diss_treatment" name="chord_tones_no_diss_treatment" type="text" value="False">
+  
+  <button class="field-help-button" id="chord_tones_no_diss_treatment-help-button" 
+      type="button" onClick="toggleHelp('chord_tones_no_diss_treatment')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tones_no_diss_treatment-help-div" 
+      style="display:none;">
+    <p>boolean, or a per-voice sequence of booleans. If true, then chord tones are exempted from the conditions of dissonance treatment. (However, dissonances sounding <em>against</em> these chord tones are still subject to the rules of dissonance treatment.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="force_chord_tone-div" 
+style="display:none">
+  <label for="force_chord_tone">force_chord_tone</label> 
+  
+  
+    
+    <select class="er_setting" id="force_chord_tone" name="force_chord_tone" size="5"><option value="global_first_beat">global_first_beat</option><option selected value="global_first_note">global_first_note</option><option value="first_beat">first_beat</option><option value="first_note">first_note</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="force_chord_tone-help-button" 
+      type="button" onClick="toggleHelp('force_chord_tone')">
+    Show help
+  </button>
+  <div class="field-help-div" id="force_chord_tone-help-div" 
+      style="display:none;">
+    <p>string. Possible values:
+                "global_first_beat": forces chord tone on onsets on the global
+                    first beat (i.e., the first beat of the entire piece). Note,
+                    however, that this does not ensure that there will be an
+                    onset on the global first beat, and this parameter has no
+                    effect on notes that sound <em>after</em> the first beat. (Compare
+                    "global_first_note".)
+                "global_first_note": forces chord tones on the first note to
+                    sound in each voice.
+                "first_beat": forces chord tones on onsets on the first beat
+                    of each harmony of the initial pattern. Note, however, that
+                    this does not ensure that there will be an onset on the
+                    first beat of each harmony, and this parameter has no effect
+                    on notes that sound <em>after</em> the first beat of each harmony.
+                    (Compare "first_note".)
+                "first_note": forces chord tones on the first note of each
+                    harmony in each voice.
+                "none": does not force any chord tones.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="chord_tones_sync_onset_in_all_voices-div" 
+style="display:none">
+  <label for="chord_tones_sync_onset_in_all_voices">chord_tones_sync_onset_in_all_voices</label> 
+  
+  
+    <input class="er_setting" id="chord_tones_sync_onset_in_all_voices" name="chord_tones_sync_onset_in_all_voices" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="chord_tones_sync_onset_in_all_voices-help-button" 
+      type="button" onClick="toggleHelp('chord_tones_sync_onset_in_all_voices')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_tones_sync_onset_in_all_voices-help-div" 
+      style="display:none;">
+    <p>bool. If True, then chord-tone selection will be synchronized between all simultaneously onset voices.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="force_foot_in_bass-div" 
+style="display:block">
+  <label for="force_foot_in_bass">force_foot_in_bass</label> 
+  
+  
+    
+    <select class="er_setting" id="force_foot_in_bass" name="force_foot_in_bass" size="5"><option selected value="global_first_beat">global_first_beat</option><option value="global_first_note">global_first_note</option><option value="first_beat">first_beat</option><option value="first_note">first_note</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="force_foot_in_bass-help-button" 
+      type="button" onClick="toggleHelp('force_foot_in_bass')">
+    Show help
+  </button>
+  <div class="field-help-div" id="force_foot_in_bass-help-div" 
+      style="display:none;">
+    <p>string. Possible values are listed below; they work in the same way as for <code>force_chord_string</code> above.
+                "first_beat"
+                "first_note"
+                "global_first_beat"
+                "global_first_note"
+                "none"</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="melody-div">
+  <fieldset class="category-fieldset" id="melody-fieldset">
+    <legend class="category-legend">melody</legend>
+    <div class="num-hidden-div" id="melody-num-hidden">
+      <button id="melody-less-button" type="button" 
+          onClick="show_less('melody-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="melody-num-hidden-text"></span>
+      <button id="melody-more-button" type="button" 
+          onClick="show_more('melody-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="prefer_small_melodic_intervals-div" 
+style="display:block">
+  <label for="prefer_small_melodic_intervals">prefer_small_melodic_intervals</label> 
+  
+  
+    <input checked class="er_setting" id="prefer_small_melodic_intervals" name="prefer_small_melodic_intervals" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="prefer_small_melodic_intervals-help-button" 
+      type="button" onClick="toggleHelp('prefer_small_melodic_intervals')">
+    Show help
+  </button>
+  <div class="field-help-div" id="prefer_small_melodic_intervals-help-div" 
+      style="display:none;">
+    <p>bool. If true, smaller intervals
+              will be more probable than larger intervals within the range
+              of each voice.
+              LONGTERM how, exactly? Make documentation more explicit?</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="prefer_small_melodic_intervals_coefficient-div" 
+style="display:none">
+  <label for="prefer_small_melodic_intervals_coefficient">prefer_small_melodic_intervals_coefficient</label> 
+  
+  
+    <input class="er_setting" id="prefer_small_melodic_intervals_coefficient" name="prefer_small_melodic_intervals_coefficient" type="text" value="1">
+  
+  <button class="field-help-button" id="prefer_small_melodic_intervals_coefficient-help-button" 
+      type="button" onClick="toggleHelp('prefer_small_melodic_intervals_coefficient')">
+    Show help
+  </button>
+  <div class="field-help-div" id="prefer_small_melodic_intervals_coefficient-help-div" 
+      style="display:none;">
+    <p>number. If <code><a href="#prefer_small_melodic_intervals-div">prefer_small_melodic_intervals</a></code> is true, then <code>prefer_small_melodic_intervals_coefficient</code> adjusts how strong the weighting towards smaller intervals is. It can take any value &gt; 0; greater values mean larger intervals are relatively more likely. A good range of values is 0 - 10.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="unison_weighted_as-div" 
+style="display:none">
+  <label for="unison_weighted_as">unison_weighted_as</label> 
+  
+  
+    <input class="er_setting" id="unison_weighted_as" name="unison_weighted_as" type="text" value="FIFTH">
+  
+  <button class="field-help-button" id="unison_weighted_as-help-button" 
+      type="button" onClick="toggleHelp('unison_weighted_as')">
+    Show help
+  </button>
+  <div class="field-help-div" id="unison_weighted_as-help-div" 
+      style="display:none;">
+    <p>int. If prefer_small_melodic_intervals is true, then we have to tell the algorithm how to weight melodic unisons, because we usually don't want them to be the most common melodic interval. Unisons will be weighted the same as whichever generic interval this variable is assigned to.</p>
+<p>(If you <em>DO</em> want unisons to be the most common melodic interval, set to "GENERIC_UNISON" -- you can't use "UNISON" because that's a just interval constant.)</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="max_interval-div" 
+style="display:none">
+  <label for="max_interval">max_interval</label> 
+  
+  
+    <input class="er_setting" id="max_interval" name="max_interval" type="text" value="4">
+  
+  <button class="field-help-button" id="max_interval-help-button" 
+      type="button" onClick="toggleHelp('max_interval')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_interval-help-div" 
+      style="display:none;">
+    <p>number, or a per-voice sequence of numbers. If <code>None</code>, does not apply.  If positive, indicates a generic interval. Otherwise, indicates a specific interval (in which case it can be a float to indicate a just interval which will be tempered in pre-processing---see the note above on specifying pitches and intervals).</p>
+<p><code>max_interval</code> sets an inclusive bound (so if <code>max_interval == -5</code>, an interval of 5 semitones is allowed, but 6 is not). <code>max_interval</code>, like the other similar settings below, applies across rests.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="max_interval_for_non_chord_tones-div" 
+style="display:none">
+  <label for="max_interval_for_non_chord_tones">max_interval_for_non_chord_tones</label> 
+  
+  
+    <input class="er_setting" id="max_interval_for_non_chord_tones" name="max_interval_for_non_chord_tones" type="text" value="take_from_max_interval">
+  
+  <button class="field-help-button" id="max_interval_for_non_chord_tones-help-button" 
+      type="button" onClick="toggleHelp('max_interval_for_non_chord_tones')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_interval_for_non_chord_tones-help-div" 
+      style="display:none;">
+    <p>number, or a per-voice sequence of numbers.  Works in the same way as max_interval, but only applies to non-chord tones. If given a value of 1, can be used to apply a sort of primitive dissonance treatment. It can, however, also be given a value <em>larger</em> than max_interval, for unusual effects.  min_interval sets an inclusive bound (so if <code>min_interval == -3</code>, an interval of 3 semitones is allowed, but 2 is not).  If not passed, is assigned the value of <code><a href="#max_interval-div">max_interval</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="min_interval-div" 
+style="display:none">
+  <label for="min_interval">min_interval</label> 
+  
+  
+    <input class="er_setting" id="min_interval" name="min_interval" type="text" value="">
+  
+  <button class="field-help-button" id="min_interval-help-button" 
+      type="button" onClick="toggleHelp('min_interval')">
+    Show help
+  </button>
+  <div class="field-help-div" id="min_interval-help-div" 
+      style="display:none;">
+    <p>number, or a per-voice sequence of numbers. Works like <code><a href="#max_interval-div">max_interval</a></code>, but specifies a minimum, rather than a maximum, interval.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="min_interval_for_non_chord_tones-div" 
+style="display:none">
+  <label for="min_interval_for_non_chord_tones">min_interval_for_non_chord_tones</label> 
+  
+  
+    <input class="er_setting" id="min_interval_for_non_chord_tones" name="min_interval_for_non_chord_tones" type="text" value="take_from_min_interval">
+  
+  <button class="field-help-button" id="min_interval_for_non_chord_tones-help-button" 
+      type="button" onClick="toggleHelp('min_interval_for_non_chord_tones')">
+    Show help
+  </button>
+  <div class="field-help-div" id="min_interval_for_non_chord_tones-help-div" 
+      style="display:none;">
+    <p>number, or a per-voice sequence of numbers. Works like <code><a href="#max_interval_for_non_chord_tones-div">max_interval_for_non_chord_tones</a></code>, but specifies a minimum, rather than a maximum, interval.  If not passed, is assigned the value of <code><a href="#min_interval-div">min_interval</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="force_repeated_notes-div" 
+style="display:none">
+  <label for="force_repeated_notes">force_repeated_notes</label> 
+  
+  
+    <input class="er_setting" id="force_repeated_notes" name="force_repeated_notes" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="force_repeated_notes-help-button" 
+      type="button" onClick="toggleHelp('force_repeated_notes')">
+    Show help
+  </button>
+  <div class="field-help-div" id="force_repeated_notes-help-div" 
+      style="display:none;">
+    <p>bool. If True, then within each harmony, each note is forced to repeat the pitch of the previous note.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="max_repeated_notes-div" 
+style="display:none">
+  <label for="max_repeated_notes">max_repeated_notes</label> 
+  
+  
+    <input class="er_setting" id="max_repeated_notes" name="max_repeated_notes" type="text" value="1">
+  
+  <button class="field-help-button" id="max_repeated_notes-help-button" 
+      type="button" onClick="toggleHelp('max_repeated_notes')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_repeated_notes-help-div" 
+      style="display:none;">
+    <p>integer. Sets the maximum allowed number of repeated pitches in a single voice. If <code><a href="#force_repeated_notes-div">force_repeated_notes</a></code> is True, this parameter is ignored. "One repeated note" means two notes with the same pitch in a row. To disable, set to a negative value.</p>
+<p>Warning: for now, only applies to the initial pattern, not to the subsequent voice-leading</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="max_alternations-div" 
+style="display:none">
+  <label for="max_alternations">max_alternations</label> 
+  
+  
+    <input class="er_setting" id="max_alternations" name="max_alternations" type="text" value="2">
+  
+  <button class="field-help-button" id="max_alternations-help-button" 
+      type="button" onClick="toggleHelp('max_alternations')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_alternations-help-div" 
+      style="display:none;">
+    <p>integer, or a per-voice sequence of integers. Specifies the maximum allowed number of consecutive alternations of two pitches in a voice.  "One alternation" is two pitches (e.g., A, B), and "two alternations" is four pitches (e.g., A, B, A, B). If set to two, then the sequence "A, B, A, B, A" is allowed, just not "A, B, A, B, A, B" (or longer).  To disable, set to 0.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="pitch_loop-div" 
+style="display:none">
+  <label for="pitch_loop">pitch_loop</label> 
+  
+  
+    <input class="er_setting" id="pitch_loop" name="pitch_loop" type="text" value="()">
+  
+  <button class="field-help-button" id="pitch_loop-help-button" 
+      type="button" onClick="toggleHelp('pitch_loop')">
+    Show help
+  </button>
+  <div class="field-help-div" id="pitch_loop-help-div" 
+      style="display:none;">
+    <p>int, or a sequence of ints. If passed, in each voice, pitches will be repeated in a loop of the specified length. (However, at each harmony change, the loop will be adjusted to fit the new harmony.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="hard_pitch_loop-div" 
+style="display:none">
+  <label for="hard_pitch_loop">hard_pitch_loop</label> 
+  
+  
+    <input class="er_setting" id="hard_pitch_loop" name="hard_pitch_loop" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="hard_pitch_loop-help-button" 
+      type="button" onClick="toggleHelp('hard_pitch_loop')">
+    Show help
+  </button>
+  <div class="field-help-div" id="hard_pitch_loop-help-div" 
+      style="display:none;">
+    <p>boolean. If True, then after the initial loop of each voice is constructed, pitch constraint parameters such as <code><a href="#consonances-div">consonances</a></code> and <code><a href="#max_interval-div">max_interval</a></code> will be ignored and the pitches will continue to be looped "no matter what." If False, then a "soft" pitch loop is constructed, where a new pitch is chosen each time a pitch fails to pass the pitch constraint parameters.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="prohibit_parallels-div" 
+style="display:none">
+  <label for="prohibit_parallels">prohibit_parallels</label> 
+  
+  
+    <input class="er_setting" id="prohibit_parallels" name="prohibit_parallels" type="text" value="(OCTAVE,)">
+  
+  <button class="field-help-button" id="prohibit_parallels-help-button" 
+      type="button" onClick="toggleHelp('prohibit_parallels')">
+    Show help
+  </button>
+  <div class="field-help-div" id="prohibit_parallels-help-div" 
+      style="display:none;">
+    <p>sequence of numbers. The numbers will be treated as octave-equivalent intervals (so, e.g., an octave equals a unison). Parallel motion by these intervals will be forbidden. The obvious use is to prohibit parallel octaves, but can be used however one wishes. (See the note above on specifying pitches and intervals.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="antiparallels-div" 
+style="display:none">
+  <label for="antiparallels">antiparallels</label> 
+  
+  
+    <input checked class="er_setting" id="antiparallels" name="antiparallels" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="antiparallels-help-button" 
+      type="button" onClick="toggleHelp('antiparallels')">
+    Show help
+  </button>
+  <div class="field-help-div" id="antiparallels-help-div" 
+      style="display:none;">
+    <p>bool. If True, then "antiparallel" versions of the intervals in <code><a href="#prohibit_parallels-div">prohibit_parallels</a></code> will also be prohibited. (E.g., if parallel octaves are forbidden, then an octave followed by a unison or a fifteenth will also be forbidden, and vice versa.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="force_parallel_motion-div" 
+style="display:none">
+  <label for="force_parallel_motion">force_parallel_motion</label> 
+  
+  
+    <input class="er_setting" id="force_parallel_motion" name="force_parallel_motion" type="text" value="False">
+  
+  <button class="field-help-button" id="force_parallel_motion-help-button" 
+      type="button" onClick="toggleHelp('force_parallel_motion')">
+    Show help
+  </button>
+  <div class="field-help-div" id="force_parallel_motion-help-div" 
+      style="display:none;">
+    <p>bool, or a dictionary where keys are tuples of ints (indicating voice indices) and values are bools.  If True, then voices will be constrained to move in (generic) parallel motion. The parallel motion is only enforced within harmonies; across the boundaries between harmonies, voices may move freely. When this parameter is True between voices that do not have the same onsets, it works as follows: it takes the <em>last</em> melodic interval in the leader voice, and adds the same melodic interval in the follower voice.</p>
+<p>If True, <code><a href="#prohibit_parallels-div">prohibit_parallels</a></code> is nevertheless respected (specifically, the harmonic interval that would result from forcing parallel motion is checked for membership in <code><a href="#prohibit_parallels-div">prohibit_parallels</a></code>). If moving in parallel with the leader would cause the follower voice to exceed the lowest pitch of its range, it will be moved up an octave; conversely, if it would exceed the highest pitch of its range, it will be moved down an octave. (Either operation may violate <code><a href="#max_interval-div">max_interval</a></code> or <code><a href="#max_interval_for_non_chord_tones-div">max_interval_for_non_chord_tones</a></code>.) Note that strange effects may result if the voice's range is less than an octave.</p>
+<p>Note that if the follower has a longer <code><a href="#pattern_len-div">pattern_len</a></code> than the leader, the parallel motion will only last until the conclusion of the leader pattern.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="consonance-div">
+  <fieldset class="category-fieldset" id="consonance-fieldset">
+    <legend class="category-legend">consonance</legend>
+    <div class="num-hidden-div" id="consonance-num-hidden">
+      <button id="consonance-less-button" type="button" 
+          onClick="show_less('consonance-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="consonance-num-hidden-text"></span>
+      <button id="consonance-more-button" type="button" 
+          onClick="show_more('consonance-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="consonance_type-div" 
+style="display:none">
+  <label for="consonance_type">consonance_type</label> 
+  
+  
+    
+    <select class="er_setting" id="consonance_type" name="consonance_type" size="2"><option selected value="pairwise">pairwise</option><option value="chordwise">chordwise</option></select>
+  
+  <button class="field-help-button" id="consonance_type-help-button" 
+      type="button" onClick="toggleHelp('consonance_type')">
+    Show help
+  </button>
+  <div class="field-help-div" id="consonance_type-help-div" 
+      style="display:none;">
+    <p>string. Controls how notes are evaluated for consonance/dissonance. Possible values:
+                "pairwise": all pairs of sounding voices are checked against
+                    the sequence in <code><a href="#consonances-div">consonances</a></code>
+                "chordwise": all voices are checked as a group
+                    to see if they belong to one of the chords in
+                    <code><a href="#consonant_chords-div">consonant_chords</a></code></p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="consonance_treatment-div" 
+style="display:block">
+  <label for="consonance_treatment">consonance_treatment</label> 
+  
+  
+    
+    <select class="er_setting" id="consonance_treatment" name="consonance_treatment" size="3"><option selected value="all_onsets">all_onsets</option><option value="all_durs">all_durs</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="consonance_treatment-help-button" 
+      type="button" onClick="toggleHelp('consonance_treatment')">
+    Show help
+  </button>
+  <div class="field-help-div" id="consonance_treatment-help-div" 
+      style="display:none;">
+    <p>string. Controls among which notes consonance is evaluated. Possible values:
+                "all_onsets": each pitch is evaluated for consonance with all
+                    other simulatenously onset pitches.
+                "all_durs": each pitch is evaluated for consonance with
+                    all other pitches sounding during its duration.
+                "none": no consonance treatment.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="forbidden_intervals-div" 
+style="display:none">
+  <label for="forbidden_intervals">forbidden_intervals</label> 
+  
+  
+    <input class="er_setting" id="forbidden_intervals" name="forbidden_intervals" type="text" value="()">
+  
+  <button class="field-help-button" id="forbidden_intervals-help-button" 
+      type="button" onClick="toggleHelp('forbidden_intervals')">
+    Show help
+  </button>
+  <div class="field-help-div" id="forbidden_intervals-help-div" 
+      style="display:none;">
+    <p>a sequence of numbers. The harmonic intervals specified by this sequence will be  avoided. Octave-equivalent intervals are NOT avoided. The main expected use is to avoid unisons. Whether this setting persists after the initial pattern depends on the value of <code><a href="#vl_maintain_consonance-div">vl_maintain_consonance</a></code>. (See the note above on specifying pitches and intervals.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="forbidden_interval_classes-div" 
+style="display:none">
+  <label for="forbidden_interval_classes">forbidden_interval_classes</label> 
+  
+  
+    <input class="er_setting" id="forbidden_interval_classes" name="forbidden_interval_classes" type="text" value="()">
+  
+  <button class="field-help-button" id="forbidden_interval_classes-help-button" 
+      type="button" onClick="toggleHelp('forbidden_interval_classes')">
+    Show help
+  </button>
+  <div class="field-help-div" id="forbidden_interval_classes-help-div" 
+      style="display:none;">
+    <p>a sequence of numbers. The harmonic interval classes specified by this sequence will be  avoided. will be entirely avoided, regardless of consonance settings, at least in the initial pattern.  Whether this setting persists after the initial pattern depends on the value of <code><a href="#vl_maintain_consonance-div">vl_maintain_consonance</a></code>. (See the note above on specifying pitches and intervals.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="forbidden_interval_modulo-div" 
+style="display:none">
+  <label for="forbidden_interval_modulo">forbidden_interval_modulo</label> 
+  
+  
+    <input class="er_setting" id="forbidden_interval_modulo" name="forbidden_interval_modulo" type="text" value="0">
+  
+  <button class="field-help-button" id="forbidden_interval_modulo-help-button" 
+      type="button" onClick="toggleHelp('forbidden_interval_modulo')">
+    Show help
+  </button>
+  <div class="field-help-div" id="forbidden_interval_modulo-help-div" 
+      style="display:none;">
+    <p>number, or a sequence of number, or a sequence of sequence of numbers. Optionally defines onset times at which <code><a href="#forbidden_interval_classes-div">forbidden_interval_classes</a></code> will be enforced. Works similarly to and is specified in the same manner as <code>consonance_modulo</code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="exclude_augmented_triad-div" 
+style="display:none">
+  <label for="exclude_augmented_triad">exclude_augmented_triad</label> 
+  
+  
+    <input checked class="er_setting" id="exclude_augmented_triad" name="exclude_augmented_triad" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="exclude_augmented_triad-help-button" 
+      type="button" onClick="toggleHelp('exclude_augmented_triad')">
+    Show help
+  </button>
+  <div class="field-help-div" id="exclude_augmented_triad-help-div" 
+      style="display:none;">
+    <p>boolean. Because all the pairwise intervals of the 12-tet augmented triad are consonant, if we want to avoid it, we need to explicitly exclude it. Only has any effect if consonance_type is "pairwise".</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="consonances-div" 
+style="display:block">
+  <label for="consonances">consonances</label> 
+  
+  
+    <input class="er_setting" id="consonances" name="consonances" type="text" value="CONSONANCES">
+  
+  <button class="field-help-button" id="consonances-help-button" 
+      type="button" onClick="toggleHelp('consonances')">
+    Show help
+  </button>
+  <div class="field-help-div" id="consonances-help-div" 
+      style="display:none;">
+    <p>a sequence of numbers. The sequence items specify the intervals that will be treated as consonances if <code><a href="#consonance_type-div">consonance_type</a></code> is <code>"pairwise"</code>. (But see <code><a href="#invert_consonances-div">invert_consonances</a></code> below.) Since it's just a sequence of numbers, you can specify any intervals you like---it does not have to conform to the usual set of consonances.</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html. See also the note above on specifying pitches and intervals.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="invert_consonances-div" 
+style="display:none">
+  <label for="invert_consonances">invert_consonances</label> 
+  
+  
+    <input class="er_setting" id="invert_consonances" name="invert_consonances" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="invert_consonances-help-button" 
+      type="button" onClick="toggleHelp('invert_consonances')">
+    Show help
+  </button>
+  <div class="field-help-div" id="invert_consonances-help-div" 
+      style="display:none;">
+    <p>bool. If True, then the contents of <code><a href="#consonances-div">consonances</a></code> are replaced by their setwise complement. (E.g., if <code><a href="#tet-div">tet</a></code> is 12, then <code>[0, 3, 4, 5, 7, 8, 9]</code> will be replaced by <code>[1, 2, 6, 10, 11]</code>.) This permits an easy way of specifying so-called "dissonant counterpoint". Has no effect if <code><a href="#consonance_type-div">consonance_type</a></code> is <code>"chordwise"</code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="consonant_chords-div" 
+style="display:none">
+  <label for="consonant_chords">consonant_chords</label> 
+  
+  
+    <input class="er_setting" id="consonant_chords" name="consonant_chords" type="text" value="(MAJOR_TRIAD, MINOR_TRIAD)">
+  
+  <button class="field-help-button" id="consonant_chords-help-button" 
+      type="button" onClick="toggleHelp('consonant_chords')">
+    Show help
+  </button>
+  <div class="field-help-div" id="consonant_chords-help-div" 
+      style="display:none;">
+    <p>a sequence of sequences of numbers. Each sub-sequence specifies a chord to be understood as consonant if <code><a href="#consonance_type-div">consonance_type</a></code> is <code>"chordwise"</code>.</p>
+<p>For a list of pre-defined constants that can be used with this setting, see docs/constants.html. See also the note above on specifying pitches and intervals.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="chord_octave_equi_type-div" 
+style="display:none">
+  <label for="chord_octave_equi_type">chord_octave_equi_type</label> 
+  
+  
+    <input class="er_setting" id="chord_octave_equi_type" name="chord_octave_equi_type" type="text" value="all">
+  
+  <button class="field-help-button" id="chord_octave_equi_type-help-button" 
+      type="button" onClick="toggleHelp('chord_octave_equi_type')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_octave_equi_type-help-div" 
+      style="display:none;">
+    <p>string. If <code><a href="#consonance_type-div">consonance_type</a></code> is <code>"chordwise"</code>, controls how the items in <code><a href="#consonant_chords-div">consonant_chords</a></code> are interpreted regarding octave equivalence and octave permutations. Possible values:
+                "all": all octave-equivalent and octave-permuted voicings are
+                    allowed. Thus (C4, E4, G4), (C4, G4, E5), and (G3, E4, C4)
+                    are all equivalent (as are many other voicings of a
+                    C major chord).
+                "bass": all octave-equivalent and octave-permuted voicings are
+                    allowed, except that the bass pitch (the lowest pitch of the
+                    chord) must be preserved. Thus (C4, E4, G4) and (C4, G4, E5)
+                    are equivalent, but (G3, E4, C4) is not, because the lowest
+                    pitch has changed.
+                "order": octave equivalence is allowed but pitches must be in
+                    the order listed. Thus (C4, E4, G4) is equivalent to
+                    (C4, E4, G5) but not to (C4, G4, E5).
+                "none": no octave equivalence or octave permutations of
+                    voicings. Thus (C3, E4, G4) is not equivalent to
+                    (C4, E4, G4).</p>
+<p>Note that transpositional equivalence always applies, so (C4, E4, G4) will always match (F4, A4, C5), and also (C3, E3, G3), even if <code>"none"</code>.</p>
+<p>Note on voice crossings: in all of these settings, "order" refers to order by pitch height, and not by voice number. So if voice 0 has E3 and voice 1 has C3, the order is (C3, E3), because C3 is lower in pitch than E3, and not (E3, C3), because voice 0 is lower than voice 1.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="chord_permit_doublings-div" 
+style="display:none">
+  <label for="chord_permit_doublings">chord_permit_doublings</label> 
+  
+  
+    
+    <select class="er_setting" id="chord_permit_doublings" name="chord_permit_doublings" size="3"><option selected value="all">all</option><option value="complete">complete</option><option value="none">none</option></select>
+  
+  <button class="field-help-button" id="chord_permit_doublings-help-button" 
+      type="button" onClick="toggleHelp('chord_permit_doublings')">
+    Show help
+  </button>
+  <div class="field-help-div" id="chord_permit_doublings-help-div" 
+      style="display:none;">
+    <p>string. If <code><a href="#consonance_type-div">consonance_type</a></code> is <code>"chordwise"</code>, controls when octave doublings of chord members are permitted. Possible values:
+                "all": any and all doublings are permitted.
+                "complete": doublings are only permitted once the chord is
+                    complete. E.g., if the allowed chord is a major triad, then
+                    after (C4, E4), the doubling E5 will not be permitted
+                    because the chord is incomplete. However, after
+                    (C4, E4, G4), E5 will be permitted, because the chord is
+                    now complete.
+                "none": all doublings are prohibited.</p>
+<pre><code>    All rhythm settings use &lt;code&gt;&lt;a href="#rhythm_len-div"&gt;rhythm_len&lt;/a&gt;&lt;/code&gt; above.
+</code></pre>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="rhythm-div">
+  <fieldset class="category-fieldset" id="rhythm-fieldset">
+    <legend class="category-legend">rhythm</legend>
+    <div class="num-hidden-div" id="rhythm-num-hidden">
+      <button id="rhythm-less-button" type="button" 
+          onClick="show_less('rhythm-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="rhythm-num-hidden-text"></span>
+      <button id="rhythm-more-button" type="button" 
+          onClick="show_more('rhythm-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="rhythmic_unison-div" 
+style="display:none">
+  <label for="rhythmic_unison">rhythmic_unison</label> 
+  
+  
+    <input class="er_setting" id="rhythmic_unison" name="rhythmic_unison" type="text" value="False">
+  
+  <button class="field-help-button" id="rhythmic_unison-help-button" 
+      type="button" onClick="toggleHelp('rhythmic_unison')">
+    Show help
+  </button>
+  <div class="field-help-div" id="rhythmic_unison-help-div" 
+      style="display:none;">
+    <p>bool, or a sequence of tuples of ints. Controls whether to apply "rhythmic unison" (i.e., simultaneous onsets and releases) to some or all voices.</p>
+<p>If True, all voices are in rhythmic unison. In this case, the rhythm settings that will apply to all voices are those of the bass voice (i.e., voice 0).</p>
+<p>If False, no voices are in rhythmic unison.</p>
+<p>If a sequence of tuples of ints, specifies combinations of voices that are in rhythmic unison. For example, <code>[(0, 1), (2, 3)]</code> would indicate that voices 0 and 1 would be in rhythmic unison with one another, while voices 2 and 3 would also be in rhythmic unison with one another, but neither of voices 0 and 1 are in rhythmic unison with either of voices 2 and 3. Voices that are not specified will have an independent rhythm, not in rhythmic unison with any other part. Thus, with four voices, <code>[(0, 2)]</code> would cause voices 0 and 2 to be in rhythmic unison with one another, while voices 1 and 3 would each have independent rhythms. Note that each tuple should be in ascending order. The rhythmic parameters that will be used in the construction of each rhythm are those of the first-listed voice.</p>
+<p>Note that, when using tuples of rhythmic unison voices, it is sometimes necessary to provide "dummy" rhythmic parameters. If, for instance, the <code>rhythmic_unison</code> tuples are <code>[(0, 1), (2, 3)]</code> and a parameter such as <code><a href="#onset_density-div">onset_density</a></code> is <code>[0.5, 0.3]</code>, the second value of <code><a href="#onset_density-div">onset_density</a></code> will never be used, because the first voices of the <code>rhythmic_unison</code> tuples are 0 and 2 (and 2, modulo the length of <code><a href="#onset_density-div">onset_density</a></code>, is 0). In this situation it is necessary to insert a dummy value into <code><a href="#onset_density-div">onset_density</a></code> (e.g., [0.5, 0.0, 0.3]) in order to apply the parameter 0.3 to the second <code>rhythmic_unison</code> tuple.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="rhythmic_quasi_unison-div" 
+style="display:none">
+  <label for="rhythmic_quasi_unison">rhythmic_quasi_unison</label> 
+  
+  
+    <input class="er_setting" id="rhythmic_quasi_unison" name="rhythmic_quasi_unison" type="text" value="False">
+  
+  <button class="field-help-button" id="rhythmic_quasi_unison-help-button" 
+      type="button" onClick="toggleHelp('rhythmic_quasi_unison')">
+    Show help
+  </button>
+  <div class="field-help-div" id="rhythmic_quasi_unison-help-div" 
+      style="display:none;">
+    <p>bool, or a sequence of tuples of ints. This parameter is specified in the same way as <code><a href="#rhythmic_unison-div">rhythmic_unison</a></code> above. However, whereas <code><a href="#rhythmic_unison-div">rhythmic_unison</a></code> causes voices to have precisely the same rhythms, this parameter works differently. It does not override the rhythmic settings (such as <code><a href="#onset_density-div">onset_density</a></code>) that apply to each voice, but it constrains the onsets of "follower" voices to occur at the same time as the onsets of "leader" voices, as far as is possible. If the follower has a greater <code><a href="#onset_density-div">onset_density</a></code> than the leader, then the follower will have onsets simultaneous with all those of the leader, as well as extra onsets to satisfy its <code><a href="#onset_density-div">onset_density</a></code> value. If the follower has a lesser <code><a href="#onset_density-div">onset_density</a></code> than the leader, then all of the followers onsets will occur simultaneous with onsets in the leader, but it will have fewer onsets than the leader. The effect on other rhythmic parameters like <code><a href="#dur_density-div">dur_density</a></code> is similar.  See also <code><a href="#rhythmic_quasi_unison_constrain-div">rhythmic_quasi_unison_constrain</a></code> below.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="hocketing-div" 
+style="display:none">
+  <label for="hocketing">hocketing</label> 
+  
+  
+    <input class="er_setting" id="hocketing" name="hocketing" type="text" value="False">
+  
+  <button class="field-help-button" id="hocketing-help-button" 
+      type="button" onClick="toggleHelp('hocketing')">
+    Show help
+  </button>
+  <div class="field-help-div" id="hocketing-help-div" 
+      style="display:none;">
+    <p>bool, or a sequence of tuples of ints.  This parameter is specified in the same way as <code><a href="#rhythmic_unison-div">rhythmic_unison</a></code> above.  Its effect is to lead combinations of voices to be "hocketed" ---i.e., for, when possible, the onsets of one voice to be placed during the pauses of another, and vice versa.</p>
+<p>Tuples of the form (0, 1, 2) will cause voice 1 to be constructed in hocket with voice 0, and then voice 2 to be constructed in hocket with voice 1.</p>
+<p>Tuples of the form (0, 1) and (1, 2), in contrast, will cause voice 1 to be constructed in hocket with voice 0 (as before), but voice 2 to be constructed in hocket with voice 1 <em>but not</em> with voice 0.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="rhythmic_quasi_unison_constrain-div" 
+style="display:none">
+  <label for="rhythmic_quasi_unison_constrain">rhythmic_quasi_unison_constrain</label> 
+  
+  
+    <input class="er_setting" id="rhythmic_quasi_unison_constrain" name="rhythmic_quasi_unison_constrain" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="rhythmic_quasi_unison_constrain-help-button" 
+      type="button" onClick="toggleHelp('rhythmic_quasi_unison_constrain')">
+    Show help
+  </button>
+  <div class="field-help-div" id="rhythmic_quasi_unison_constrain-help-div" 
+      style="display:none;">
+    <p>boolean. If <code><a href="#rhythmic_quasi_unison-div">rhythmic_quasi_unison</a></code> is False, has no effect. If True, and <code><a href="#rhythmic_quasi_unison-div">rhythmic_quasi_unison</a></code> is True, then
+                - if the follower voice has a smaller onset density than the
+                leader, it will be constrained not to contain any durations
+                that lie outside the durations of the leader.
+                - if the follower has a greater onset density than the leader,
+                it will be constrained to have all its onsets occur during the
+                durations of the leader, if possible.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="onset_density-div" 
+style="display:block">
+  <label for="onset_density">onset_density</label> 
+  
+  
+    <input class="er_setting" id="onset_density" name="onset_density" type="text" value="0.65">
+  
+  <button class="field-help-button" id="onset_density-help-button" 
+      type="button" onClick="toggleHelp('onset_density')">
+    Show help
+  </button>
+  <div class="field-help-div" id="onset_density-help-div" 
+      style="display:none;">
+    <p>a float from 0.0 to 1.0, or an int, or a per-voice sequence of floats and/or ints.</p>
+<p>Floats represent a proportion of the available onsets to be filled. E.g., if <code>onset_density == 0.5</code> and there are 4 possible onset times, there will be 2 onsets. (Possible onset times are determined by <code><a href="#onset_subdivision-div">onset_subdivision</a></code>, <code><a href="#sub_subdivisions-div">sub_subdivisions</a></code>, and <code>comma</code> below).</p>
+<p>Integers represent a literal number of onsets. E.g., if <code>onset_density == 3</code>, there will be 3 onsets.</p>
+<p>Any negative values will be replaced by a random float between 0.0 and 1.0.</p>
+<p>Note that there will always be at least one onset in each rhythm, regardless of how low <code>onset_density</code> is set.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="dur_density-div" 
+style="display:block">
+  <label for="dur_density">dur_density</label> 
+  
+  
+    <input class="er_setting" id="dur_density" name="dur_density" type="text" value="0.65">
+  
+  <button class="field-help-button" id="dur_density-help-button" 
+      type="button" onClick="toggleHelp('dur_density')">
+    Show help
+  </button>
+  <div class="field-help-div" id="dur_density-help-div" 
+      style="display:none;">
+    <p>a float from 0.0 to 1.0, or a per-voice sequence of floats. Indicates a proportion of the duration of <code><a href="#rhythm_len-div">rhythm_len</a></code> that should be filled. Any negative values will be replaced by a random float between 0.0 and 1.0.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="onset_subdivision-div" 
+style="display:block">
+  <label for="onset_subdivision">onset_subdivision</label> 
+  
+  
+    <input class="er_setting" id="onset_subdivision" name="onset_subdivision" type="text" value="0.25">
+  
+  <button class="field-help-button" id="onset_subdivision-help-button" 
+      type="button" onClick="toggleHelp('onset_subdivision')">
+    Show help
+  </button>
+  <div class="field-help-div" id="onset_subdivision-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. Indicates the basic "grid" on which onsets can take place, measured in quarter notes. For example, if <code>onset_subdivision == 1/4</code>, then onsets can occur on every sixteenth note subdivision. (But see also <code>sub_subdivision</code> below.) If <code>cont_rhythms == "all"</code> or <code>cont_rhythms == "grid"</code>, then this parameter no longer indicates the grid on which onsets can take place, but it is still used to calculate how many onset positions there should be. Thus, in the case of continuous rhythms, this parameter can be thought of as indicating the average grid duration, rather than the exact grid duration.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="sub_subdivisions-div" 
+style="display:none">
+  <label for="sub_subdivisions">sub_subdivisions</label> 
+  
+  
+    <input class="er_setting" id="sub_subdivisions" name="sub_subdivisions" type="text" value="1">
+  
+  <button class="field-help-button" id="sub_subdivisions-help-button" 
+      type="button" onClick="toggleHelp('sub_subdivisions')">
+    Show help
+  </button>
+  <div class="field-help-div" id="sub_subdivisions-help-div" 
+      style="display:none;">
+    <p>a sequence of ints, or a per-voice sequence of sequences of ints.  Further subdivides <code><a href="#onset_subdivision-div">onset_subdivision</a></code>, into parts defined by the ratio of the integers in the sequence. This can be used to apply "swing" or any other irregular subdivision you like. For instance, if passed a value of <code>(3, 4, 2)</code>, each unit of length <code><a href="#onset_subdivision-div">onset_subdivision</a></code> will be subdivided into a portion of 3/9, a portion of 4/9, and a portion of 2/9. If a sequence of sequences, each sub-sequence applies to an individual voice, interpreted in the looping per-voice manner described above.</p>
+<p>Note that this parameter is ignored if <code>cont_rhythms != "none"</code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="dur_subdivision-div" 
+style="display:block">
+  <label for="dur_subdivision">dur_subdivision</label> 
+  
+  
+    <input class="er_setting" id="dur_subdivision" name="dur_subdivision" type="text" value="0">
+  
+  <button class="field-help-button" id="dur_subdivision-help-button" 
+      type="button" onClick="toggleHelp('dur_subdivision')">
+    Show help
+  </button>
+  <div class="field-help-div" id="dur_subdivision-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. Indicates the "grid" on which note durations are extended (and thus on which releases take place), which will be measured from the note onset. Values of 0 will be assigned the corresponding value of onset_subdivision. Note that, regardless of this value, all notes will be given a duration of at least <code><a href="#min_dur-div">min_dur</a></code>, so it is possible that the total duration will exceed the value implied by <code>dur_subdivision</code> somewhat.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="min_dur-div" 
+style="display:none">
+  <label for="min_dur">min_dur</label> 
+  
+  
+    <input class="er_setting" id="min_dur" name="min_dur" type="text" value="0">
+  
+  <button class="field-help-button" id="min_dur-help-button" 
+      type="button" onClick="toggleHelp('min_dur')">
+    Show help
+  </button>
+  <div class="field-help-div" id="min_dur-help-div" 
+      style="display:none;">
+    <p>a number, or a per-voice sequence of numbers. Indicates the minimum duration of a note. Values &lt;= 0 will be assigned the corresponding value of <code><a href="#onset_subdivision-div">onset_subdivision</a></code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="obligatory_onsets-div" 
+style="display:none">
+  <label for="obligatory_onsets">obligatory_onsets</label> 
+  
+  
+    <input class="er_setting" id="obligatory_onsets" name="obligatory_onsets" type="text" value="()">
+  
+  <button class="field-help-button" id="obligatory_onsets-help-button" 
+      type="button" onClick="toggleHelp('obligatory_onsets')">
+    Show help
+  </button>
+  <div class="field-help-div" id="obligatory_onsets-help-div" 
+      style="display:none;">
+    <p>a sequence of numbers, or a per-voice sequence of sequences of numbers. Numbers specify obligatory onset times to include in the rhythm. Zero-indexed, so beat "1" (in musical terms) is <code>0</code>. Thus a value of <code>[0, 2, 3]</code>, with an <code>obligatory_onsets</code> value of <code>4</code> would enforce onsets on beats 0, 2, and 3, repeating every 4 beats; in musical terms, we could think of this as onsets on the first, third, and fourth beats of every measure of 4/4.</p>
+<p>If <code>obligatory_onsets</code> specifies more onsets than would be implied by <code><a href="#onset_density-div">onset_density</a></code>, <code>obligatory_onsets</code> takes precedence.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="obligatory_onsets_modulo-div" 
+style="display:none">
+  <label for="obligatory_onsets_modulo">obligatory_onsets_modulo</label> 
+  
+  
+    <input class="er_setting" id="obligatory_onsets_modulo" name="obligatory_onsets_modulo" type="text" value="4">
+  
+  <button class="field-help-button" id="obligatory_onsets_modulo-help-button" 
+      type="button" onClick="toggleHelp('obligatory_onsets_modulo')">
+    Show help
+  </button>
+  <div class="field-help-div" id="obligatory_onsets_modulo-help-div" 
+      style="display:none;">
+    <p>a number, or a sequence of numbers. Specifies which times (if any) should be understood as equivalent to the values in <code><a href="#obligatory_onsets-div">obligatory_onsets</a></code>. Thus, if <code><a href="#obligatory_onsets-div">obligatory_onsets</a></code> is <code>(0,)</code>, and <code>obligatory_onsets_modulo</code> is passed a value of <code>2</code>, then times of 2, 4, 6, ... will be equivalent to 0. Has no effect if <code><a href="#obligatory_onsets-div">obligatory_onsets</a></code> is empty.
+        # TODO how to handle possible values can be string <em>or</em> int</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="comma_position-div" 
+style="display:none">
+  <label for="comma_position">comma_position</label> 
+  
+  
+    <input class="er_setting" id="comma_position" name="comma_position" type="text" value="end">
+  
+  <button class="field-help-button" id="comma_position-help-button" 
+      type="button" onClick="toggleHelp('comma_position')">
+    Show help
+  </button>
+  <div class="field-help-div" id="comma_position-help-div" 
+      style="display:none;">
+    <p>string, int, or sequence of strings and/or ints.  If the <code><a href="#rhythm_len-div">rhythm_len</a></code> is not divisible by <code><a href="#onset_subdivision-div">onset_subdivision</a></code> (e.g., <code>rhythm_len == 3</code> and <code>onset_subdivision == 2/3</code>), then there will be a "comma" left over that the onsets do not fill. This setting controls the placement of any such comma. Possible values:
+              - "end": comma is placed at the end of the rhythm.
+              - "anywhere": the comma is placed randomly anywhere before,
+                  after, or during the rhythm.
+              - "beginning": comma is placed at the beginning of the rhythm,
+                  before any notes.
+              - "middle": comma is placed randomly in the middle of the
+                  rhythm.
+              - int: specify the index at which to place the comma.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="overlap-div" 
+style="display:none">
+  <label for="overlap">overlap</label> 
+  
+  
+    <input checked class="er_setting" id="overlap" name="overlap" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="overlap-help-button" 
+      type="button" onClick="toggleHelp('overlap')">
+    Show help
+  </button>
+  <div class="field-help-div" id="overlap-help-div" 
+      style="display:none;">
+    <p>bool. If <code>True</code>, then the final durations of each pattern repetition can overlap with the first durations of the next. If <code>False</code>, pattern overlaps are avoided.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="choir-div">
+  <fieldset class="category-fieldset" id="choir-fieldset">
+    <legend class="category-legend">choir</legend>
+    <div class="num-hidden-div" id="choir-num-hidden">
+      <button id="choir-less-button" type="button" 
+          onClick="show_less('choir-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="choir-num-hidden-text"></span>
+      <button id="choir-more-button" type="button" 
+          onClick="show_more('choir-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="choirs-div" 
+style="display:block">
+  <label for="choirs">choirs</label> 
+  
+  
+    <input class="er_setting" id="choirs" name="choirs" type="text" value="[16, 21, 15]">
+  
+  <button class="field-help-button" id="choirs-help-button" 
+      type="button" onClick="toggleHelp('choirs')">
+    Show help
+  </button>
+  <div class="field-help-div" id="choirs-help-div" 
+      style="display:none;">
+    <p>Sequence of ints.</p>
+<p>Each integer selects one of the following elementary synth presets:</p>
+<ul>
+<li>0: Sine</li>
+<li>1: Saw</li>
+<li>2: Square</li>
+<li>3: FilteredSaw</li>
+<li>4: FollowSaw</li>
+<li>5: FilteredSquare</li>
+<li>6: FollowSquare</li>
+<li>7: FilteredDoubleSaw</li>
+<li>8: DoubleFollowSaw</li>
+<li>9: DoubleFollowSquare</li>
+<li>10: DoubleSaw</li>
+<li>11: DoubleSquare</li>
+<li>12: TripleSine</li>
+<li>13: ShortSine</li>
+<li>14: ShortSaw</li>
+<li>15: ShortSquare</li>
+<li>16: ShortFollowSaw</li>
+<li>17: ShortFollowSquare</li>
+<li>18: ShortDoubleSaw</li>
+<li>19: ShortDoubleFollowSaw</li>
+<li>20: ShortDoubleFollowSquare</li>
+<li>21: ShortTripleSine</li>
+</ul>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="choir_assignments-div" 
+style="display:block">
+  <label for="choir_assignments">choir_assignments</label> 
+  
+  
+    <input class="er_setting" id="choir_assignments" name="choir_assignments" type="text" value="">
+  
+  <button class="field-help-button" id="choir_assignments-help-button" 
+      type="button" onClick="toggleHelp('choir_assignments')">
+    Show help
+  </button>
+  <div class="field-help-div" id="choir_assignments-help-div" 
+      style="display:none;">
+    <p>sequence of ints. Assigns voices to the given index in <code><a href="#choirs-div">choirs</a></code>. Will be looped through if necessary. For example, if <code>choir_assignments == [1, 0]</code>, voice 0 will be assigned to <code>choirs[1]</code>, voice 1 will be assigned to <code>choirs[0]</code>, voice 2 (if it exists) will be assigned to <code>choirs[1]</code>, and so on.  By default, or if passed an empty sequence, voices are assigned to choirs in counting order (i.e., voice 0 is assigned to choir 0, voice 1 to choir 1, etc.), except that if there are more voices than choirs, the choirs are looped through.</p>
+<p>If <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True, then this setting is ignored.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="randomly_distribute_between_choirs-div" 
+style="display:none">
+  <label for="randomly_distribute_between_choirs">randomly_distribute_between_choirs</label> 
+  
+  
+    <input checked class="er_setting" id="randomly_distribute_between_choirs" name="randomly_distribute_between_choirs" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="randomly_distribute_between_choirs-help-button" 
+      type="button" onClick="toggleHelp('randomly_distribute_between_choirs')">
+    Show help
+  </button>
+  <div class="field-help-div" id="randomly_distribute_between_choirs-help-div" 
+      style="display:none;">
+    <p>bool. If True, then voices are randomly assigned to items from <code><a href="#choirs-div">choirs</a></code>. The precise way in which this occurs is controlled by the settings below.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="length_choir_segments-div" 
+style="display:none">
+  <label for="length_choir_segments">length_choir_segments</label> 
+  
+  
+    <input class="er_setting" id="length_choir_segments" name="length_choir_segments" type="text" value="2">
+  
+  <button class="field-help-button" id="length_choir_segments-help-button" 
+      type="button" onClick="toggleHelp('length_choir_segments')">
+    Show help
+  </button>
+  <div class="field-help-div" id="length_choir_segments-help-div" 
+      style="display:none;">
+    <p>number. Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. Sets the duration of each random choir assignment in quarter notes. If 0 or negative, each voice is permanently assigned to a choir at random.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="length_choir_loop-div" 
+style="display:none">
+  <label for="length_choir_loop">length_choir_loop</label> 
+  
+  
+    <input class="er_setting" id="length_choir_loop" name="length_choir_loop" type="text" value="0">
+  
+  <button class="field-help-button" id="length_choir_loop-help-button" 
+      type="button" onClick="toggleHelp('length_choir_loop')">
+    Show help
+  </button>
+  <div class="field-help-div" id="length_choir_loop-help-div" 
+      style="display:none;">
+    <p>number. Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. If positive, sets the duration of a loop for the random choir assignments. Shorter values will be readily audible loops; longer values are likely to be less apparent as loops. If 0 or negative, then no loop.  Note that depending on the combination of settings applied, it may not be possible to construct a loop of sufficient length. In this case, a warning will be emitted, but the script will otherwise continue.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="choir_segments_dovetail-div" 
+style="display:none">
+  <label for="choir_segments_dovetail">choir_segments_dovetail</label> 
+  
+  
+    <input class="er_setting" id="choir_segments_dovetail" name="choir_segments_dovetail" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="choir_segments_dovetail-help-button" 
+      type="button" onClick="toggleHelp('choir_segments_dovetail')">
+    Show help
+  </button>
+  <div class="field-help-div" id="choir_segments_dovetail-help-div" 
+      style="display:none;">
+    <p>bool. Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. If True, then choir assignments will be extended by one note, so that they overlap with the following choir assignment. (This can make this sort of thing easier for humans to play.)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="max_consec_seg_from_same_choir-div" 
+style="display:none">
+  <label for="max_consec_seg_from_same_choir">max_consec_seg_from_same_choir</label> 
+  
+  
+    <input class="er_setting" id="max_consec_seg_from_same_choir" name="max_consec_seg_from_same_choir" type="text" value="1">
+  
+  <button class="field-help-button" id="max_consec_seg_from_same_choir-help-button" 
+      type="button" onClick="toggleHelp('max_consec_seg_from_same_choir')">
+    Show help
+  </button>
+  <div class="field-help-div" id="max_consec_seg_from_same_choir-help-div" 
+      style="display:none;">
+    <p>int. Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. If positive, then no voice will be assigned to the same choir for more than the specified number of segments in a row.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="all_voices_from_different_choirs-div" 
+style="display:none">
+  <label for="all_voices_from_different_choirs">all_voices_from_different_choirs</label> 
+  
+  
+    <input class="er_setting" id="all_voices_from_different_choirs" name="all_voices_from_different_choirs" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="all_voices_from_different_choirs-help-button" 
+      type="button" onClick="toggleHelp('all_voices_from_different_choirs')">
+    Show help
+  </button>
+  <div class="field-help-div" id="all_voices_from_different_choirs-help-div" 
+      style="display:none;">
+    <p>bool. Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. If True, then at each new choir assignment, it will be ensured that no two voices are assigned to the same choir.  An error will be raised if this setting is True and <code><a href="#num_voices-div">num_voices</a></code> is greater than <code>len(choirs)</code>.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="each_choir_combination_only_once-div" 
+style="display:none">
+  <label for="each_choir_combination_only_once">each_choir_combination_only_once</label> 
+  
+  
+    <input class="er_setting" id="each_choir_combination_only_once" name="each_choir_combination_only_once" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="each_choir_combination_only_once-help-button" 
+      type="button" onClick="toggleHelp('each_choir_combination_only_once')">
+    Show help
+  </button>
+  <div class="field-help-div" id="each_choir_combination_only_once-help-div" 
+      style="display:none;">
+    <p>bool.  Only has an effect if <code><a href="#randomly_distribute_between_choirs-div">randomly_distribute_between_choirs</a></code> is True. If True, then each combination of choir assignments will occur only once before all others are heard, or before <code><a href="#length_choir_loop-div">length_choir_loop</a></code> is reached, if possible.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="transpose-div">
+  <fieldset class="category-fieldset" id="transpose-fieldset">
+    <legend class="category-legend">transpose</legend>
+    <div class="num-hidden-div" id="transpose-num-hidden">
+      <button id="transpose-less-button" type="button" 
+          onClick="show_less('transpose-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="transpose-num-hidden-text"></span>
+      <button id="transpose-more-button" type="button" 
+          onClick="show_more('transpose-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="transpose-div" 
+style="display:none">
+  <label for="transpose">transpose</label> 
+  
+  
+    <input class="er_setting" id="transpose" name="transpose" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="transpose-help-button" 
+      type="button" onClick="toggleHelp('transpose')">
+    Show help
+  </button>
+  <div class="field-help-div" id="transpose-help-div" 
+      style="display:none;">
+    <p>bool. Toggles transposition of segments according to the following settings. Note that the limits imposed by <code><a href="#voice_ranges-div">voice_ranges</a></code> are not followed by the transposition settings.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="transpose_type-div" 
+style="display:none">
+  <label for="transpose_type">transpose_type</label> 
+  
+  
+    
+    <select class="er_setting" id="transpose_type" name="transpose_type" size="2"><option value="generic">generic</option><option selected value="specific">specific</option></select>
+  
+  <button class="field-help-button" id="transpose_type-help-button" 
+      type="button" onClick="toggleHelp('transpose_type')">
+    Show help
+  </button>
+  <div class="field-help-div" id="transpose_type-help-div" 
+      style="display:none;">
+    <p>string. For explanation of the possible values, see the discussion of "generic" and "specific" transposition above. Possible values:
+                "generic"
+                "specific"</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="transpose_len-div" 
+style="display:none">
+  <label for="transpose_len">transpose_len</label> 
+  
+  
+    <input class="er_setting" id="transpose_len" name="transpose_len" type="text" value="4">
+  
+  <button class="field-help-button" id="transpose_len-help-button" 
+      type="button" onClick="toggleHelp('transpose_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="transpose_len-help-div" 
+      style="display:none;">
+    <p>number, or sequence of numbers. The length of the segments to be transposed. If a single number, all segments have the same length. If a sequence of numbers, will be looped through.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="transpose_intervals-div" 
+style="display:none">
+  <label for="transpose_intervals">transpose_intervals</label> 
+  
+  
+    <input class="er_setting" id="transpose_intervals" name="transpose_intervals" type="text" value="()">
+  
+  <button class="field-help-button" id="transpose_intervals-help-button" 
+      type="button" onClick="toggleHelp('transpose_intervals')">
+    Show help
+  </button>
+  <div class="field-help-div" id="transpose_intervals-help-div" 
+      style="display:none;">
+    <p>number, or sequence of numbers. The interval or intervals by which to transpose segments. If a single number, all segments will be transposed by the same amount. If a sequence of numbers, will be looped through. The transposition is cumulative, so, for example, if <code>transpose_intervals</code> is <code>3</code>, then the first segment will be transposed by <code>3</code>, the second by <code>6</code>, etc. (See also <code><a href="#cumulative_max_transpose_interval-div">cumulative_max_transpose_interval</a></code>.) If an empty sequence, segments will be transposed at random.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="cumulative_max_transpose_interval-div" 
+style="display:none">
+  <label for="cumulative_max_transpose_interval">cumulative_max_transpose_interval</label> 
+  
+  
+    <input class="er_setting" id="cumulative_max_transpose_interval" name="cumulative_max_transpose_interval" type="text" value="5">
+  
+  <button class="field-help-button" id="cumulative_max_transpose_interval-help-button" 
+      type="button" onClick="toggleHelp('cumulative_max_transpose_interval')">
+    Show help
+  </button>
+  <div class="field-help-div" id="cumulative_max_transpose_interval-help-div" 
+      style="display:none;">
+    <p>a number. Sets an absolute maximum bound for cumulative transposition, after which segments will be transposed up or down an octave. The bound is inclusive. To disable, set to 0.  Thus, if <code>cumulative_max_transpose_interval == 6</code> and <code>transpose_intervals == 3</code>, segments will be transposed by 3, 6, -3, 0, 3, ... semitones. (If, on the other hand, <code>cumulative_max_transpose_interval == 0</code>, segments will be transposed by 3, 6, 9, 12, 15, ...)</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="transpose_before_repeat-div" 
+style="display:none">
+  <label for="transpose_before_repeat">transpose_before_repeat</label> 
+  
+  
+    <input class="er_setting" id="transpose_before_repeat" name="transpose_before_repeat" type="checkbox" value="y">
+  
+  <button class="field-help-button" id="transpose_before_repeat-help-button" 
+      type="button" onClick="toggleHelp('transpose_before_repeat')">
+    Show help
+  </button>
+  <div class="field-help-div" id="transpose_before_repeat-help-div" 
+      style="display:none;">
+    <p>boolean. If True, then any transpositions are applied to the completed "super pattern" <em>before</em> repeating it; thus, the super pattern will have the same sequence of transpositions on all repetitions. If False, then any transpositions are applied <em>after</em> repeating the super pattern. Thus, unless the sequence of transpositions happen to return to their starting point at exactly the beginning of the repetitions of the super pattern, each super pattern will feature a new sequence of transpositions.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="tempo-div">
+  <fieldset class="category-fieldset" id="tempo-fieldset">
+    <legend class="category-legend">tempo</legend>
+    <div class="num-hidden-div" id="tempo-num-hidden">
+      <button id="tempo-less-button" type="button" 
+          onClick="show_less('tempo-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="tempo-num-hidden-text"></span>
+      <button id="tempo-more-button" type="button" 
+          onClick="show_more('tempo-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="1" 
+id="tempo-div" 
+style="display:block">
+  <label for="tempo">tempo</label> 
+  
+  
+    <input class="er_setting" id="tempo" name="tempo" type="text" value="144">
+  
+  <button class="field-help-button" id="tempo-help-button" 
+      type="button" onClick="toggleHelp('tempo')">
+    Show help
+  </button>
+  <div class="field-help-div" id="tempo-help-div" 
+      style="display:none;">
+    <p>a number or a sequence of numbers. Specifies a tempo or tempi in quarter-note beats-per-minute. If a sequence, the length of each tempo segment is set with <code><a href="#tempo_len-div">tempo_len</a></code>. If a sequence, will be looped through if necessary. If an empty sequence, a tempo or tempi will be randomly generated.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="2" 
+id="tempo_len-div" 
+style="display:none">
+  <label for="tempo_len">tempo_len</label> 
+  
+  
+    <input class="er_setting" id="tempo_len" name="tempo_len" type="text" value="0">
+  
+  <button class="field-help-button" id="tempo_len-help-button" 
+      type="button" onClick="toggleHelp('tempo_len')">
+    Show help
+  </button>
+  <div class="field-help-div" id="tempo_len-help-div" 
+      style="display:none;">
+    <p>a number or a sequence of numbers. Specifies the duration of each tempo in <code><a href="#tempo-div">tempo</a></code> in quarter-note beats. If a sequence, will be looped through as necessary. Has no effect if <code><a href="#tempo-div">tempo</a></code> is a single number.  If 0, then the first tempo in <code><a href="#tempo-div">tempo</a></code> applies to the whole file.</p>
+  </div>
+  
+</div>
+    
+      
+<div class="field-div" data-priority-level="3" 
+id="tempo_bounds-div" 
+style="display:none">
+  <label for="tempo_bounds">tempo_bounds</label> 
+  
+  
+    <input class="er_setting" id="tempo_bounds" name="tempo_bounds" type="text" value="(80, 144)">
+  
+  <button class="field-help-button" id="tempo_bounds-help-button" 
+      type="button" onClick="toggleHelp('tempo_bounds')">
+    Show help
+  </button>
+  <div class="field-help-div" id="tempo_bounds-help-div" 
+      style="display:none;">
+    <p>a tuple of form (number, number). If <code><a href="#tempo-div">tempo</a></code> is an empty sequence, then tempi are randomly generated within the (inclusive) bounds set by this tuple.</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+      <div class="category-div" id="randomization-div">
+  <fieldset class="category-fieldset" id="randomization-fieldset">
+    <legend class="category-legend">randomization</legend>
+    <div class="num-hidden-div" id="randomization-num-hidden">
+      <button id="randomization-less-button" type="button" 
+          onClick="show_less('randomization-div')">
+        Show fewer fields
+      </button>
+      <span class="num-hidden-text" id="randomization-num-hidden-text"></span>
+      <button id="randomization-more-button" type="button" 
+          onClick="show_more('randomization-div')">
+        Show more fields
+      </button>
+    </div>
+    
+    
+      
+<div class="field-div" data-priority-level="4" 
+id="exclude_from_randomization-div" 
+style="display:none">
+  <label for="exclude_from_randomization">exclude_from_randomization</label> 
+  
+  
+    <input class="er_setting" id="exclude_from_randomization" name="exclude_from_randomization" type="text" value="()">
+  
+  <button class="field-help-button" id="exclude_from_randomization-help-button" 
+      type="button" onClick="toggleHelp('exclude_from_randomization')">
+    Show help
+  </button>
+  <div class="field-help-div" id="exclude_from_randomization-help-div" 
+      style="display:none;">
+    <p>sequence of strings. A list of attribute names of this class. Only has an effect when the script is invoked with "-r" or "--random", in which case any attribute names found in this list will be excluded from randomization. (Although note that not all attributes are randomized in any case; see the documentation for more info.)</p>
+  </div>
+  
+</div>
+    
+  </fieldset>
+</div>
+    
+    <input id="bottom-submit" name="submit" type="submit" value="Submit">
+  </form>
+</div>
+<div id="please-wait-div">
+  <p>Please wait while the script executes...</p>
+</div>
+<script type=text/javascript>
+  const DEFAULT_FIELD_VALUES = {"all_voices_from_different_choirs": "n", "allow_flexible_voice_leading": "n", "allow_voice_crossings": "True", "antiparallels": "y", "choir_assignments": "", "choir_segments_dovetail": "n", "choirs": "[16, 21, 15]", "chord_octave_equi_type": "all", "chord_permit_doublings": "all", "chord_tone_and_foot_disable": "n", "chord_tone_before_rests": "0.26", "chord_tone_prob_func": "linear", "chord_tone_selection": "y", "chord_tones_no_diss_treatment": "False", "chord_tones_sync_onset_in_all_voices": "n", "chords": "[MINOR_TRIAD]", "comma_position": "end", "consonance_treatment": "all_onsets", "consonance_type": "pairwise", "consonances": "CONSONANCES", "consonant_chords": "(MAJOR_TRIAD, MINOR_TRIAD)", "constrain_voice_leading_to_ranges": "n", "cumulative_max_transpose_interval": "5", "dur_density": "0.65", "dur_subdivision": "0", "each_choir_combination_only_once": "n", "exclude_augmented_triad": "y", "exclude_from_randomization": "()", "extend_bass_range_for_foots": "0", "foot_pcs": "[0, 5, 10, 3]", "forbidden_interval_classes": "()", "forbidden_interval_modulo": "0", "forbidden_intervals": "()", "force_chord_tone": "global_first_note", "force_foot_in_bass": "global_first_beat", "force_parallel_motion": "False", "force_repeated_notes": "n", "hard_bounds": "((\u0027OCTAVE0 * A\u0027, \u0027OCTAVE8 * C\u0027),)", "hard_pitch_loop": "n", "harmony_len": "4", "hocketing": "False", "interval_cycle": "", "invert_consonances": "n", "len_to_force_chord_tone": "1", "length_choir_loop": "0", "length_choir_segments": "2", "max_alternations": "2", "max_consec_seg_from_same_choir": "1", "max_interval": "4", "max_interval_for_non_chord_tones": "take_from_max_interval", "max_n_between_chord_tones": "4", "max_repeated_notes": "1", "max_super_pattern_len": "", "min_dur": "0", "min_interval": "", "min_interval_for_non_chord_tones": "take_from_min_interval", "min_prob_chord_tone": "0.25", "num_harmonies": "4", "num_reps_super_pattern": "2", "num_voices": "3", "obligatory_onsets": "()", "obligatory_onsets_modulo": "4", "onset_density": "0.65", "onset_subdivision": "0.25", "overlap": "y", "parallel_direction": "0", "parallel_voice_leading": "n", "pattern_len": "2", "pitch_loop": "()", "prefer_small_melodic_intervals": "y", "prefer_small_melodic_intervals_coefficient": "1", "preserve_foot_in_bass": "lowest", "prohibit_parallels": "(OCTAVE,)", "randomly_distribute_between_choirs": "y", "rhythm_len": "", "rhythmic_quasi_unison": "False", "rhythmic_quasi_unison_constrain": "n", "rhythmic_unison": "False", "scale_chord_tone_neutral_dur": "0.5", "scale_chord_tone_prob_by_dur": "y", "scale_short_chord_tones_down": "n", "scales": "[NATURAL_MINOR_SCALE]", "seed": "", "sub_subdivisions": "1", "tempo": "144", "tempo_bounds": "(80, 144)", "tempo_len": "0", "tet": "12", "time_sig": "", "transpose": "n", "transpose_before_repeat": "n", "transpose_intervals": "()", "transpose_len": "4", "transpose_type": "specific", "truncate_patterns": "n", "try_to_force_non_chord_tones": "n", "unison_weighted_as": "FIFTH", "vl_maintain_consonance": "y", "vl_maintain_forbidden_intervals": "y", "vl_maintain_limit_intervals": "across_harmonies", "vl_maintain_prohibit_parallels": "y", "voice_lead_chord_tones": "y", "voice_order_str": "usual", "voice_ranges": "CONTIGUOUS_OCTAVES * OCTAVE3 * C"}
+  const MAX_PRIORITY_DICT = {"choir": 4, "chord_tones": 4, "consonance": 4, "global": 4, "melody": 4, "randomization": 4, "rhythm": 4, "scale_and_chord": 2, "tempo": 3, "transpose": 3, "voice_leading": 3}
+</script>

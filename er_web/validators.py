@@ -7,6 +7,7 @@ import wtforms
 
 # from wtforms.validators import ValidationError
 
+from . import globals_
 from . import safe_eval
 
 
@@ -14,9 +15,17 @@ def comp_(x, y, op, op_str, seq=False):
     if isinstance(x, collections.abc.Sequence) and not isinstance(x, str):
         for z in x:
             comp_(z, y, op, op_str, seq=True)
-    elif op(x, y):
-        msg = ("all values" if seq else "value") + f" must be {op_str} {y}"
-        raise wtforms.validators.ValidationError(msg)
+    else:
+        try:
+            result = op(x, y)
+        except TypeError:
+            # this can occur, e.g., if the field can be None or have a numeric
+            # value. We validate types elsewhere, so we shouldn't have to do
+            # anything else here.
+            return
+        if result:
+            msg = ("all values" if seq else "value") + f" must be {op_str} {y}"
+            raise wtforms.validators.ValidationError(msg)
 
 
 def min_(x, min_x):
@@ -25,6 +34,12 @@ def min_(x, min_x):
 
 def max_(x, max_x):
     comp_(x, max_x, operator.gt, "less than or equal to")
+
+
+def max_len(seq, max_len_=globals_.MAX_SEQ_LEN):
+    if len(seq) > max_len_:
+        msg = f"sequence must have {max_len_} or fewer items"
+        raise wtforms.validators.ValidationError(msg)
 
 
 # er_const_splitter = re.compile(r"( ?[*/+-]+ ?)")
@@ -73,10 +88,11 @@ def validate_field(type_hint, val_dict, form, field):
         actual_type = typing.get_origin(type_hint) or type_hint
         if actual_type is typing.Union:
             for union_type in typing.get_args(type_hint):
-                print("union type: ", union_type)
                 try:
                     _validate_type(union_type, val)
-                except wtforms.validators.ValidationError:
+                except wtforms.validators.ValidationError as exc:
+                    if "not of type" not in exc.__str__():
+                        raise exc
                     continue
                 return
             # TODO error messages
@@ -98,17 +114,20 @@ def validate_field(type_hint, val_dict, form, field):
                 f"Value {val} is not of type {actual_type}"
             )
         if isinstance(val, typing.Dict):
+            max_len(val)
             k_ty, v_ty = typing.get_args(type_hint)
             for k, v in val.items():
                 _validate_type(k_ty, k)
                 _validate_type(v_ty, v)
         elif isinstance(val, typing.Tuple):
+            max_len(val)
             sub_type_hint_tup = typing.get_args(type_hint)
             for sub_type_hint, sub_val in zip(sub_type_hint_tup, val):
                 _validate_type(sub_type_hint, sub_val)
         elif isinstance(val, collections.abc.Sequence) and not isinstance(
             val, str
         ):
+            max_len(val)
             sub_type_hint_tup = typing.get_args(type_hint)
             # we expect this to only have one member
             # TODO handle gracefully

@@ -37,8 +37,20 @@ WEB_DEFAULTS = {
     "tempo": 144,
 }
 
+MAX_SEQ_LEN = 16
+
 VAL_DICTS = {
-    "choirs": {"min_": (min(malsynth.synths),), "max_": (max(malsynth.synths),)}
+    "choirs": {
+        "min_": (min(malsynth.synths),),
+        "max_": (max(malsynth.synths),),
+    },
+    "num_voices": {"max_": (6,)},
+    "num_reps_super_pattern": {"min_": (1,), "max_": (4,)},
+    "pattern_len": {"min_": (0.1,), "max_": (32,)},
+    "rhythm_len": {"min_": (0.1,), "max_": (32,)},
+    "num_harmonies": {"min_": (1,), "max_": (16,)},
+    "harmony_len": {"min_": (0.1,), "max_": (32,)},
+    "max_super_pattern_len": {"min_": (0,), "max_": (64,)},
 }
 
 

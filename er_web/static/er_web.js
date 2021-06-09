@@ -19,7 +19,6 @@ function init_priorities() {
             const categoryDiv = categoryDivs[i];
             refresh_priority(categoryDiv.id);
         }
-        console.log(categoryPriorities);
         return;
     }
     var categoryDivs = document.getElementsByClassName("category-div");
@@ -36,10 +35,10 @@ function toggleHelp(field_id) {
     var button = document.getElementById(field_id + "-help-button");
     var div = document.getElementById(field_id + "-help-div");
     if (div.style.display === "none") {
-        button.innerHTML = "Hide help";
-        div.style.display = "inline-block";
+        button.innerHTML = button.innerHTML.replace("show", "hide").replace("?", "⨯");
+        div.style.display = "block";
     } else {
-        button.innerHTML = "Show help";
+        button.innerHTML = button.innerHTML.replace("hide", "show").replace("⨯", "?");
         div.style.display = "none";
     }
 }
@@ -126,6 +125,7 @@ function getShareableLink() {
         function (field) { return field.id + '=' + field.value; }
     ).join('&');
     var url = window.location.href.split("?")[0];
+    var url = url.split("#")[0];
     return encodeURI(url + "?" + query);
 }
 
@@ -134,8 +134,11 @@ function updateShareableLink() {
     document.getElementById('shareable-link').innerHTML = shareableLink;
 }
 
-function initShareableLink() {
-    document.getElementById('shareable-link').innerHTML = window.location.href;
+function initTraceback() {
+    var tracebackLink = document.getElementById("traceback-mail");
+    if (tracebackLink) {
+        tracebackLink.href = tracebackLink + "%0A%0A" + shareableLink;
+    }
 }
 
 // according to Mozilla docs, `false` boolean (for optional `useCapture` arg) 
@@ -179,13 +182,33 @@ function init_field_colors() {
 //     alert("Link copied to clipboard");
 // }
 
-document.addEventListener('DOMContentLoaded', initShareableLink, false);
-document.addEventListener('DOMContentLoaded', init_field_colors, false);
-document.addEventListener('DOMContentLoaded', function () {
+function revealShareableLink() {
+    var link = document.getElementById("shareable-link");
+    var button = document.getElementById("show-shareable-link");
+    if (link.style.display === "none") {
+        link.style.display = "inline-block";
+        button.innerHTML = button.innerHTML.replace("Show", "Hide");
+    } else {
+        link.style.display = "none";
+        button.innerHTML = button.innerHTML.replace("Hide", "Show");
+    }
+
+}
+
+function init_page() {
+    init_field_colors();
+    updateShareableLink();
     document.getElementById('top-submit').addEventListener('click', polite, false);
     document.getElementById('bottom-submit').addEventListener('click', polite, false);
-    // document.getElementById('shareable-link').addEventListener('click', copyLink, false);
-}, false);
+    document.getElementById('show-shareable-link').addEventListener('click', revealShareableLink, false);
+    initTraceback();
+}
+
+document.addEventListener('DOMContentLoaded', init_page, false);
+// document.addEventListener('DOMContentLoaded', function () {
+
+//     // document.getElementById('shareable-link').addEventListener('click', copyLink, false);
+// }, false);
 
 
 

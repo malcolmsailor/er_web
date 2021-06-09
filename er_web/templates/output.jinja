@@ -1,0 +1,56 @@
+<div class="output-div">
+  <h2 class="output-label">Output
+  </h2>
+  {% if error %}
+    <div id="py-error">
+      <p id="py-error-text">
+        I screwed up: the midi didn't compile because there was a bug in the code.
+      </p>
+      <p>
+        <a id="traceback-mail" href="mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body={{ error | urlencode }}">
+          Please click here to email me the below traceback so I can do better in the future.
+        </a>
+      </p>
+      <div id="traceback">
+        <p>
+          {{ error|replace("\n", "</p><p>") }}
+        </p>
+      </div>
+    </div>
+  {% endif %}
+  {% if form.errors %}
+    <div id="form-error">
+      <p id="form-error-text">
+        There was a problem validating the form. Please see the errors below.
+      </p>
+    </div>
+  {% endif %}
+  {% if ogg_path %}
+  <div id='audio-controls-div'>
+    <audio controls>
+      <source src="{{ url_for( 'static', filename=ogg_path) }}" type="audio/ogg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  <div id='downloads-div'>
+    <div id="downloads-inner">
+      <div id="dl-midi-div">
+        <a href="{{ url_for( 'static', filename=midi_path) }}">Download midi</a>
+      </div>
+      <div id="dl-ogg-div">
+        <a href="{{ url_for( 'static', filename=ogg_path) }}">Download audio</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if seed %}
+  <div id="seed-display-div">
+    <p id="seed-display">Random number generator seed: {{ seed }}</p>
+    <p id="seed-display-help">
+      Include this number in the 
+        <code><a href="#seed-div">seed</a></code> 
+      field below if you would like to reproduce this output exactly.
+    </p>
+  </div>
+  {% endif %}
+</div>

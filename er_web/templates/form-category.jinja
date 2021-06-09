@@ -2,15 +2,22 @@
   <fieldset class="category-fieldset" id="{{ category }}-fieldset">
     <legend class="category-legend">{{ category }}</legend>
     <div class="num-hidden-div" id="{{ category }}-num-hidden">
-      <button id="{{ category }}-less-button" type="button" 
+      <div id="{{ category }}-less-button" class="small-button" 
           onClick="show_less('{{ category }}-div')">
-        Show fewer fields
-      </button>
+        -
+        <span class="tooltip tooltip-less" id="{{ category}}-less-tooltip">
+          Click to show fewer fields.
+        </span>
+      </div>
+
       <span class="num-hidden-text" id="{{ category }}-num-hidden-text"></span>
-      <button id="{{ category }}-more-button" type="button" 
+      <div id="{{ category }}-more-button" class="small-button" 
           onClick="show_more('{{ category }}-div')">
-        Show more fields
-      </button>
+        +
+        <span class="tooltip tooltip-more" id="{{ category}}-more-tooltip">
+          Click to show more fields.
+        </span>
+      </div>
     </div>
     {# {% for field in form if field.widget.input_type != 'hidden' %}  #}
     {% for field in form if 
@@ -21,3 +28,10 @@
     {% endfor %}
   </fieldset>
 </div>
+
+  {# <span class="tooltip" id="{{ field.id }}-tooltip">
+    ?
+    <span class="tooltiptext" id="{{ field.id }}-tooltiptext">
+      {{ attr_dict[field.id]["doc"] }}
+    </span>
+  </span> #}

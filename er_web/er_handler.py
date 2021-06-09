@@ -51,7 +51,8 @@ def make_music(form):
         midi_to_audio(temp_mid, temp_ogg)
     if non_empty:
         return (
+            settings.seed,
             os.path.join("temp_files", os.path.basename(temp_mid)),
             os.path.join("temp_files", os.path.basename(temp_ogg)),
         )
-    return None, None
+    return settings.seed, None, None
