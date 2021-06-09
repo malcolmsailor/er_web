@@ -26,6 +26,15 @@ def temp_path(suffix):
         dir=TEMP_DIR,
     )[1]
 
+# All browsers support mp3 so for now I am just returning False always.
+# Perhaps to-do eventually.
+
+def ogg_support():
+    return False
+    # if "safari" in flask.request.user_agent.browser.lower():
+    #     return False
+    # return True
+
 
 def make_music(form):
     init_temp_dir()
@@ -47,11 +56,7 @@ def make_music(form):
     pattern = efficient_rhythms.make_super_pattern(settings)
     temp_mid = temp_path(".mid")
 
-    audio_format = (
-        ".mp3"
-        if "safari" in flask.request.user_agent.browser.lower()
-        else ".ogg"
-    )
+    audio_format = ".mp3" if not ogg_support() else ".ogg"
     non_empty = efficient_rhythms.write_er_midi(settings, pattern, temp_mid)
     if non_empty:
         temp_audio = temp_path(audio_format)
