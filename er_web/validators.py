@@ -3,16 +3,18 @@ import collections
 import operator
 import typing
 
-import wtforms
+import numpy as np
 
-# from wtforms.validators import ValidationError
+import wtforms
 
 from . import globals_
 from . import safe_eval
 
 
 def comp_(x, y, op, op_str, seq=False):
-    if isinstance(x, collections.abc.Sequence) and not isinstance(x, str):
+    if isinstance(x, (collections.abc.Sequence, np.ndarray)) and not isinstance(
+        x, str
+    ):
         for z in x:
             comp_(z, y, op, op_str, seq=True)
     else:
@@ -34,6 +36,14 @@ def min_(x, min_x):
 
 def max_(x, max_x):
     comp_(x, max_x, operator.gt, "less than or equal to")
+
+
+def open_min(x, min_x):
+    comp_(x, min_x, operator.le, "greater than")
+
+
+def open_max(x, max_x):
+    comp_(x, max_x, operator.ge, "greater than")
 
 
 def max_len(seq, max_len_=globals_.MAX_SEQ_LEN):
@@ -84,34 +94,40 @@ def max_len(seq, max_len_=globals_.MAX_SEQ_LEN):
 
 
 def validate_field(type_hint, val_dict, form, field):
+    # We do not use the 'form' argument but it will be passed by flaskwtf
     def _validate_type(type_hint, val):
         actual_type = typing.get_origin(type_hint) or type_hint
         if actual_type is typing.Union:
             for union_type in typing.get_args(type_hint):
                 try:
                     _validate_type(union_type, val)
+                    return
                 except wtforms.validators.ValidationError as exc:
                     if "not of type" not in exc.__str__():
                         raise exc
-                    continue
-                return
-            # TODO error messages
-            raise wtforms.validators.ValidationError(
-                f"Value {val} is not of type {actual_type}"
-            )
+            type_names = []
+            for type_ in typing.get_args(type_hint):
+                try:
+                    # classes have __name__ attribute
+                    type_names.append(type_.__name__)
+                except AttributeError:
+                    # type hints have _name attribute
+                    type_names.append(type_._name)
+            msg = f"Value {val} is not one of required types {type_names}"
+            raise wtforms.validators.ValidationError(msg)
         if not isinstance(val, actual_type):
             if val is not None:
                 try:
-                    # this function actually *evaluates* the value, but we are not
-                    # storing it anywhere, and then we evaluate it again later.
-                    # surely that redundancy can be avoided! TODO
+                    # this function actually *evaluates* the value, but we are
+                    # not storing it anywhere, and then we evaluate it again
+                    # later. surely that redundancy can be avoided! TODO
                     val = safe_eval.safe_eval(val)
                     _validate_type(type_hint, val)
                     return
                 except (AssertionError, ValueError):
                     pass
             raise wtforms.validators.ValidationError(
-                f"Value {val} is not of type {actual_type}"
+                f"Value {val} is not of type {actual_type.__name__}"
             )
         if isinstance(val, typing.Dict):
             max_len(val)
@@ -135,42 +151,38 @@ def validate_field(type_hint, val_dict, form, field):
             sub_type_hint = sub_type_hint_tup[0]
             for sub_val in val:
                 _validate_type(sub_type_hint, sub_val)
+        if isinstance(val, str):
+            if not actual_type == str:
+                raise wtforms.validators.ValidationError(
+                    f"Value {val} is not of type {actual_type.__name__}"
+                )
 
     try:
-        # print(field.data, type(field.data))
-        if not field.data:
+        if isinstance(field.data, bool):
+            val = field.data
+        elif not field.data:
             val = None
         else:
+            # it should be a string
+            data = str(field.data)
+            if "," in data and data[0] not in "([{":
+                data = "(" + data + ")"
             try:
-                val = ast.literal_eval(field.data)
+                val = ast.literal_eval(data)
             except ValueError:
                 try:
-                    # maybe it's an allowed math expression
-                    val = safe_eval.safe_eval(field.data)
+                    # maybe it's an allowed math expression or a use of
+                    # er_constants
+                    val = safe_eval.safe_eval(data)
                 except (AssertionError, ValueError):
-                    try:
-                        # maybe it's a sequence with the external brackets/
-                        # parentheses missing
-                        val = ast.literal_eval("(" + field.data + ")")
-                    except ValueError:
-                        # if none of these parse, let's try it as a string
-                        val = field.data
-        # print(val, type(val))
-        # print(type_hint)
+                    # if none of these parse, let's try it as a string
+                    val = data
+        # else:
+        #     val = field.data
         _validate_type(type_hint, val)
         for criterion, args in val_dict.items():
             # TODO I wonder if there is a better way of fetching the function?
             globals()[criterion](val, *args)
         field.validated_data = val
-    except wtforms.validators.ValidationError:
+    except wtforms.validators.ValidationError as exc:
         raise
-    except:  # pylint: disable=bare-except
-        # TODO delete this except clause
-        import sys
-        import traceback
-
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        traceback.print_exception(
-            exc_type, exc_value, exc_traceback, file=sys.stdout
-        )
-        breakpoint()

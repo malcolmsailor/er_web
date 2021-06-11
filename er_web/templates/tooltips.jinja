@@ -1,0 +1,9 @@
+{% macro tooltip(id, class_suffix, content)%}
+  <span class="tooltip tooltip-{{ class_suffix }}" 
+      name="{{ id }}-{{ suffix }}-tooltip">
+    {{ content }}
+  </span>
+{%- endmacro %}
+{% macro changed_tooltip(id) %}
+{{ tooltip(id, "changed", "Settings that have changed from their default values are highlighted in blue") }}
+{%- endmacro %}

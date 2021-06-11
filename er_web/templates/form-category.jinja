@@ -1,25 +1,24 @@
-<div class="category-div" id="{{ category }}-div">
+{% from 'tooltips.jinja' import tooltip %}
+{# id ends in 'cat-div' to avoid collisions with field divs if fields and
+categories have the same name (e.g., "transpose")  #}
+<div class="category-div" id="{{ category }}-cat-div">
+
   <fieldset class="category-fieldset" id="{{ category }}-fieldset">
     <legend class="category-legend">{{ category }}</legend>
     <div class="num-hidden-div" id="{{ category }}-num-hidden">
       <div id="{{ category }}-less-button" class="small-button" 
-          onClick="show_less('{{ category }}-div')">
+          onClick="show_less('{{ category }}-cat-div')">
         -
-        <span class="tooltip tooltip-less" id="{{ category}}-less-tooltip">
-          Click to show fewer fields.
-        </span>
+        {{ tooltip( category, "less", "Click to show fewer fields" )}}
       </div>
 
       <span class="num-hidden-text" id="{{ category }}-num-hidden-text"></span>
       <div id="{{ category }}-more-button" class="small-button" 
-          onClick="show_more('{{ category }}-div')">
+          onClick="show_more('{{ category }}-cat-div')">
         +
-        <span class="tooltip tooltip-more" id="{{ category}}-more-tooltip">
-          Click to show more fields.
-        </span>
+        {{ tooltip( category, "more", "Click to show more fields" )}}
       </div>
     </div>
-    {# {% for field in form if field.widget.input_type != 'hidden' %}  #}
     {% for field in form if 
       field.id in attr_dict and 
       attr_dict[field.id]["category"] == category 
@@ -28,10 +27,3 @@
     {% endfor %}
   </fieldset>
 </div>
-
-  {# <span class="tooltip" id="{{ field.id }}-tooltip">
-    ?
-    <span class="tooltiptext" id="{{ field.id }}-tooltiptext">
-      {{ attr_dict[field.id]["doc"] }}
-    </span>
-  </span> #}

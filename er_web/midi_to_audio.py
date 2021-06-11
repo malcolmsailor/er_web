@@ -63,8 +63,8 @@ def get_array(midi_list, sample_rate, final_release_dur=1):
     # it seems that the output needs to be on a half-closed interval [0, 1)
     # (rather than [0, 1]), or there are clicks and pops in the output (from
     # overflow?). In fact we seem to need to give a generous buffer (e.g.,
-    # when I used np.max(out) * 1.01, there were still artefacts.)
-    out /= np.max(out) * 1.1
+    # when I used np.max(out) * 1.01 or * 1.1, there were still artefacts.)
+    out /= np.max(out) * 1.5
 
     return out
 

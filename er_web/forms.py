@@ -14,8 +14,17 @@ class ERForm(FlaskForm):
     def __init__(self, request_args):
         super().__init__()
         for field_name, value in request_args.items():
-            field = getattr(self, field_name)
-            field.data = value
+            # # we need to parse boolean args; others seem to be ok as strings
+            if value in ("y", "n"):
+                # breakpoint()
+                value = value == "y"
+            try:
+                field = getattr(self, field_name)
+                field.data = value
+            except AttributeError:
+                # occurs if field_name is a typo etc.
+                # TODO print error message
+                pass
 
 
 add_fields.add_fields_to_form(

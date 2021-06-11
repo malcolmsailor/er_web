@@ -1,13 +1,13 @@
 import os
 import tempfile
 
-import flask
 import wtforms
 
 import efficient_rhythms
 
 
 from .midi_to_audio import midi_to_audio
+from . import globals_
 
 TEMP_DIR = os.path.join(
     os.path.dirname((os.path.realpath(__file__))), "static/temp_files"
@@ -26,10 +26,10 @@ def temp_path(suffix):
         dir=TEMP_DIR,
     )[1]
 
-# All browsers support mp3 so for now I am just returning False always.
-# Perhaps to-do eventually.
 
 def ogg_support():
+    # All browsers support mp3 so for now I am just returning False always.
+    # Perhaps to-do eventually.
     return False
     # if "safari" in flask.request.user_agent.browser.lower():
     #     return False
@@ -49,9 +49,7 @@ def make_music(form):
                 user_settings[field.id] = field.data
             else:
                 raise
-    # user_settings = form.data.copy()
-    # del user_settings["submit"]
-    # del user_settings["csrf_token"]
+    user_settings["timeout"] = globals_.TIMEOUT
     settings = efficient_rhythms.preprocess_settings(user_settings)
     pattern = efficient_rhythms.make_super_pattern(settings)
     temp_mid = temp_path(".mid")

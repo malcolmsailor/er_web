@@ -57,28 +57,29 @@ function getNumHidden(div) {
 }
 
 function refresh_num_hidden(div, numHidden) {
-    const div_id = div.id.slice(0, -4);
-    numHiddenText = document.getElementById(div_id + "-num-hidden-text");
+    // remove "-cat-div" from end of container id
+    const id = div.id.slice(0, -8);
+    numHiddenText = document.getElementById(id + "-num-hidden-text");
     if (numHidden === undefined) {
         var numHidden = getNumHidden(div);
     }
     numTotal = div.getElementsByClassName("field-div").length;
     if (numHidden == numTotal) {
         numHiddenText.innerHTML = "All fields hidden.";
-        document.getElementById(div_id + "-more-button").disabled = false;
-        document.getElementById(div_id + "-less-button").disabled = true;
-    } else if (numHidden > 2) {
+        document.getElementById(id + "-more-button").disabled = false;
+        document.getElementById(id + "-less-button").disabled = true;
+    } else if (numHidden > 1) {
         numHiddenText.innerHTML = numHidden + " less-used fields hidden.";
-        document.getElementById(div_id + "-more-button").disabled = false;
-        document.getElementById(div_id + "-less-button").disabled = false;
+        document.getElementById(id + "-more-button").disabled = false;
+        document.getElementById(id + "-less-button").disabled = false;
     } else if (numHidden == 1) {
         numHiddenText.innerHTML = "1 less-used field hidden.";
-        document.getElementById(div_id + "-more-button").disabled = false;
-        document.getElementById(div_id + "-less-button").disabled = false;
+        document.getElementById(id + "-more-button").disabled = false;
+        document.getElementById(id + "-less-button").disabled = false;
     } else {
         numHiddenText.innerHTML = "All fields shown.";
-        document.getElementById(div_id + "-more-button").disabled = true;
-        document.getElementById(div_id + "-less-button").disabled = false;
+        document.getElementById(id + "-more-button").disabled = true;
+        document.getElementById(id + "-less-button").disabled = false;
     }
 }
 
@@ -89,8 +90,9 @@ function refresh_priority(div_id) {
     fieldDivs = div.getElementsByClassName("field-div");
     for (let i = 0; i < fieldDivs.length; i++) {
         var fieldDiv = fieldDivs[i];
-        if (priority == 0 ||
+        if ((priority == 0 ||
             fieldDiv.getAttribute('data-priority-level') > priority
+        ) && !fieldDiv.classList.contains('has-error')
         ) {
             fieldDiv.style.display = "none";
             numHidden++;
@@ -103,7 +105,7 @@ function refresh_priority(div_id) {
 
 function show_more(div_id) {
     categoryPriorities[div_id] = Math.min(
-        categoryPriorities[div_id] + 1, MAX_PRIORITY_DICT[div_id.slice(0, -4)]
+        categoryPriorities[div_id] + 1, MAX_PRIORITY_DICT[div_id.slice(0, -8)]
     );
     refresh_priority(div_id);
     update_priorities();
@@ -137,7 +139,7 @@ function updateShareableLink() {
 function initTraceback() {
     var tracebackLink = document.getElementById("traceback-mail");
     if (tracebackLink) {
-        tracebackLink.href = tracebackLink + "%0A%0A" + shareableLink;
+        tracebackLink.href = tracebackLink + "%0A%0A" + shareableLink.replace("&", "%26");
     }
 }
 
@@ -195,6 +197,16 @@ function revealShareableLink() {
 
 }
 
+function clearQueryFromUrl() {
+    // executed on page load, clears any query string from the url
+    window.history.replaceState(
+        null,
+        document.title,
+        location.protocol + "//" + location.host + location.pathname
+    );
+}
+
+
 function init_page() {
     init_field_colors();
     updateShareableLink();
@@ -202,13 +214,7 @@ function init_page() {
     document.getElementById('bottom-submit').addEventListener('click', polite, false);
     document.getElementById('show-shareable-link').addEventListener('click', revealShareableLink, false);
     initTraceback();
+    clearQueryFromUrl();
 }
 
 document.addEventListener('DOMContentLoaded', init_page, false);
-// document.addEventListener('DOMContentLoaded', function () {
-
-//     // document.getElementById('shareable-link').addEventListener('click', copyLink, false);
-// }, false);
-
-
-

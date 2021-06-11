@@ -1,0 +1,25 @@
+<div id='audio-controls-div'>
+  <audio controls>
+    <source src="{{ url_for( 'static', filename=audio_path) }}" 
+      type="audio/{{ 'ogg' if '.ogg' in audio_path else 'mp3' }}">
+    Your browser does not support the audio element.
+  </audio>
+</div>
+<div id='downloads-div'>
+  <div id="downloads-inner">
+    <div id="dl-midi-div">
+      <a href="{{ url_for( 'static', filename=midi_path) }}">Download midi</a>
+    </div>
+    <div id="dl-ogg-div">
+      <a href="{{ url_for( 'static', filename=audio_path) }}">Download audio</a>
+    </div>
+  </div>
+</div>
+<div id="seed-display-div">
+  <p id="seed-display">Random number generator seed: {{ seed }}</p>
+  <p id="seed-display-help">
+    Include this number in the 
+      <code><a href="#seed-div">seed</a></code> 
+    field below if you would like to reproduce this output exactly.
+  </p>
+</div>

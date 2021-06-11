@@ -45,6 +45,10 @@ def _safe_eval(node):
         if isinstance(node.op, ast.Pow):
             assert right < 100
         return op(left, right)
+    elif isinstance(node, ast.List):
+        return [_safe_eval(elt) for elt in node.elts]
+    elif isinstance(node, ast.Tuple):
+        return tuple(_safe_eval(elt) for elt in node.elts)
 
     raise AssertionError("Unsafe operation")
 

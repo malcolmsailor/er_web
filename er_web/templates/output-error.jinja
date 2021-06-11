@@ -1,0 +1,90 @@
+{% macro output_error(id, header, content="", mail_link="", mail_link_text="") %}
+<div id="{{ id }}" class="output-error-div">
+  <p id="{{ id }}-text" class="output-error-text">
+    {{ header }}
+  </p>
+  {% if mail_link %}
+  <p id="traceback-mail-p" >
+    <a id="traceback-mail" href="{{ mail_link }}">
+      {{ mail_link_text }}
+    </a>
+  </p>
+  {% endif %}
+  {% if content %}
+    {{ content }}
+  {% endif %}
+{%- endmacro %}
+
+{% if script_error %}
+
+  {% set header = "I screwed up: the midi didn't compile because there was a bug in the code." %}
+  {% set content %}
+    <div id="traceback">
+      <p>
+        {{ script_error|replace("\n", "</p><p>") }}
+      </p>
+    </div>
+  {% endset %}
+  {% set mail_link = "mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body={{ script_error | urlencode }}" %}
+  {% set mail_link_text = "Please click here to email me the below traceback so I can do better in the future."%}
+  {{ output_error("py-error", header, content, mail_link, mail_link_text) }}
+
+{% elif settings_error %}
+  {% set header = "The following settings prevented the midi from compiling." %}
+  {% set content %}
+    <div id="settings-errors-div">
+      {# {% for item in settings_error %}
+        <li>
+          {{ item }}
+        </li>
+      {% endfor %} #}
+    </div>
+  {% endset %}
+  {{ output_error("settings-error", header, content) }}
+  {# {% for item in settings_error %}
+    <li>
+      {{ item }}
+    </li>
+  {% endfor %} #}
+{% elif timeout %}
+
+  {% set header = "Sorry, the script timed out! This might be because the settings you chose are difficult to satisfy, or it might be because of a bug in my code."%}
+  {# The reason the link ends with "body=" is because in the JS I append the 
+    query string to the link to reproduce the results #}
+  {% set mail_link = "mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body=" %}
+  {% set mail_link_text = "Please click here to email me these settings so I can investigate." %}
+  {{ output_error("timeout-error", header, mail_link=mail_link, mail_link_text=mail_link_text)}}
+
+{% endif %}
+{# <div id="py-error" class="output-error-div">
+  <p id="py-error-text">
+    {% if script_error %}
+    I screwed up: the midi didn't compile because there was a bug in the code.
+    {% else %}
+    Sorry, the script timed out! This might be because the settings you 
+    chose are difficult to satisfy, or it might be because of a bug in my
+    code.
+    {% endif %}
+  </p>
+  <p>
+    {% if script_error %}
+    <a id="traceback-mail" 
+      href="mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body={{ script_error | urlencode }}">
+      Please click here to email me the below traceback so I can do better 
+      in the future.
+    </a>
+    {% else %}
+    <a id="traceback-mail" 
+      href="mailto:malcolm.sailor@gmail.com?subject=er_web%20bug&body=">
+      Please click here to email me these settings so I can investigate.
+    </a>
+    {% endif %}
+  </p>
+  {% if script_error %}
+  <div id="traceback">
+    <p>
+      {{ script_error|replace("\n", "</p><p>") }}
+    </p>
+  </div>
+  {% endif %}
+</div> #}

@@ -2,6 +2,8 @@ import efficient_rhythms
 import malsynth
 from .constants import ER_CONSTANTS
 
+TIMEOUT = 10.0
+
 ATTR_DICT = {}
 MAX_PRIORITY_DICT = {}
 IGNORED_CATEGORIES = (
@@ -30,6 +32,7 @@ WEB_DEFAULTS = {
     "chords": "[MINOR_TRIAD]",
     "randomly_distribute_between_choirs": True,
     "length_choir_segments": 2,
+    "max_super_pattern_len": 64,
     "max_consec_seg_from_same_choir": 1,
     "onset_density": 0.65,
     "dur_density": 0.65,
@@ -51,6 +54,9 @@ VAL_DICTS = {
     "num_harmonies": {"min_": (1,), "max_": (16,)},
     "harmony_len": {"min_": (0.1,), "max_": (32,)},
     "max_super_pattern_len": {"min_": (0,), "max_": (64,)},
+    "foot_pcs": {"min_": (0,)},
+    "scales": {"min_": (0,)},
+    "chords": {"min_": (0,)},  # TODO verify
 }
 
 

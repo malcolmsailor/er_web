@@ -40,9 +40,18 @@ a:focus, .a-button:focus {
   color: #F44336;
 }
 
-#py-error-text, #form-error-text {
+.output-error-text, #form-error-text {
   color: #F44336;
   font-weight: bold;
+  
+}
+
+.output-error-text, #form-error-text {
+  margin: 1rem;
+}
+
+#traceback-mail-p {
+  margin: 1rem;
 }
 
 #traceback {
@@ -51,7 +60,7 @@ a:focus, .a-button:focus {
 }
 
 #traceback p {
-  margin: 0;
+  margin: 0rem;
 }
 
 .help-button {
@@ -249,7 +258,7 @@ h1 {
   text-align: justify;
 }
 
-label {
+.other-label, .bool-label-span {
   display: inline-block;
   min-width: 25%;
   text-align: right;
@@ -287,12 +296,13 @@ label {
   font-weight: normal;
 }
 
-.small-button:hover .tooltip, .help-button:hover .tooltip {
+.small-button:hover .tooltip, 
+.help-button:hover .tooltip, 
+.changed-field-div .bool-label-span:hover .tooltip,
+.changed-field-div .other-label:hover .tooltip {
   visibility: visible;
   transition-delay: 0.3s;
 }
-
-
 
 .field-help-div {
   padding:0px;
@@ -311,7 +321,6 @@ label {
   border-radius: 1rem;
   color: white;
   text-align: center;
-
 }
 
 #please-wait-div p {

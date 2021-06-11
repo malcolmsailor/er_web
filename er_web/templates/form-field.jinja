@@ -1,35 +1,30 @@
+{% from 'tooltips.jinja' import tooltip, changed_tooltip %}
 {% set priority = attr_dict[field.id]['priority'] %}
 <div class="field-div{% if field.errors %} has-error{% endif %}" data-priority-level="{{ priority }}" 
 id="{{ field.id }}-div" 
 style="display:{{ 'none' if priority > 1 else 'block' }}">
-  
-  {# <span class="tooltip" id="{{ field.id }}-tooltip">
-    ?
-    <span class="tooltiptext" id="{{ field.id }}-tooltiptext">
-      {{ attr_dict[field.id]["doc"] }}
-    </span>
-  </span> #}
-  {% if field.type == "SelectField" %}
-    {{ field.label }} 
-    {% set n_choices = field.choices|length %}
-    {# {{ field(class_="er_setting", size=n_choices) }} #}
-    {{ field(class_="er_setting") }}
-  {% elif field.type == "BooleanField" %}
-    <label for="{{ field.id }}">{{ field.id }}
-      <input {% if field.default %}checked=""{% endif %} class="er_setting" id="{{ field.id }}" name="{{ field.id }}"
+  {% if field.type == "BooleanField" %}
+    <label class="bool-label" for="{{ field.id }}">
+      <span class="bool-label-span">
+        {{ field.id }}
+        {{ changed_tooltip(field.id)}}
+      </span>
+      <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
+        class="er_setting" id="{{ field.id }}" name="{{ field.id }}"
         type="checkbox" value="y">
       <span class="checkmark"></span>
     </label>
   {% else %}
-    {{ field.label }} 
+    <label class="other-label" for="{{ field.id }}">
+      {{ field.id }}
+      {{ changed_tooltip(field.id)}}
+    </label>
     {{ field(class_="er_setting") }}
   {% endif %}
   <div class="help-button" id="{{ field.id }}-help-button" 
     onClick="toggleHelp('{{ field.id }}')">
     ?
-    <span class="tooltip tooltip-help" id="{{ field.id }}-help-tooltip">
-      Click to show help
-    </span>
+    {{ tooltip( field.id, "help", "Click to show help" ) }}
   </div>
   {% if field.errors %}
   <ul class="error-list">

@@ -1,0 +1,10 @@
+{% for item in items %}
+  <p>{{item}}</p>
+{% endfor %}
+
+{% set stuff %}
+  {% for item in items %}
+    <p>{{item}}</p>
+  {% endfor %}
+{% endset %}
+{{ stuff }}
