@@ -3,7 +3,7 @@ import operator
 import os
 import sys
 
-from . import globals_
+from . import constants
 
 # sys.path.insert(
 #     0,
@@ -34,7 +34,7 @@ def _safe_eval(node):
         # getattr(er_constants, id), I prefer to check it against a whitelist
         # first, since er_constants has other names defined like "np" or
         # "__builtins__"
-        assert node.id in globals_.ER_CONSTANTS
+        assert node.id in constants.ER_CONSTANTS
         return getattr(er_constants, node.id)
     elif isinstance(node, ast.BinOp):
         op = ALLOWED_OPERATIONS[

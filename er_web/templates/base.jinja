@@ -10,13 +10,32 @@
     <p>Welcome to an early version of this page. Please feel free to play around and 
     let me know if you have any issues at 
     <a href="mailto:malcolm.sailor@gmail.com">malcolm.sailor@gmail.com</a></p>
-    <button type="button" onclick="getElementById('issues-div').style.display = 'block'">Known current issues</button>
+    <button type="button" class="a-button" 
+      onclick="getElementById('wish-div').style.display = 'block'">
+        TODOs and wishlist
+    </button>
+    <div id="wish-div" style="display: none;">
+      <ul>
+        <li>Add an introduction/overview etc.</li>
+        <li>Improve test suite</li>
+        <li>Better documentation and interface for indicating presets like "MAJOR_SCALE"</li>
+        <li>Improve alignment of fields and help buttons</li>
+        <li>Add validation constraints (min, max, etc.) for all fields</li>
+        <li>Export settings to Python dictionary for use with shell script.</li>
+        <li>Enforce maximum sequence length</li>
+        <li>Allow randomization of settings</li>
+        <li>Second interface for the application of filters and transformers</li>
+      </ul>
+    </div>
+    <button type="button" class="a-button" 
+      onclick="getElementById('issues-div').style.display = 'block'">
+        Known current issues
+    </button>
     <div id="issues-div" style="display: none;">
       <ul>
         <li>Help docs mention settings that only apply to the shell version of the app.</li>
-        <li>Links in help docs to fields that are currently hidden do nothing. (Ideally, they should reveal the linked-to field, and this reveal should persist through refreshes of the page.)</li>
-        <li>Error messages do not print out type (e.g., set `max_consec_seg_from_same_choir` to 0.5)</li>
-        <li>Page says "all fields shown" when all fields are initially hidden</li>
+        <li>Linked-to fields in help docs are shown, but this doesn't persist through refreshes of the page.</li>
+        <li>Tooltips are often out of view</li>
       </ul>
     </div>
     {% if form.is_submitted() %}

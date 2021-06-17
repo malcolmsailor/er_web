@@ -1,3 +1,4 @@
+import collections
 import functools
 import json
 import re
@@ -7,6 +8,7 @@ import wtforms
 
 from . import globals_
 from . import validators
+from . import constants
 
 
 def _add_boolean_field(form_cls, field_name, default_val):
@@ -37,9 +39,97 @@ def get_default(field_name, field_val):
     field_val = str(field_val)
     poss_consts = [(s, s[1:-1]) for s in re.findall(poss_const_re, field_val)]
     for quoted, unquoted in poss_consts:
-        if unquoted in globals_.ER_CONSTANTS:
+        if unquoted in constants.ER_CONSTANTS:
             field_val = field_val.replace(quoted, unquoted)
+    if (field_val[0] == "(" and field_val[-1] == ")") or (
+        field_val[0] == "[" and field_val[-1] == "]"
+    ):
+        return field_val[1:-1]
     return field_val
+
+
+def get_typing_string(field_args, val_dict):
+    def _concat_strings(strings, abbrev_i):
+        if not strings:
+            return ""
+        if len(strings) == 1:
+            return strings[0] + "."
+        if len(strings) == 2:
+
+            return strings[0] + " and " + strings[1][abbrev_i:] + "."
+        return (
+            strings[0]
+            + ", "
+            + ",".join([s[abbrev_i:] for s in strings[1:-1]])
+            + ", and "
+            + strings[-1][abbrev_i:]
+            + "."
+        )
+
+    try:
+        typing_string = globals_.TYPING_STRINGS[field_args.type]
+    except KeyError:
+        # TODO
+        typing_string = ""
+    val_strings = []
+    for func_name, args in val_dict.items():
+        func = getattr(validators, func_name)
+        user_text = getattr(func, "user_text")
+        val_strings.append(user_text.format(*args))
+    if not val_strings:
+        return typing_string
+
+    v_strings = [s for s in val_strings if s.startswith("Values")]
+    i_strings = [s for s in val_strings if s.startswith("Integers")]
+    f_strings = [s for s in val_strings if s.startswith("Floats")]
+    s_strings = [s for s in val_strings if s.startswith("Sequences")]
+    u_strings = [s for s in val_strings if s.startswith("Subsequences")]
+    # Replace 'Value must be ' at beginning of subsequent strings
+    v_string = _concat_strings(v_strings, 15)
+    i_string = _concat_strings(i_strings, 17)
+    f_string = _concat_strings(f_strings, 15)
+    v_string = ". ".join([v_string, i_string, f_string])
+    s_string = _concat_strings(s_strings, 10)
+    u_string = _concat_strings(u_strings, 13)
+    out = [typing_string + ".", v_string, s_string, u_string]
+    return "\n\n".join(out)
+
+
+def _is_seq(type_hint):
+    def _sub(type_hint):
+        origin = typing.get_origin(type_hint)
+        if origin == collections.abc.Sequence:
+            return True, typing.get_args(type_hint)
+        elif origin == typing.Union:
+            union_types = typing.get_args(type_hint)
+            for t in union_types:
+                if typing.get_origin(t) == collections.abc.Sequence:
+                    return True, typing.get_args(t)
+        return False, None
+
+    seq, sub_type_hints = _sub(type_hint)
+    if not seq:
+        return False, False
+    for sub_type_hint in sub_type_hints:
+        subseq, _ = _sub(sub_type_hint)
+        if subseq:
+            return seq, subseq
+    return seq, False
+
+
+def get_val_dict(metadata, field_name, field_type):
+    try:
+        val_dict = metadata["val_dict"]
+    except KeyError:
+        val_dict = {}
+    if field_name in globals_.VAL_DICTS:
+        val_dict.update(globals_.VAL_DICTS[field_name])
+    seq, subseq = _is_seq(field_type)
+    if seq and "max_len" not in val_dict:
+        val_dict["max_len"] = (globals_.MAX_SEQ_LEN,)
+    if subseq and "subseq_max_len" not in val_dict:
+        val_dict["subseq_max_len"] = (globals_.MAX_SUBSEQ_LEN,)
+    return val_dict
 
 
 def add_fields_to_form(cls_or_obj, form_cls):
@@ -62,6 +152,7 @@ def add_fields_to_form(cls_or_obj, form_cls):
             field_dict["doc"] = metadata["mutable_attrs"]["doc"]
         field_dict["priority"] = priority
         field_dict["category"] = category
+
         if category not in globals_.MAX_PRIORITY_DICT:
             globals_.MAX_PRIORITY_DICT[category] = priority
         elif globals_.MAX_PRIORITY_DICT[category] < priority:
@@ -82,12 +173,8 @@ def add_fields_to_form(cls_or_obj, form_cls):
                 form_cls, field_name, metadata["possible_values"], default
             )
             continue
-        try:
-            val_dict = metadata["val_dict"]
-        except KeyError:
-            val_dict = {}
-        if field_name in globals_.VAL_DICTS:
-            val_dict.update(globals_.VAL_DICTS[field_name])
+        val_dict = get_val_dict(metadata, field_name, field_type)
+        field_dict["typing_string"] = get_typing_string(field_args, val_dict)
         validator = functools.partial(
             validators.validate_field, field_type, val_dict
         )

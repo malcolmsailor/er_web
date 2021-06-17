@@ -7,17 +7,17 @@ const INIT_PRIORITY = 1;
 const MAX_PRIORITY = 5; // TODO choose an appropriate value
 var categoryPriorities;
 
-function update_priorities() {
+function updatePriorities() {
     sessionStorage.setItem("categoryPriorities", JSON.stringify(categoryPriorities));
 }
 
-function init_priorities() {
+function initPriorities() {
     if (sessionStorage.getItem("categoryPriorities")) {
         categoryPriorities = JSON.parse(sessionStorage.getItem("categoryPriorities"));
         var categoryDivs = document.getElementsByClassName("category-div");
         for (let i = 0; i < categoryDivs.length; i++) {
             const categoryDiv = categoryDivs[i];
-            refresh_priority(categoryDiv.id);
+            refreshPriority(categoryDiv.id);
         }
         return;
     }
@@ -26,14 +26,14 @@ function init_priorities() {
     for (let i = 0; i < categoryDivs.length; i++) {
         const categoryDiv = categoryDivs[i];
         categoryPriorities[categoryDiv.id] = INIT_PRIORITY;
-        refresh_num_hidden(categoryDiv);
+        refreshNumHidden(categoryDiv);
     }
-    update_priorities();
+    updatePriorities();
 }
 
-function toggleHelp(field_id) {
-    var button = document.getElementById(field_id + "-help-button");
-    var div = document.getElementById(field_id + "-help-div");
+function toggleHelp(fieldId) {
+    var button = document.getElementById(fieldId + "-help-button");
+    var div = document.getElementById(fieldId + "-help-div");
     if (div.style.display === "none") {
         button.innerHTML = button.innerHTML.replace("show", "hide").replace("?", "⨯");
         div.style.display = "block";
@@ -56,7 +56,7 @@ function getNumHidden(div) {
     return numHidden;
 }
 
-function refresh_num_hidden(div, numHidden) {
+function refreshNumHidden(div, numHidden) {
     // remove "-cat-div" from end of container id
     const id = div.id.slice(0, -8);
     numHiddenText = document.getElementById(id + "-num-hidden-text");
@@ -83,10 +83,10 @@ function refresh_num_hidden(div, numHidden) {
     }
 }
 
-function refresh_priority(div_id) {
-    const priority = categoryPriorities[div_id];
+function refreshPriority(divId) {
+    const priority = categoryPriorities[divId];
     var numHidden = 0;
-    div = document.getElementById(div_id);
+    div = document.getElementById(divId);
     fieldDivs = div.getElementsByClassName("field-div");
     for (let i = 0; i < fieldDivs.length; i++) {
         var fieldDiv = fieldDivs[i];
@@ -100,23 +100,23 @@ function refresh_priority(div_id) {
             fieldDiv.style.display = "block";
         }
     }
-    refresh_num_hidden(div, numHidden);
+    refreshNumHidden(div, numHidden);
 }
 
-function show_more(div_id) {
-    categoryPriorities[div_id] = Math.min(
-        categoryPriorities[div_id] + 1, MAX_PRIORITY_DICT[div_id.slice(0, -8)]
+function showMore(divId) {
+    categoryPriorities[divId] = Math.min(
+        categoryPriorities[divId] + 1, MAX_PRIORITY_DICT[divId.slice(0, -8)]
     );
-    refresh_priority(div_id);
-    update_priorities();
+    refreshPriority(divId);
+    updatePriorities();
 }
 
-function show_less(div_id) {
-    categoryPriorities[div_id] = Math.max(
-        categoryPriorities[div_id] - 1, MIN_PRIORITY
+function showLess(divId) {
+    categoryPriorities[divId] = Math.max(
+        categoryPriorities[divId] - 1, MIN_PRIORITY
     );
-    refresh_priority(div_id);
-    update_priorities();
+    refreshPriority(divId);
+    updatePriorities();
 }
 
 var shareableLink;
@@ -143,20 +143,18 @@ function initTraceback() {
     }
 }
 
-// according to Mozilla docs, `false` boolean (for optional `useCapture` arg) 
-// should be included for maximum browser compatability
-document.addEventListener('DOMContentLoaded', init_priorities, false);
+
 
 var SettingInputFields = document.getElementsByClassName("er_setting");
 
-function update_field(field) {
+function updateField(field) {
     const container = document.getElementById(field.id + "-div");
-    var values_match = (
+    var valuesMatch = (
         field.type == "checkbox"
             ? field.checked == (DEFAULT_FIELD_VALUES[field.id] == "y")
             : field.value == DEFAULT_FIELD_VALUES[field.id]
     );
-    if (values_match) {
+    if (valuesMatch) {
         container.classList.remove("changed-field-div");
         field.classList.remove("changed-field");
     } else {
@@ -165,12 +163,34 @@ function update_field(field) {
     }
 }
 
-function init_field_colors() {
+function showTypingString(field) {
+    var typingString = document.getElementById(field.id + "-typing-string");
+    if (typingString) {
+        typingString.style.visibility = "visible";
+    }
+}
+
+function hideTypingString(field) {
+    var typingString = document.getElementById(field.id + "-typing-string");
+    if (typingString) {
+        typingString.style.visibility = "hidden";
+    }
+}
+
+function initFieldColors() {
     for (let i = 0; i < SettingInputFields.length; i++) {
         var inputField = SettingInputFields[i];
-        inputField.addEventListener('change', function (event) { update_field(event.target) });
+        inputField.addEventListener('change', function (event) { updateField(event.target) });
         inputField.addEventListener('change', updateShareableLink, false);
-        update_field(inputField);
+        updateField(inputField);
+        if (inputField.type === "text") {
+            inputField.addEventListener(
+                'focus', function (event) { showTypingString(event.target); }
+            );
+            inputField.addEventListener(
+                'blur', function (event) { hideTypingString(event.target); }
+            );
+        }
     }
 }
 
@@ -206,15 +226,30 @@ function clearQueryFromUrl() {
     );
 }
 
+function revealLinkedField(linkDiv) {
+    var targetDiv = document.getElementById(linkDiv.href.split("#")[1]);
+    targetDiv.style.display = "block";
+}
 
-function init_page() {
-    init_field_colors();
+function initHelpLinks() {
+    const helpLinks = document.getElementsByClassName('help-field-a');
+    for (let i = 0; i < helpLinks.length; i++) {
+        helpLinks[i].addEventListener('click', function (event) { revealLinkedField(event.target) }, false);
+    }
+}
+
+function initPage() {
+    initPriorities();
+    initFieldColors();
     updateShareableLink();
     document.getElementById('top-submit').addEventListener('click', polite, false);
     document.getElementById('bottom-submit').addEventListener('click', polite, false);
     document.getElementById('show-shareable-link').addEventListener('click', revealShareableLink, false);
     initTraceback();
     clearQueryFromUrl();
+    initHelpLinks();
 }
 
-document.addEventListener('DOMContentLoaded', init_page, false);
+// according to Mozilla docs, `false` boolean (for optional `useCapture` arg) 
+// should be included for maximum browser compatability
+document.addEventListener('DOMContentLoaded', initPage, false);

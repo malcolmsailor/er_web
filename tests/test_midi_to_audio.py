@@ -4,6 +4,8 @@ import tempfile
 import subprocess
 import traceback
 
+import pytest
+
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 )
@@ -11,6 +13,7 @@ sys.path.insert(
 import er_web.midi_to_audio as midi_to_audio
 
 
+@pytest.mark.skip
 def test_midi_to_wav():
     # For some reason, the midi file I am using has 10 tracks but only tracks
     # 3,5, and 7 have any note events!

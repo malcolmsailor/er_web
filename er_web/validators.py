@@ -1,14 +1,17 @@
 import ast
 import collections
 import operator
+import sys
 import typing
 
 import numpy as np
 
 import wtforms
 
-from . import globals_
 from . import safe_eval
+
+CURRENT_MODULE = sys.modules[__name__]
+print(CURRENT_MODULE)
 
 
 def comp_(x, y, op, op_str, seq=False):
@@ -34,128 +37,166 @@ def min_(x, min_x):
     comp_(x, min_x, operator.lt, "greater than or equal to")
 
 
+min_.user_text = "Values must be >= {}"
+
+
 def max_(x, max_x):
     comp_(x, max_x, operator.gt, "less than or equal to")
+
+
+max_.user_text = "Values must be <= {}"
 
 
 def open_min(x, min_x):
     comp_(x, min_x, operator.le, "greater than")
 
 
+open_min.user_text = "Values must be > {}"
+
+
 def open_max(x, max_x):
-    comp_(x, max_x, operator.ge, "greater than")
+    comp_(x, max_x, operator.ge, "less than")
 
 
-def max_len(seq, max_len_=globals_.MAX_SEQ_LEN):
-    if len(seq) > max_len_:
+open_max.user_text = "Values must be < {}"
+
+
+def get_type_specific_validator(type_, func_name, value_repl):
+    g = getattr(CURRENT_MODULE, func_name)
+
+    def f(x, *args, **kwargs):
+        if not isinstance(x, type_):
+            return
+        return g(x, *args, **kwargs)
+
+    f.user_text = g.user_text.replace("Values", value_repl)
+    return f
+
+
+for type_, str_ in ((int, "Integers"), (float, "Floats")):
+    for func in (min_, max_, open_min, open_max):
+        new_func_name = type_.__name__ + "_" + func.__name__
+        if new_func_name[-1] == "_":
+            new_func_name = new_func_name[:-1]
+        new_func = get_type_specific_validator(type_, func.__name__, str_)
+        setattr(CURRENT_MODULE, new_func_name, new_func)
+
+
+def subseq_max_len(seq, max_len_):
+    try:
+        iter_ = iter(seq)
+    except TypeError:
+        # the argument is not a sequence. If this was not allowed, it would
+        #   have failed type check previously, so we can return.
+        return
+    for subseq in iter_:
+        try:
+            len_ = len(subseq)
+        except TypeError:
+            continue
+        if len_ > max_len_:
+            msg = f"subsequences must have {max_len_} or fewer items"
+            raise wtforms.validators.ValidationError(msg)
+
+
+subseq_max_len.user_text = "Subsequences must have {} or fewer items"
+
+
+def max_len(seq, max_len_):
+    try:
+        len_ = len(seq)
+    except TypeError:
+        # the argument is not a sequence. If this was not allowed, it would
+        #   have failed type check previously, so we can return.
+        return
+    if len_ > max_len_:
         msg = f"sequence must have {max_len_} or fewer items"
         raise wtforms.validators.ValidationError(msg)
 
 
-# er_const_splitter = re.compile(r"( ?[*/+-]+ ?)")
-# ops = {
-#     "*": operator.mul,
-#     "/": operator.truediv,
-#     "+": operator.add,
-#     "-": operator.sub,
-#     "//": operator.floordiv,
-#     "**": operator.pow,
-# }
+max_len.user_text = "Sequences must have {} or fewer items"
 
 
-# def _process_atom(atom):
-#     # 1. check if atom is a defined constant
-#     try:
-#         return getattr(er_constants, atom)
-#     except AttributeError:
-#         pass
-#     # 2. check if atom is a math operator
-#     try:
-#         return ops[atom.strip()]
-#     except KeyError:
-#         pass
-#     # 3. check if atom is a number
-#     try:
-#         val = ast.literal_eval(atom)
-#         assert isinstance(val, numbers.Number)
-#         return val
-#     except ValueError:
-#         raise wtforms.validators.ValidationError
-#     except TypeError:
-#         raise wtforms.validators.ValidationError
+def equal_subseq_lens(seq):
+    try:
+        iter_ = iter(seq)
+    except TypeError:
+        # the argument is not a sequence. If this was not allowed, it would
+        #   have failed type check previously, so we can return.
+        return
+    len_ = len(next(iter_))
+    for subseq in iter_:
+        if len_ != len(subseq):
+            msg = "subsequences must all be of the same length"
+            raise wtforms.validators.ValidationError(msg)
 
 
-# def process_er_constants(string):
-#     # LONGTERM parse parentheses?
-#     atoms = re.split(er_const_splitter, string)
-#     atoms = [_process_atom(atom) for atom in atoms if atom]
-#     val_stack = []
-#     op_stack = []
+equal_subseq_lens.user_text = "Subsequences must all have the same length"
+
+
+def _validate_type(type_hint, val):
+    actual_type = typing.get_origin(type_hint) or type_hint
+    if actual_type is typing.Union:
+        for union_type in typing.get_args(type_hint):
+            try:
+                _validate_type(union_type, val)
+                return
+            except wtforms.validators.ValidationError as exc:
+                if "not of type" not in exc.__str__():
+                    raise exc
+        type_names = []
+        for type_ in typing.get_args(type_hint):
+            try:
+                # classes have __name__ attribute
+                type_names.append(type_.__name__)
+            except AttributeError:
+                # type hints have _name attribute
+                type_names.append(type_._name)
+        msg = f"Value {val} is not one of required types {type_names}"
+        raise wtforms.validators.ValidationError(msg)
+    if not isinstance(val, actual_type):
+        if val is not None:
+            try:
+                # this function actually *evaluates* the value, but we are
+                # not storing it anywhere, and then we evaluate it again
+                # later. surely that redundancy can be avoided! TODO
+                val = safe_eval.safe_eval(val)
+                _validate_type(type_hint, val)
+                return
+            except (AssertionError, ValueError):
+                pass
+        raise wtforms.validators.ValidationError(
+            f"Value {val} is not of type {actual_type.__name__}"
+        )
+    if isinstance(val, typing.Dict):
+        # max_len(val)
+        k_ty, v_ty = typing.get_args(type_hint)
+        for k, v in val.items():
+            _validate_type(k_ty, k)
+            _validate_type(v_ty, v)
+    elif isinstance(val, typing.Tuple):
+        # max_len(val)
+        sub_type_hint_tup = typing.get_args(type_hint)
+        for sub_type_hint, sub_val in zip(sub_type_hint_tup, val):
+            _validate_type(sub_type_hint, sub_val)
+    elif isinstance(val, collections.abc.Sequence) and not isinstance(val, str):
+        # max_len(val)
+        sub_type_hint_tup = typing.get_args(type_hint)
+        # we expect this to only have one member
+        # TODO handle gracefully
+        assert len(sub_type_hint_tup) == 1
+        sub_type_hint = sub_type_hint_tup[0]
+        for sub_val in val:
+            _validate_type(sub_type_hint, sub_val)
+    if isinstance(val, str):
+        if not actual_type == str:
+            raise wtforms.validators.ValidationError(
+                f"Value {val} is not of type {actual_type.__name__}"
+            )
 
 
 def validate_field(type_hint, val_dict, form, field):
     # We do not use the 'form' argument but it will be passed by flaskwtf
-    def _validate_type(type_hint, val):
-        actual_type = typing.get_origin(type_hint) or type_hint
-        if actual_type is typing.Union:
-            for union_type in typing.get_args(type_hint):
-                try:
-                    _validate_type(union_type, val)
-                    return
-                except wtforms.validators.ValidationError as exc:
-                    if "not of type" not in exc.__str__():
-                        raise exc
-            type_names = []
-            for type_ in typing.get_args(type_hint):
-                try:
-                    # classes have __name__ attribute
-                    type_names.append(type_.__name__)
-                except AttributeError:
-                    # type hints have _name attribute
-                    type_names.append(type_._name)
-            msg = f"Value {val} is not one of required types {type_names}"
-            raise wtforms.validators.ValidationError(msg)
-        if not isinstance(val, actual_type):
-            if val is not None:
-                try:
-                    # this function actually *evaluates* the value, but we are
-                    # not storing it anywhere, and then we evaluate it again
-                    # later. surely that redundancy can be avoided! TODO
-                    val = safe_eval.safe_eval(val)
-                    _validate_type(type_hint, val)
-                    return
-                except (AssertionError, ValueError):
-                    pass
-            raise wtforms.validators.ValidationError(
-                f"Value {val} is not of type {actual_type.__name__}"
-            )
-        if isinstance(val, typing.Dict):
-            max_len(val)
-            k_ty, v_ty = typing.get_args(type_hint)
-            for k, v in val.items():
-                _validate_type(k_ty, k)
-                _validate_type(v_ty, v)
-        elif isinstance(val, typing.Tuple):
-            max_len(val)
-            sub_type_hint_tup = typing.get_args(type_hint)
-            for sub_type_hint, sub_val in zip(sub_type_hint_tup, val):
-                _validate_type(sub_type_hint, sub_val)
-        elif isinstance(val, collections.abc.Sequence) and not isinstance(
-            val, str
-        ):
-            max_len(val)
-            sub_type_hint_tup = typing.get_args(type_hint)
-            # we expect this to only have one member
-            # TODO handle gracefully
-            assert len(sub_type_hint_tup) == 1
-            sub_type_hint = sub_type_hint_tup[0]
-            for sub_val in val:
-                _validate_type(sub_type_hint, sub_val)
-        if isinstance(val, str):
-            if not actual_type == str:
-                raise wtforms.validators.ValidationError(
-                    f"Value {val} is not of type {actual_type.__name__}"
-                )
 
     try:
         if isinstance(field.data, bool):
@@ -165,8 +206,11 @@ def validate_field(type_hint, val_dict, form, field):
         else:
             # it should be a string
             data = str(field.data)
-            if "," in data and data[0] not in "([{":
-                data = "(" + data + ")"
+            if (
+                "," in data
+                or typing.get_origin(type_hint) == collections.abc.Sequence
+            ) and data[0] not in "([{":
+                data = "(" + data + (")" if data[-1] == "," else ",)")
             try:
                 val = ast.literal_eval(data)
             except ValueError:

@@ -4,7 +4,7 @@ from . import globals_
 
 
 field_re = re.compile(r"`(\w+)`")
-field_repl = '<code><a href="#{other_field}-div">{other_field}</a></code>'
+field_repl = '<code><a class="help-field-a" href="#{other_field}-div">{other_field}</a></code>'
 
 
 def add_links():

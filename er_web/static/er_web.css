@@ -24,12 +24,16 @@ body {
 a, .a-button {
   color: #729cb1;
   text-decoration: underline;
+  background-color: initial;
+  border: initial;
 }
 
 a:hover, .a-button:hover,
 a:focus, .a-button:focus {
   color:#4a6782;
   outline: none;
+  background-color: initial;
+  border: initial;
 }
 
 .error-list {
@@ -67,6 +71,7 @@ a:focus, .a-button:focus {
   color: #009688;
   font-weight: bold;
   display: inline-block;
+  margin-left: 0.5rem;
 }
 
 .help-button:hover {
@@ -100,9 +105,12 @@ input[type='submit']:focus {
   outline: 0;
 }
 
-#show-shareable-link {
-  background-color: initial;
-  border: initial;
+
+
+.input-div {
+  width: 50%;
+  display: inline-block;
+  position: relative;
 }
 
 input[type='color'],
@@ -125,7 +133,9 @@ select {
   background-color: transparent;
   border: 0.1rem solid #d1d1d1;
   border-radius: .4rem;
-  width: 50%;
+  width: 100%;
+  line-height: 1.15rem;
+/*   width: 50%; */
 }
 
 input[type='color']:focus,
@@ -146,6 +156,21 @@ textarea:focus,
 select:focus {
   outline: 0;
   box-shadow: 0px 0px 1px 1px #009688d6;
+}
+
+.typing-string {
+  font-size: 0.95rem;
+  background-color: #9E9E9E;
+  color: white;
+  width: 100%;
+  bottom: 1.5rem;
+  left: 0.1rem;
+  border: 0.1rem solid #9E9E9E;
+  border-radius: .4rem;
+}
+
+.typing-string p {
+  margin: .3rem;
 }
 
 select {
@@ -268,7 +293,6 @@ h1 {
   color: #2196F3;
 }
 
-/* copied from W3, to replace */
 .small-button {
 /*   position: relative; */
   font-size: 0.8em;
@@ -282,26 +306,32 @@ h1 {
   font-weight: bold;
 }
 
+.tooltip, .typing-string {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+}
+
 .tooltip {
   font-size: 0.8rem;
-  visibility: hidden;
   width: 120px;
   background-color: #808080c2;
   color: #fff;
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
-  position: absolute;
-  z-index: 1;
   font-weight: normal;
+  transition-delay: 0.3s;
 }
+
+
 
 .small-button:hover .tooltip, 
 .help-button:hover .tooltip, 
 .changed-field-div .bool-label-span:hover .tooltip,
 .changed-field-div .other-label:hover .tooltip {
   visibility: visible;
-  transition-delay: 0.3s;
+
 }
 
 .field-help-div {

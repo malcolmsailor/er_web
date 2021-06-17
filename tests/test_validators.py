@@ -1,19 +1,16 @@
 import numbers
-import os
-import sys
-import traceback
 import typing
 
+import wtforms
+import pytest
 import numpy as np
 
-import wtforms
-
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-)
-
+import er_web
 import er_web.validators as validators
 import er_web.forms as forms
+
+
+from fixtures import client
 
 # # TODO update this test
 # def process_er_constants():
@@ -32,12 +29,37 @@ import er_web.forms as forms
 #         breakpoint()
 
 
+def test_value_validation():
+    # func_name, args, succeed, fail
+    tests = [
+        ("min_", (2,), (2,), (1,)),
+        ("max_", (2,), (2,), (3,)),
+        ("open_min", (2,), (2.1,), (2,)),
+        ("open_max", (2,), (1.9,), (2,)),
+        ("int_min", (2,), (2, 1.0), (1,)),
+        ("int_max", (2,), (2, 3.0), (3,)),
+        ("float_min", (2.0,), (2.0, 1), (1.0,)),
+        ("float_max", (2.0,), (2.0, 3), (3.0,)),
+    ]
+    for fname, args, succeed, fail in tests:
+        f = getattr(validators, fname)
+        for x in succeed:
+            f(x, *args)
+        for x in fail:
+            try:
+                f(x, *args)
+            except wtforms.validators.ValidationError:
+                pass
+            else:
+                raise AssertionError("Test should have failed")
+
+
 class DummyField:
     def __init__(self, data):
         self.data = data
 
 
-def test_validators():
+def test_type_validation():
     to_pass = [
         (str, "foo"),
         (typing.Tuple[int, int], "(2, 3)"),
@@ -61,8 +83,18 @@ def test_validators():
             "[NATURAL_MINOR_SCALE]",
         ),
         (
+            typing.Sequence[
+                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
+            ],
+            "NATURAL_MINOR_SCALE",
+        ),
+        (
             typing.Sequence[numbers.Number],
             "(OCTAVE,)",
+        ),
+        (
+            typing.Sequence[numbers.Number],
+            "OCTAVE",
         ),
         (
             typing.Sequence[
@@ -93,55 +125,26 @@ def test_validators():
         ),
     ]
     empty_val_dict = {}
-    try:
-        for type_hint, value in to_pass:
-            field = DummyField(value)
-            validators.validate_field(type_hint, empty_val_dict, None, field)
-        for type_hint, val_dict, value in to_pass_with_val_dict:
-            field = DummyField(value)
-            validators.validate_field(type_hint, val_dict, None, field)
-        for type_hint, value in to_fail:
-            field = DummyField(value)
-            try:
-                validators.validate_field(
-                    type_hint, empty_val_dict, None, field
-                )
-            except wtforms.validators.ValidationError:
-                continue
-            else:
-                raise AssertionError(
-                    "There should have been a validation error"
-                )
-    except:  # pylint: disable=bare-except
 
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        traceback.print_exception(
-            exc_type, exc_value, exc_traceback, file=sys.stdout
-        )
-        breakpoint()
-
-
-def test_form_validation():
-    # default form
-    import flask
-
-    app = flask.Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY="dev",  # TODO
-    )
-    with app.app_context():
-        form = forms.ERForm({})
+    for type_hint, value in to_pass:
+        field = DummyField(value)
+        validators.validate_field(type_hint, empty_val_dict, None, field)
+    for type_hint, val_dict, value in to_pass_with_val_dict:
+        field = DummyField(value)
+        validators.validate_field(type_hint, val_dict, None, field)
+    for type_hint, value in to_fail:
+        field = DummyField(value)
         try:
-            assert form.validate()
-        except:  # pylint: disable=bare-except
-
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            traceback.print_exception(
-                exc_type, exc_value, exc_traceback, file=sys.stdout
-            )
-            breakpoint()
+            validators.validate_field(type_hint, empty_val_dict, None, field)
+        except wtforms.validators.ValidationError:
+            continue
+        else:
+            raise AssertionError("There should have been a validation error")
 
 
-if __name__ == "__main__":
-    test_validators()
-    test_form_validation()
+def test_form_validation(client):
+    with er_web.app.test_request_context():
+        form = forms.ERForm({})
+        form.validate()
+        for field, error in form.errors.items():
+            raise AssertionError(f"{field}: {error}")

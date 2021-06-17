@@ -1,25 +1,37 @@
 {% from 'tooltips.jinja' import tooltip, changed_tooltip %}
 {% set priority = attr_dict[field.id]['priority'] %}
+{% macro format_label(text) %}
+{{ text | capitalize | replace("_", " ") }}
+{%- endmacro %}
 <div class="field-div{% if field.errors %} has-error{% endif %}" data-priority-level="{{ priority }}" 
 id="{{ field.id }}-div" 
 style="display:{{ 'none' if priority > 1 else 'block' }}">
   {% if field.type == "BooleanField" %}
     <label class="bool-label" for="{{ field.id }}">
       <span class="bool-label-span">
-        {{ field.id }}
+        {{ format_label(field.id) }}
         {{ changed_tooltip(field.id)}}
       </span>
-      <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
-        class="er_setting" id="{{ field.id }}" name="{{ field.id }}"
-        type="checkbox" value="y">
-      <span class="checkmark"></span>
+      <div class="input-div">
+        <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
+          class="er_setting" id="{{ field.id }}" name="{{ field.id }}"
+          type="checkbox" value="y">
+        <span class="checkmark"></span>
+      </div>
     </label>
   {% else %}
     <label class="other-label" for="{{ field.id }}">
-      {{ field.id }}
+      {{ format_label(field.id) }}
       {{ changed_tooltip(field.id)}}
     </label>
-    {{ field(class_="er_setting") }}
+    <div class="input-div">
+      {{ field(class_="er_setting") }}
+      {% if attr_dict[field.id]["typing_string"]%}
+        <div class="typing-string" id="{{ field.id }}-typing-string">
+          {{ attr_dict[field.id]["typing_string"] | markdown }}
+        </div>
+      {% endif %}
+    </div>
   {% endif %}
   <div class="help-button" id="{{ field.id }}-help-button" 
     onClick="toggleHelp('{{ field.id }}')">

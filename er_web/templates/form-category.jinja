@@ -7,14 +7,14 @@ categories have the same name (e.g., "transpose")  #}
     <legend class="category-legend">{{ category }}</legend>
     <div class="num-hidden-div" id="{{ category }}-num-hidden">
       <div id="{{ category }}-less-button" class="small-button" 
-          onClick="show_less('{{ category }}-cat-div')">
+          onClick="showLess('{{ category }}-cat-div')">
         -
         {{ tooltip( category, "less", "Click to show fewer fields" )}}
       </div>
 
       <span class="num-hidden-text" id="{{ category }}-num-hidden-text"></span>
       <div id="{{ category }}-more-button" class="small-button" 
-          onClick="show_more('{{ category }}-cat-div')">
+          onClick="showMore('{{ category }}-cat-div')">
         +
         {{ tooltip( category, "more", "Click to show more fields" )}}
       </div>
