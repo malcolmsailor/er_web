@@ -6,6 +6,14 @@ const MIN_PRIORITY = 0;
 const INIT_PRIORITY = 1;
 const MAX_PRIORITY = 5; // TODO choose an appropriate value
 var categoryPriorities;
+var x;
+var y;
+
+function getCoords(event) {
+    x = event.clientX;
+    y = event.clientY;
+    console.log(x, y);
+}
 
 function updatePriorities() {
     sessionStorage.setItem("categoryPriorities", JSON.stringify(categoryPriorities));
@@ -163,18 +171,36 @@ function updateField(field) {
     }
 }
 
-function showTypingString(field) {
+function adjustFieldContext(field, visibility) {
     var typingString = document.getElementById(field.id + "-typing-string");
     if (typingString) {
-        typingString.style.visibility = "visible";
+        typingString.style.visibility = visibility;
+    }
+    var constantsDiv = document.getElementById(field.id + "-constants-div");
+    if (constantsDiv) {
+        constantsDiv.style.visibility = visibility;
     }
 }
 
-function hideTypingString(field) {
-    var typingString = document.getElementById(field.id + "-typing-string");
-    if (typingString) {
-        typingString.style.visibility = "hidden";
+function showFieldContext(field) {
+    adjustFieldContext(field, "visible");
+}
+
+function hideFieldContext(event) {
+    var clickedElement = document.elementFromPoint(x, y);
+    var field = event.target;
+    var constantsDiv = document.getElementById(field.id + "-constants-div");
+    if (constantsDiv.contains(clickedElement) && constantsDiv.style.visibility == "visible") {
+        field.focus();
+    } else {
+        adjustFieldContext(field, "hidden");
     }
+}
+
+function addConstant(constantName, fieldId) {
+    var field = document.getElementById(fieldId);
+    // TODO handle commas more carefully
+    field.value += (field.value ? ", " : "") + constantName;
 }
 
 function initFieldColors() {
@@ -185,10 +211,10 @@ function initFieldColors() {
         updateField(inputField);
         if (inputField.type === "text") {
             inputField.addEventListener(
-                'focus', function (event) { showTypingString(event.target); }
+                'focus', function (event) { showFieldContext(event.target); }, false
             );
             inputField.addEventListener(
-                'blur', function (event) { hideTypingString(event.target); }
+                'blur', function (event) { hideFieldContext(event); }, false
             );
         }
     }
@@ -238,7 +264,10 @@ function initHelpLinks() {
     }
 }
 
+
+
 function initPage() {
+    document.addEventListener('mousedown', getCoords, false);
     initPriorities();
     initFieldColors();
     updateShareableLink();

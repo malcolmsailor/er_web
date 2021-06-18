@@ -11,7 +11,6 @@ import wtforms
 from . import safe_eval
 
 CURRENT_MODULE = sys.modules[__name__]
-print(CURRENT_MODULE)
 
 
 def comp_(x, y, op, op_str, seq=False):
@@ -206,6 +205,8 @@ def validate_field(type_hint, val_dict, form, field):
         else:
             # it should be a string
             data = str(field.data)
+            # substitute any 'sharp signs' in the input
+            data = data.replace("#", "_SHARP")
             if (
                 "," in data
                 or typing.get_origin(type_hint) == collections.abc.Sequence

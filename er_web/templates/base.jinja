@@ -18,13 +18,15 @@
       <ul>
         <li>Add an introduction/overview etc.</li>
         <li>Improve test suite</li>
+        <li>Allow non 12-tet tunings</li>
         <li>Better documentation and interface for indicating presets like "MAJOR_SCALE"</li>
         <li>Improve alignment of fields and help buttons</li>
         <li>Add validation constraints (min, max, etc.) for all fields</li>
         <li>Export settings to Python dictionary for use with shell script.</li>
-        <li>Enforce maximum sequence length</li>
         <li>Allow randomization of settings</li>
         <li>Second interface for the application of filters and transformers</li>
+        <li>Fields that can be boolean or sequences have checkmark that is greyed out if textbox has content</li>
+        <li>Simplify "comma" field</li>
       </ul>
     </div>
     <button type="button" class="a-button" 
@@ -34,8 +36,13 @@
     <div id="issues-div" style="display: none;">
       <ul>
         <li>Help docs mention settings that only apply to the shell version of the app.</li>
+        <li>Lists in help docs are not properly formatted (e.g., interval cycle)</li>
         <li>Linked-to fields in help docs are shown, but this doesn't persist through refreshes of the page.</li>
         <li>Tooltips are often out of view</li>
+        <li>Excess periods in type hints</li>
+        <li>Settings error output is unformatted</li>
+        <li>Triad groups should not be in chords constants</li>
+        <li>Tooltips for constants behave strangely</li>
       </ul>
     </div>
     {% if form.is_submitted() %}

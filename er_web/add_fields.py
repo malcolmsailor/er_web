@@ -1,10 +1,11 @@
 import collections
 import functools
-import json
 import re
 import typing
 
 import wtforms
+
+import efficient_rhythms
 
 from . import globals_
 from . import validators
@@ -88,7 +89,7 @@ def get_typing_string(field_args, val_dict):
     v_string = _concat_strings(v_strings, 15)
     i_string = _concat_strings(i_strings, 17)
     f_string = _concat_strings(f_strings, 15)
-    v_string = ". ".join([v_string, i_string, f_string])
+    v_string = " ".join([v_string, i_string, f_string])
     s_string = _concat_strings(s_strings, 10)
     u_string = _concat_strings(u_strings, 13)
     out = [typing_string + ".", v_string, s_string, u_string]
@@ -132,6 +133,35 @@ def get_val_dict(metadata, field_name, field_type):
     return val_dict
 
 
+def get_constants(field_dict, metadata):
+    def _get_label(group):
+        try:
+            return globals_.CONSTANT_GROUP_LABELS[group]
+        except KeyError:
+            return group  # TODO make sure all labels are in this dict
+
+    out = {}
+    if "expected_constants" in metadata:
+        constant_groups = metadata["expected_constants"]
+        for group in constant_groups:
+
+            if group in globals_.CONSTANT_GROUPS:
+                out[_get_label(group)] = globals_.CONSTANT_GROUPS[group]
+            elif group in globals_.CONSTANT_SUPER_GROUPS:
+                for subgroup in globals_.CONSTANT_SUPER_GROUPS[group]:
+                    out[_get_label(subgroup)] = globals_.CONSTANT_GROUPS[
+                        subgroup
+                    ]
+            else:
+                out[_get_label(group)] = efficient_rhythms.CONSTANT_GROUPS[
+                    group
+                ]
+        # field_dict["expected_constants"] = tuple(
+        #     item for list_ in expected_constants for item in list_
+        # )
+    field_dict["expected_constants"] = out
+
+
 def add_fields_to_form(cls_or_obj, form_cls):
     for field_name, field_args in cls_or_obj.__dataclass_fields__.items():
 
@@ -164,6 +194,7 @@ def add_fields_to_form(cls_or_obj, form_cls):
             field_val = field_args.default_factory()
 
         default = get_default(field_name, field_val)
+        get_constants(field_dict, metadata)
 
         if field_type is bool:
             _add_boolean_field(form_cls, field_name, default)
@@ -173,6 +204,7 @@ def add_fields_to_form(cls_or_obj, form_cls):
                 form_cls, field_name, metadata["possible_values"], default
             )
             continue
+
         val_dict = get_val_dict(metadata, field_name, field_type)
         field_dict["typing_string"] = get_typing_string(field_args, val_dict)
         validator = functools.partial(

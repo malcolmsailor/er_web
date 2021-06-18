@@ -51,11 +51,15 @@ def make_music(form):
                 raise
     user_settings["timeout"] = globals_.TIMEOUT
     settings = efficient_rhythms.preprocess_settings(user_settings)
-    pattern = efficient_rhythms.make_super_pattern(settings)
-    temp_mid = temp_path(".mid")
+    try:
+        pattern = efficient_rhythms.make_super_pattern(settings)
+        temp_mid = temp_path(".mid")
 
-    audio_format = ".mp3" if not ogg_support() else ".ogg"
-    non_empty = efficient_rhythms.write_er_midi(settings, pattern, temp_mid)
+        audio_format = ".mp3" if not ogg_support() else ".ogg"
+        non_empty = efficient_rhythms.write_er_midi(settings, pattern, temp_mid)
+    except Exception as exc:
+        exc.seed = settings.seed
+        raise exc
     if non_empty:
         temp_audio = temp_path(audio_format)
         midi_to_audio(temp_mid, temp_audio)

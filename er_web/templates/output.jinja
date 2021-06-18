@@ -12,4 +12,14 @@
   {% elif audio_path %}
     {% include "audio.jinja" %}
   {% endif %}
+  {% if seed %}
+    <div id="seed-display-div">
+      <p id="seed-display">Random number generator seed: {{ seed }}</p>
+      <p id="seed-display-help">
+        Include this number in the 
+          <code><a href="#seed-div">seed</a></code> 
+        field below if you would like to reproduce this output exactly.
+      </p>
+    </div>
+  {% endif %}
 </div>

@@ -1,4 +1,5 @@
 import numbers
+import types
 import typing
 
 import numpy as np
@@ -42,6 +43,7 @@ WEB_DEFAULTS = {
     "dur_density": 0.65,
     "voice_lead_chord_tones": True,
     "tempo": 144,
+    "consonance_treatment": "none",
     "consonances": "0, 3, 4, 5, 7, 8, 9",
 }
 
@@ -82,6 +84,207 @@ Each integer selects one of the following elementary synth presets:
 DOCS = {
     "choirs": CHOIR_DOC,
 }
+
+CONSTANT_GROUP_LABELS = types.MappingProxyType(
+    {
+        "pitch_class": "Pitch classes",
+        "specific_interval": "Specific intervals",
+        "generic_interval": "Generic intervals",
+        "three_chord": "Three-note chords",
+        "four_chord": "Four-note chords",
+        "three_position": "Three-note chord positions",
+        "seven_scale": "Seven-note scales",
+        "five_scale": "Five-note scales",
+        "six_scale": "Six-note scales",
+        "eight_scale": "Eight-note scales",
+        "nine_scale": "Nine-note scales",
+        "octave": "Octaves",
+        "voice_range": "Voice ranges",
+    }
+)
+
+CONSTANT_SUPER_GROUPS = types.MappingProxyType(
+    {
+        "chord": ("three_chord", "four_chord"),
+        "scale": (
+            "seven_scale",
+            "five_scale",
+            "six_scale",
+            "eight_scale",
+            "nine_scale",
+        ),
+    }
+)
+
+TEMP_CONSTANT_GROUPS = {
+    "pitch_class": (
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "A",
+        "B",
+        "Cbb",
+        "Dbb",
+        "Ebb",
+        "Fbb",
+        "Gbb",
+        "Abb",
+        "Bbb",
+        "Cb",
+        "Db",
+        "Eb",
+        "Fb",
+        "Gb",
+        "Ab",
+        "Bb",
+        "C_SHARP",
+        "D_SHARP",
+        "E_SHARP",
+        "F_SHARP",
+        "G_SHARP",
+        "A_SHARP",
+        "B_SHARP",
+        "C_SHARP_SHARP",
+        "D_SHARP_SHARP",
+        "E_SHARP_SHARP",
+        "F_SHARP_SHARP",
+        "G_SHARP_SHARP",
+        "A_SHARP_SHARP",
+        "B_SHARP_SHARP",
+    ),
+    "specific_interval": (
+        "UNISON",
+        "MINOR_2ND",
+        "MAJOR_2ND",
+        "MINOR_3RD",
+        "MAJOR_3RD",
+        "PERFECT_4TH",
+        "DIMINISHED_5TH",
+        "PERFECT_5TH",
+        "AUGMENTED_5TH",
+        "MINOR_6TH",
+        "MAJOR_6TH",
+        "MINOR_7TH",
+        "MAJOR_7TH",
+        "OCTAVE",
+        "MINOR_9TH",
+        "MAJOR_9TH",
+        "MINOR_10TH",
+        "MAJOR_10TH",
+    ),
+    "generic_interval": (
+        "GENERIC_UNISON",
+        "SECOND",
+        "THIRD",
+        "FOURTH",
+        "FIFTH",
+        "SIXTH",
+        "SEVENTH",
+        "GENERIC_OCTAVE",
+    ),
+    "three_chord": (
+        "MAJOR_TRIAD",
+        "MINOR_TRIAD",
+        "DIMINISHED_TRIAD",
+        "AUGMENTED_TRIAD",
+        "HALF_DIMINISHED_NO5",
+        "HALF_DIMINISHED_NO3",
+        "DOMINANT_7TH_NO5",
+        "DOMINANT_7TH_NO3",
+        "MAJOR_7TH_NO5",
+        "MAJOR_7TH_NO3",
+        "MINOR_7TH_NO5",
+        "MINOR_7TH_NO3",
+    ),
+    "four_chord": (
+        "HALF_DIMINISHED_CHORD",
+        "DOMINANT_7TH_CHORD",
+        "MAJOR_7TH_CHORD",
+        "MINOR_7TH_CHORD",
+    ),
+    "three_position": (
+        "MAJOR_53",
+        "MAJOR_63",
+        "MAJOR_64",
+        "MINOR_53",
+        "MINOR_63",
+        "MINOR_64",
+        "MAJOR_53_OPEN",
+        "MAJOR_63_OPEN",
+        "MAJOR_64_OPEN",
+        "MINOR_53_OPEN",
+        "MINOR_63_OPEN",
+        "MINOR_64_OPEN",
+    ),
+    "seven_scale": (
+        "DIATONIC_SCALE",
+        "MAJOR_SCALE",
+        "NATURAL_MINOR_SCALE",
+        "IONIAN",
+        "DORIAN",
+        "PHRYGIAN",
+        "LYDIAN",
+        "MIXOLYDIAN",
+        "AEOLIAN",
+        "LOCRIAN",
+    ),
+    "five_scale": ("PENTATONIC_SCALE",),
+    "six_scale": (
+        "HEXACHORD_MAJOR",
+        "HEXACHORD_MINOR",
+        "WHOLE_TONE",
+        "HEXATONIC01",
+        "HEXATONIC03",
+    ),
+    "eight_scale": (
+        "OCTATONIC01",
+        "OCTATONIC02",
+    ),
+    "nine_scale": (
+        "ENNEATONIC012",
+        "ENNEATONIC013",
+        "ENNEATONIC023",
+    ),
+    "octave": (
+        "OCTAVE0",
+        "OCTAVE1",
+        "OCTAVE2",
+        "OCTAVE3",
+        "OCTAVE4",
+        "OCTAVE5",
+        "OCTAVE6",
+        "OCTAVE7",
+        "OCTAVE8",
+    ),
+    "voice_range": (
+        "CONTIGUOUS_OCTAVES",
+        "CONTIGUOUS_4THS",
+        "CONTIGUOUS_5THS",
+        "CONTIGUOUS_12THS",
+        "CONTIGUOUS_15THS",
+        "AUTHENTIC_OCTAVES",
+        "AUTHENTIC_5THS",
+        "AUTHENTIC_12THS",
+        "AUTHENTIC_15THS",
+        "PLAGAL_OCTAVES",
+        "PLAGAL_5THS",
+    ),
+}
+
+
+def get_constant_groups():
+    out = {}
+    for group, constants in TEMP_CONSTANT_GROUPS.items():
+        out[group] = tuple(
+            efficient_rhythms.CONSTANTS_BY_NAME[constant]
+            for constant in constants
+        )
+    return out
+
+
+CONSTANT_GROUPS = types.MappingProxyType(get_constant_groups())
 
 # TODO update
 TYPING_STRINGS = {

@@ -54,17 +54,20 @@ a:focus, .a-button:focus {
   margin: 1rem;
 }
 
-#traceback-mail-p {
+#traceback-mail-p, #make-error-div-p {
   margin: 1rem;
 }
 
-#traceback {
+/* #traceback {
   font-family: monospace;
   margin: 0 2rem;
-}
+} */
 
-#traceback p {
-  margin: 0rem;
+
+
+.code-error p {
+  font-family: monospace;
+  margin: 0 2rem;
 }
 
 .help-button {
@@ -105,7 +108,24 @@ input[type='submit']:focus {
   outline: 0;
 }
 
+.constant-button {
+  margin: 0.1rem 0.02rem;
+  background-color: #1A237E;
+  border-color: #283593;
+  color: #E8EAF6;
+}
 
+.constant-button:hover {
+  background-color: #5C6BC0;
+  border-color: #5C6BC0;
+  color: #fff;
+}
+
+.constant-button:active {
+  background-color:#7986CB;
+  border-color: #7986CB;
+  color: #fff;
+}
 
 .input-div {
   width: 50%;
@@ -158,15 +178,32 @@ select:focus {
   box-shadow: 0px 0px 1px 1px #009688d6;
 }
 
-.typing-string {
-  font-size: 0.95rem;
+.constants-div, .typing-string {
   background-color: #9E9E9E;
-  color: white;
   width: 100%;
-  bottom: 1.5rem;
-  left: 0.1rem;
   border: 0.1rem solid #9E9E9E;
   border-radius: .4rem;
+}
+
+.typing-string {
+  font-size: 0.95rem;
+  color: white;
+  bottom: 1.5rem;
+  left: 0.1rem;
+}
+
+.constants-div {
+  background-color:#E0E0E0;
+}
+
+.constant-group {
+  margin: 0.5rem;
+}
+
+.constant-group-label {
+  font-weight: bold;
+  color:#0a1046;
+  display:block;
 }
 
 .typing-string p {
@@ -306,7 +343,7 @@ h1 {
   font-weight: bold;
 }
 
-.tooltip, .typing-string {
+.tooltip, .typing-string, .constants-div {
   visibility: hidden;
   position: absolute;
   z-index: 1;
@@ -328,6 +365,7 @@ h1 {
 
 .small-button:hover .tooltip, 
 .help-button:hover .tooltip, 
+.constant-button:hover .tooltip,
 .changed-field-div .bool-label-span:hover .tooltip,
 .changed-field-div .other-label:hover .tooltip {
   visibility: visible;

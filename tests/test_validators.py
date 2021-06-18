@@ -2,7 +2,6 @@ import numbers
 import typing
 
 import wtforms
-import pytest
 import numpy as np
 
 import er_web
@@ -63,6 +62,10 @@ def test_type_validation():
     to_pass = [
         (str, "foo"),
         (typing.Tuple[int, int], "(2, 3)"),
+        (numbers.Number, "D"),
+        (numbers.Number, "D#"),
+        (numbers.Number, "D_SHARP"),
+        (numbers.Number, "Db"),
         (int, "SECOND"),
         (bool, "True"),
         (typing.Union[bool, typing.Sequence[bool]], "True, False, True"),
@@ -70,6 +73,9 @@ def test_type_validation():
         (typing.Union[None, typing.Tuple[int]], "(2,)"),
         (typing.Union[None, typing.Tuple[int]], "2,"),
         (typing.Union[None, typing.Tuple[int]], "None"),
+        (typing.Union[None, typing.Sequence[numbers.Number]], "(F, A, C)"),
+        (typing.Union[None, typing.Sequence[numbers.Number]], "F, A, C"),
+        (typing.Union[None, typing.Sequence[numbers.Number]], "F#, A, Cb"),
         (
             typing.Union[
                 numbers.Number, np.ndarray, typing.Sequence[numbers.Number]

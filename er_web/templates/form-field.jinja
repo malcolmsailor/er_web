@@ -22,17 +22,38 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
   {% else %}
     <label class="other-label" for="{{ field.id }}">
       {{ format_label(field.id) }}
-      {{ changed_tooltip(field.id)}}
+      {{ changed_tooltip(field.id) }}
     </label>
     <div class="input-div">
       {{ field(class_="er_setting") }}
-      {% if attr_dict[field.id]["typing_string"]%}
+      {% if attr_dict[field.id]["typing_string"] %}
         <div class="typing-string" id="{{ field.id }}-typing-string">
           {{ attr_dict[field.id]["typing_string"] | markdown }}
         </div>
       {% endif %}
+      {% if attr_dict[field.id]["expected_constants"] %}
+        <div class="constants-div" id="{{ field.id }}-constants-div">
+          {% for group, constants in attr_dict[field.id]["expected_constants"].items() %}
+            {% set group_id = group | lower | replace(" ", "-") %}
+            <div id="{{ group_id }}-{{ field.id}}-constant-group" class="constant-group">
+              <div id="{{ group_id }}-{{ field.id}}-constant-group-label" class="constant-group-label">
+                {{ group }}
+              </div>
+              {% for constant in constants %}
+                <button class="constant-button" type="button"
+                    id="{{ field.id}}-{{ constant.name }}-constant-button"
+                    onClick="addConstant('{{ constant.name }}', '{{ field.id }}')">
+                  {{ constant.name }}
+                  {{ tooltip( field.id + "-" + constant.name, "constant", constant.value ) }}
+                </button>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
   {% endif %}
+  {# TODO make button #}
   <div class="help-button" id="{{ field.id }}-help-button" 
     onClick="toggleHelp('{{ field.id }}')">
     ?
