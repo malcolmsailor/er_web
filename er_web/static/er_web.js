@@ -190,6 +190,7 @@ function hideFieldContext(event) {
     var clickedElement = document.elementFromPoint(x, y);
     var field = event.target;
     var constantsDiv = document.getElementById(field.id + "-constants-div");
+    // TODO debug why the check for visibility here is not working
     if (constantsDiv.contains(clickedElement) && constantsDiv.style.visibility == "visible") {
         field.focus();
     } else {
