@@ -75,6 +75,7 @@ a:focus, .a-button:focus {
   font-weight: bold;
   display: inline-block;
   margin-left: 0.5rem;
+  position: relative;
 }
 
 .help-button:hover {
@@ -341,6 +342,7 @@ h1 {
   vertical-align: text-top;
   transition: 0s;
   font-weight: bold;
+  position:relative;
 }
 
 .tooltip, .typing-string, .constants-div {
@@ -351,7 +353,6 @@ h1 {
 
 .tooltip {
   font-size: 0.8rem;
-  width: 120px;
   background-color: #808080c2;
   color: #fff;
   text-align: center;
@@ -361,11 +362,30 @@ h1 {
   transition-delay: 0.3s;
 }
 
+.small-button .tooltip, .help-button .tooltip {
+/*   width: 120px; */
+  width: 8rem;
+  left: -3.8rem;
+}
 
+.help-button .tooltip {
+  left: 0rem;
+}
+
+.constant-button-div {
+  display:inline-block;
+  position:relative;
+
+}
+
+.constant-button-div .tooltip {
+  transition-delay: 0.3s;
+  max-width:8rem;
+}
 
 .small-button:hover .tooltip, 
 .help-button:hover .tooltip, 
-.constant-button:hover .tooltip,
+.constant-button-div:hover .tooltip,
 .changed-field-div .bool-label-span:hover .tooltip,
 .changed-field-div .other-label:hover .tooltip {
   visibility: visible;

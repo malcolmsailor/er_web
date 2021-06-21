@@ -7,9 +7,7 @@
 <div id="container">
   <div id="header">
     <h1>Efficient Rhythms</h1>
-    <p>Welcome to an early version of this page. Please feel free to play around and 
-    let me know if you have any issues at 
-    <a href="mailto:malcolm.sailor@gmail.com">malcolm.sailor@gmail.com</a></p>
+    {% include "welcome.jinja" %}
     <button type="button" class="a-button" 
       onclick="getElementById('wish-div').style.display = 'block'">
         TODOs and wishlist
@@ -39,9 +37,7 @@
         <li>Lists in help docs are not properly formatted (e.g., interval cycle)</li>
         <li>Linked-to fields in help docs are shown, but this doesn't persist through refreshes of the page.</li>
         <li>Tooltips are often out of view</li>
-        <li>Excess periods in type hints</li>
         <li>Settings error output is unformatted</li>
-        <li>Triad groups should not be in chords constants</li>
         <li>Tooltips for constants behave strangely</li>
       </ul>
     </div>

@@ -40,12 +40,14 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
                 {{ group }}
               </div>
               {% for constant in constants %}
-                <button class="constant-button" type="button"
-                    id="{{ field.id}}-{{ constant.name }}-constant-button"
-                    onClick="addConstant('{{ constant.name }}', '{{ field.id }}')">
-                  {{ constant.name }}
+                <div class="constant-button-div">
+                  <button class="constant-button" type="button"
+                      id="{{ field.id}}-{{ constant.name }}-constant-button"
+                      onClick="addConstant('{{ constant.name }}', '{{ field.id }}')">
+                    {{ constant.name }}
+                  </button>
                   {{ tooltip( field.id + "-" + constant.name, "constant", constant.value ) }}
-                </button>
+                </div>
               {% endfor %}
             </div>
           {% endfor %}

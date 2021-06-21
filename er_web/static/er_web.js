@@ -12,7 +12,6 @@ var y;
 function getCoords(event) {
     x = event.clientX;
     y = event.clientY;
-    console.log(x, y);
 }
 
 function updatePriorities() {
@@ -191,7 +190,7 @@ function hideFieldContext(event) {
     var field = event.target;
     var constantsDiv = document.getElementById(field.id + "-constants-div");
     // TODO debug why the check for visibility here is not working
-    if (constantsDiv.contains(clickedElement) && constantsDiv.style.visibility == "visible") {
+    if (constantsDiv && constantsDiv.contains(clickedElement) && constantsDiv.style.visibility == "visible") {
         field.focus();
     } else {
         adjustFieldContext(field, "hidden");

@@ -14,7 +14,6 @@ MAX_PRIORITY_DICT = {}
 IGNORED_CATEGORIES = (
     "midi",
     "shell_only",
-    "tuning",
 )
 CATEGORIES = tuple(
     c for c in efficient_rhythms.CATEGORIES if c not in IGNORED_CATEGORIES

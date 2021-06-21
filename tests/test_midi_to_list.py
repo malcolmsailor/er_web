@@ -11,10 +11,89 @@ sys.path.insert(
 import er_web.midi_to_list as midi_to_list
 
 
-def test_tempi():
+def _init_mf(n_tracks):
     mf = mido.MidiFile()
-    track = mido.MidiTrack()
-    mf.tracks.append(track)
+    for _ in range(n_tracks):
+        track = mido.MidiTrack()
+        mf.tracks.append(track)
+    return mf
+
+
+def _save_mf_and_get_list(mf):
+    _, f_path = tempfile.mkstemp(suffix=".mid", prefix="er_web_test_tempi")
+    mf.save(f_path)
+    out = midi_to_list.midi_to_list(f_path)
+    os.remove(f_path)
+    return out
+
+
+def test_pitchbend():
+    mf = _init_mf(2)
+    mf.ticks_per_beat = 1
+    # 4-tuples are (track, channel, time, pitch) for pitchwheel msgs
+    # 5-tuples are (track, channel, time, note, release) for note on/off pairs
+    msgs = [
+        (0, 0, 0, 2048),
+        (0, 0, 0, 60, 2),
+        (0, 1, 0, 1024),
+        (0, 1, 0, 64, 4),
+        (1, 0, 0, 67, 2),
+        (0, 0, 2, 1024),
+        (0, 0, 2, 62, 4),
+        (1, 0, 2, 2048),
+        (1, 0, 2, 67, 4),
+    ]
+    # Track 0, channel 0: 60.5 then 62.25
+    # Track 0, channel 1: 64.25
+    # Track 1, channel 1: 67, then 67.5
+    expected_notes = [
+        (0, 0, 60.5, 0, 1),
+        (0, 1, 64.25, 0, 2),
+        (1, 0, 67, 0, 1),
+        (0, 0, 62.25, 1, 2),
+        (1, 0, 67.5, 1, 2),
+    ]
+    for msg in msgs:
+        if len(msg) == 4:
+            track, channel, time, pitch = msg
+            mf.tracks[track].append(
+                mido.Message(
+                    "pitchwheel", channel=channel, time=time, pitch=pitch
+                )
+            )
+        else:
+            track, channel, time, note, release = msg
+            mf.tracks[track].append(
+                mido.Message("note_on", note=note, time=time, channel=channel)
+            )
+            mf.tracks[track].append(
+                mido.Message(
+                    "note_off", note=note, time=release, channel=channel
+                )
+            )
+
+    # convert to relative times
+    for track in mf.tracks:
+        track.sort(key=lambda x: x.time)
+        time = 0
+        for msg in track:
+            delta = msg.time - time
+            time = msg.time
+            msg.time = delta
+
+    out = _save_mf_and_get_list(mf)
+    for item in out:
+        if not item[1] == "note":
+            continue
+        tup = track, channel, pitch, onset, release = item[2:7]
+        assert tup in expected_notes
+        expected_notes.remove(tup)
+    assert not expected_notes
+
+
+def test_tempi():
+    mf = _init_mf(1)
+    track = mf.tracks[0]
     mf.ticks_per_beat = 4  # artificially low to make the math easy :)
 
     # 2-tuples are (tempo, time) for set_tempo messages
@@ -46,10 +125,11 @@ def test_tempi():
             track.append(mido.Message("note_on", note=note, time=time))
             track.append(mido.Message("note_off", note=note, time=release))
 
-    _, f_path = tempfile.mkstemp(suffix=".mid", prefix="er_web_test_tempi")
-    mf.save(f_path)
-    out = midi_to_list.midi_to_list(f_path)
-    os.remove(f_path)
+    # _, f_path = tempfile.mkstemp(suffix=".mid", prefix="er_web_test_tempi")
+    # mf.save(f_path)
+    # out = midi_to_list.midi_to_list(f_path)
+    # os.remove(f_path)
+    out = _save_mf_and_get_list(mf)
     for note, (start, end) in zip(
         (msg for msg in out if msg[1] == "note"), start_and_end_times
     ):
@@ -57,9 +137,8 @@ def test_tempi():
 
 
 def test_sort():
-    mf = mido.MidiFile()
-    track = mido.MidiTrack()
-    mf.tracks.append(track)
+    mf = _init_mf(1)
+    track = mf.tracks[0]
     msg_attrs = [
         ("note_on", {"time": 0, "note": 60}),
         ("pitchwheel", {"time": 0, "pitch": 1000}),

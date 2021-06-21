@@ -9,6 +9,11 @@ import mido
 NUM_CHANNELS = 16
 DEFAULT_MIDI_TEMPO = 500_000  # 120 bpm
 
+# For pitchbend
+# for EastWest, SIZE_OF_SEMITONE should be 4096
+# for Vienna, SIZE_OF_SEMITONE should be 8192
+SIZE_OF_SEMITONE = 4096
+
 
 def add_track_and_abs_time(track, track_i):
     tick_time = 0
@@ -75,8 +80,8 @@ def _event(
     )
 
 
-def _pitch_bend_handler(pb_dict, msg):
-    pb_dict[msg.track][msg.channel] = msg.pitch
+def _pitch_bend_handler(pb_dict, msg, size_of_semitone=SIZE_OF_SEMITONE):
+    pb_dict[msg.track][msg.channel] = msg.pitch / size_of_semitone
 
 
 def _note_off_handler(
@@ -126,9 +131,12 @@ def _note_on_handler(
             (msg, msg.note, time)
         )
         return
-    pitch_bend = 0 if msg.channel not in pb_dict else pb_dict[msg.channel]
+    pitch_bend = (
+        0 if msg.channel not in pb_dict else pb_dict[msg.track][msg.channel]
+    )
     # TODO document that an error will be raised if this is not found
-    pitch = inv_pb_tup_dict[(msg.note, pitch_bend)]
+    # pitch = inv_pb_tup_dict[(msg.note, pitch_bend)]
+    pitch = msg.note + pitch_bend
     note_on_dict[msg.track][msg.channel][msg.note].append((msg, pitch, time))
 
 
@@ -252,13 +260,17 @@ def midi_to_list(
         i: {j: collections.defaultdict(list) for j in range(NUM_CHANNELS)}
         for i in range(num_tracks)
     }
+
     if pb_tup_dict is not None:
         pb_dict = {
             i: {j: {} for j in range(NUM_CHANNELS)} for i in range(num_tracks)
         }
         inv_pb_tup_dict = {v: k for k, v in pb_tup_dict.items()}
     else:
-        pb_dict = inv_pb_tup_dict = None
+        pb_dict = {
+            i: {j: 0 for j in range(NUM_CHANNELS)} for i in range(num_tracks)
+        }
+        inv_pb_tup_dict = None
 
     # partial function bindings
     event = functools.partial(_event, midi_basename=midi_basename)
