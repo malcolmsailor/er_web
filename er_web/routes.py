@@ -62,4 +62,4 @@ def mainpage():
 # TODO remove
 @app.route("/test/")
 def test_page():
-    return flask.render_template("test.jinja", items=["foo", "bar"])
+    return "Hello world"

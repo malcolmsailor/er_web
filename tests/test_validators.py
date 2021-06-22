@@ -28,6 +28,30 @@ from fixtures import client
 #         breakpoint()
 
 
+def test_sequence_or_optional_sequence():
+    yes = (
+        list,
+        tuple,
+        typing.Tuple[int, int],
+        typing.Sequence[bool],
+        typing.List,
+        typing.List[bool],
+        typing.Union[None, typing.Sequence[int]],
+        typing.Union[typing.List, None],
+    )
+    no = (
+        int,
+        typing.Union[None, int],
+        typing.Union[int, typing.Sequence[int]],
+        typing.Union[bool, int],
+        typing.Union[None, typing.Sequence[int], int],
+    )
+    for type_hint in yes:
+        assert validators.sequence_or_optional_sequence(type_hint)
+    for type_hint in no:
+        assert not validators.sequence_or_optional_sequence(type_hint)
+
+
 def test_value_validation():
     # func_name, args, succeed, fail
     tests = [
@@ -68,6 +92,7 @@ def test_type_validation():
         (numbers.Number, "Db"),
         (int, "SECOND"),
         (bool, "True"),
+        (typing.Union[None, typing.Sequence[numbers.Number]], "0"),
         (typing.Union[bool, typing.Sequence[bool]], "True, False, True"),
         (typing.Union[None, typing.Tuple[int]], ""),
         (typing.Union[None, typing.Tuple[int]], "(2,)"),
@@ -154,3 +179,7 @@ def test_form_validation(client):
         form.validate()
         for field, error in form.errors.items():
             raise AssertionError(f"{field}: {error}")
+
+
+if __name__ == "__main__":
+    test_type_validation()

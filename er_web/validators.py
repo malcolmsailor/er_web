@@ -1,5 +1,6 @@
 import ast
 import collections
+import inspect
 import operator
 import sys
 import typing
@@ -194,6 +195,33 @@ def _validate_type(type_hint, val):
             )
 
 
+def sequence_or_optional_sequence(type_hint):
+    origin = typing.get_origin(type_hint)
+    if origin is None:
+        # this occurs if the type hint isn't from the typing module (like
+        # "typing.Tuple") but is just a Python class (like "tuple")
+        origin = type_hint
+    if origin == typing.Union:
+        args = typing.get_args(type_hint)
+        if not len(args) == 2:
+            return False
+        if not any(
+            issubclass(item, type(None))
+            for item in args
+            if inspect.isclass(item)
+        ):
+            return False
+        for item in args:
+            sub_origin = typing.get_origin(item)
+            if not inspect.isclass(sub_origin):
+                continue
+            return issubclass(sub_origin, collections.abc.Sequence)
+    elif issubclass(origin, collections.abc.Sequence):
+        return True
+
+    return False
+
+
 def validate_field(type_hint, val_dict, form, field):
     # We do not use the 'form' argument but it will be passed by flaskwtf
 
@@ -208,9 +236,10 @@ def validate_field(type_hint, val_dict, form, field):
             # substitute any 'sharp signs' in the input
             data = data.replace("#", "_SHARP")
             if (
-                "," in data
-                or typing.get_origin(type_hint) == collections.abc.Sequence
-            ) and data[0] not in "([{":
+                ("," in data or sequence_or_optional_sequence(type_hint))
+                and data[0] not in "([{"
+                and data != "None"
+            ):
                 data = "(" + data + (")" if data[-1] == "," else ",)")
             try:
                 val = ast.literal_eval(data)
