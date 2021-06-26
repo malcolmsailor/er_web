@@ -243,12 +243,12 @@ def validate_field(type_hint, val_dict, form, field):
                 data = "(" + data + (")" if data[-1] == "," else ",)")
             try:
                 val = ast.literal_eval(data)
-            except ValueError:
+            except (ValueError, SyntaxError):
                 try:
                     # maybe it's an allowed math expression or a use of
                     # er_constants
                     val = safe_eval.safe_eval(data)
-                except (AssertionError, ValueError):
+                except (AssertionError, ValueError, SyntaxError):
                     # if none of these parse, let's try it as a string
                     val = data
         # else:

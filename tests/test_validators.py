@@ -145,6 +145,13 @@ def test_type_validation():
             ],
             "foo",
         ),
+        # Syntax error
+        (
+            typing.Sequence[
+                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
+            ],
+            "[[  16.   32.] [  24.   48.]]",
+        ),
     ]
     to_pass_with_val_dict = [
         (
