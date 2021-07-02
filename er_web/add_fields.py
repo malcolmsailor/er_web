@@ -3,6 +3,7 @@ import functools
 import re
 import typing
 
+import markdown
 import wtforms
 
 import efficient_rhythms
@@ -78,7 +79,7 @@ def get_typing_string(field_args, val_dict):
         user_text = getattr(func, "user_text")
         val_strings.append(user_text.format(*args))
     if not val_strings:
-        return typing_string
+        return markdown.markdown(typing_string)
 
     v_strings = [s for s in val_strings if s.startswith("Values")]
     i_strings = [s for s in val_strings if s.startswith("Integers")]
@@ -93,7 +94,7 @@ def get_typing_string(field_args, val_dict):
     s_string = _concat_strings(s_strings, 10)
     u_string = _concat_strings(u_strings, 13)
     out = [typing_string + ".", v_string, s_string, u_string]
-    return "\n\n".join(out)
+    return markdown.markdown("\n\n".join(out))
 
 
 def _is_seq(type_hint):
@@ -162,6 +163,13 @@ def get_constants(field_dict, metadata):
     field_dict["expected_constants"] = out
 
 
+def get_doc(field_name, metadata):
+    if field_name in globals_.DOCS:
+        return markdown.markdown(globals_.DOCS[field_name])
+    else:
+        return markdown.markdown(metadata["mutable_attrs"]["doc"])
+
+
 def add_fields_to_form(cls_or_obj, form_cls):
     for field_name, field_args in cls_or_obj.__dataclass_fields__.items():
 
@@ -176,10 +184,8 @@ def add_fields_to_form(cls_or_obj, form_cls):
         if priority == 0:
             continue
         globals_.ATTR_DICT[field_name] = field_dict = {}
-        if field_name in globals_.DOCS:
-            field_dict["doc"] = globals_.DOCS[field_name]
-        else:
-            field_dict["doc"] = metadata["mutable_attrs"]["doc"]
+
+        field_dict["doc"] = get_doc(field_name, metadata)
         field_dict["priority"] = priority
         field_dict["category"] = category
 

@@ -4,3 +4,4 @@ temp_wav
 __pycache__
 er_web/static/temp_files
 *.egg-info
+profiling

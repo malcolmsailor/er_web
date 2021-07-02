@@ -8,10 +8,16 @@
 <div id='downloads-div'>
   <div id="downloads-inner">
     <div id="dl-midi-div">
-      <a href="{{ url_for( 'static', filename=midi_path) }}">Download midi</a>
+      <a href="{{ url_for( 'static', filename=midi_path) }}" target="_blank" 
+          rel="noopener noreferrer">
+        Download midi
+      </a>
     </div>
     <div id="dl-ogg-div">
-      <a href="{{ url_for( 'static', filename=audio_path) }}">Download audio</a>
+      <a href="{{ url_for( 'static', filename=audio_path) }}" target="_blank" 
+          rel="noopener noreferrer">
+        Download audio
+      </a>
     </div>
   </div>
 </div>

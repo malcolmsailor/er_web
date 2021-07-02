@@ -57,9 +57,3 @@ def mainpage():
         midi_path=midi_path,
         seed=seed,
     )
-
-
-# TODO remove
-@app.route("/test/")
-def test_page():
-    return "Hello world"

@@ -28,7 +28,7 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
       {{ field(class_="er_setting") }}
       {% if attr_dict[field.id]["typing_string"] %}
         <div class="typing-string" id="{{ field.id }}-typing-string">
-          {{ attr_dict[field.id]["typing_string"] | markdown }}
+          {{ attr_dict[field.id]["typing_string"] }}
         </div>
       {% endif %}
       {% if attr_dict[field.id]["expected_constants"] %}
@@ -72,7 +72,7 @@ style="display:{{ 'none' if priority > 1 else 'block' }}">
   <div class="help-container">
     <div class="field-help-div" id="{{ field.id }}-help-div" 
         style="display:none;">
-      {{ attr_dict[field.id]["doc"] | markdown }}
+      {{ attr_dict[field.id]["doc"] }}
     </div>
   </div>
 </div>
