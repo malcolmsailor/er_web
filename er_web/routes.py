@@ -22,7 +22,7 @@ def mainpage():
         try:
             seed, midi_path, audio_path = er_handler.make_music(form)
             succeeded = True
-        except efficient_rhythms.TimeoutError as exc:
+        except efficient_rhythms.ErTimeoutError as exc:
             script_error = True
             error_type = "timeout"
             seed = exc.seed
@@ -36,7 +36,9 @@ def mainpage():
             error_type = "settings"
             # This error is thrown in preprocessing so there is no seed yet
         except Exception as exc:
-            seed = exc.seed
+            # I'm not sure what I was thinking with the assignment to seed; why
+            # should an arbitrary exception have a seed attribute?
+            # seed = exc.seed 
             exc_str = traceback.format_exc()
             script_error = exc_str
             error_type = "exception"

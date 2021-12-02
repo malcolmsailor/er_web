@@ -73,11 +73,11 @@ def write_mono_wav(np_array, out_path_or_f, sample_rate):
     audio = (np_array * (2 ** 15 - 1)).astype("<h")
     with wave.open(out_path_or_f, "wb") as f:
         # 2 Channels.
-        f.setnchannels(1)
+        f.setnchannels(1)  # pylint: disable=no-member
         # 2 bytes per sample.
-        f.setsampwidth(2)
-        f.setframerate(sample_rate)
-        f.writeframes(audio.tobytes())
+        f.setsampwidth(2)  # pylint: disable=no-member
+        f.setframerate(sample_rate)  # pylint: disable=no-member
+        f.writeframes(audio.tobytes())  # pylint: disable=no-member
 
 
 def midi_to_wav(midi_path, sample_rate=SAMPLE_RATE, out_path=None):

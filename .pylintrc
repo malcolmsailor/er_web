@@ -1,0 +1,7 @@
+[MASTER]
+
+# It appears that if ignore-patterns has a trailing comma,
+#   pytest will not run pylint!
+ignore-patterns=^temp.*\.py$
+
+ignore-paths=^temp_wav/.*

@@ -1,10 +1,22 @@
-import numbers
+from numbers import Number
 import types
-import typing
+from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
 
 import efficient_rhythms
+from efficient_rhythms.er_types import (
+    Density,
+    DensityOrQuantity,
+    ItemOrSequence,
+    Metron,
+    PerVoiceSequence,
+    PerVoiceSuperSequence,
+    Pitch,
+    SuperSequence,
+    Tempo,
+    VoiceRanges,
+)
 import malsynth
 
 TIMEOUT = 10.0
@@ -19,6 +31,18 @@ CATEGORIES = tuple(
     c for c in efficient_rhythms.CATEGORIES if c not in IGNORED_CATEGORIES
 )
 
+FIELD_NAME_ABBREVS = {
+    "num": "number of",
+    "len": "length",
+    "pcs": "pitch-classes",
+    "dur": "duration",
+    "consec": "consecutive",
+    "seg": "segments",
+    "cont": "continuous",
+    "var": "variation",
+    "reps": "repetitions",
+    "vl": "voice leading"
+}
 DEFAULT_FIELD_VALUES = {}
 
 WEB_DEFAULTS = {
@@ -44,6 +68,10 @@ WEB_DEFAULTS = {
     "tempo": 144,
     "consonance_treatment": "none",
     "consonances": "0, 3, 4, 5, 7, 8, 9",
+    # TODO hard_bounds default is temporary (maybe), if we get it automatically
+    # it looks something like "(('OCTAVE0 * A', 'OCTAVE8 * C'),)", and these
+    # internal strings cause problems
+    "hard_bounds": "((OCTAVE0 * A, OCTAVE8 * C),)",
 }
 
 MAX_SEQ_LEN = 16
@@ -290,105 +318,104 @@ TYPING_STRINGS = {
     # bool: not necessary
     int: "An integer",
     float: "A number",
-    numbers.Number: "A number",
-    typing.Sequence[int]: "A sequence of integers separated by commas",
-    typing.Sequence[
-        numbers.Number
-    ]: "A sequence of numbers separated by commas",
-    typing.Union[float, int, typing.Sequence[typing.Union[float, int]]]: (
+    Number: "A number",
+    Sequence[int]: "A sequence of integers separated by commas",
+    Sequence[Number]: "A sequence of numbers separated by commas",
+    Union[float, int, Sequence[Union[float, int]]]: (
         "A number, or a sequence of numbers separated by commas"
     ),
-    typing.Union[float, typing.Sequence[float]]: (
+    Union[float, Sequence[float]]: (
         "A number, or a sequence of numbers separated by commas"
     ),
     # TODO what if the user wants a sequence of length 1?
-    typing.Union[None, int]: "Blank, or an integer",
-    typing.Union[None, numbers.Number]: "Blank, or a number",
-    typing.Union[None, typing.Sequence[numbers.Number]]: (
+    Union[None, int]: "Blank, or an integer",
+    Union[None, Number]: "Blank, or a number",
+    Union[None, Sequence[Number]]: (
         "Blank, or a sequence of numbers separated by commas"
     ),
-    typing.Union[None, typing.Sequence[int]]: (
+    Union[None, Sequence[int]]: (
         "Blank, or a sequence of integers separated by commas"
     ),
-    typing.Union[None, typing.Tuple[int, int]]: (
+    Union[None, Tuple[int, int]]: (
         "Blank, or two numbers separated by a comma"
     ),
-    typing.Union[int, typing.Sequence[int]]: (
+    Union[int, Sequence[int]]: (
         "An integer, or a sequence of integers separated by commas"
     ),
-    typing.Union[numbers.Number, typing.Sequence[numbers.Number]]: (
+    Union[Number, Sequence[Number]]: (
         "A number, or a sequence of numbers separated by commas"
     ),
-    typing.Union[None, int, typing.Sequence[int]]: (
+    Union[None, int, Sequence[int]]: (
         "Blank, an integer, or a sequence of integers separated by commas"
     ),
-    typing.Union[None, numbers.Number, typing.Sequence[numbers.Number]]: (
+    Union[None, Number, Sequence[Number]]: (
         "Blank, a number, or a sequence of numbers separated by commas"
     ),
-    typing.Union[str, int, typing.Sequence[typing.Union[str, int]]]: (
+    Union[str, int, Sequence[Union[str, int]]]: (
         "A string, an integer, or a sequence of strings or integers "
         "separated by commas"
     ),
-    typing.Union[
-        typing.Sequence[typing.Tuple[numbers.Number, numbers.Number]],
-        np.ndarray,
-    ]: (
+    Union[Sequence[Tuple[Number, Number]], np.ndarray,]: (
         "A sequence of two-tuples of numbers (e.g., '(1, 2)') separated by "
         "commas"
     ),
-    typing.Sequence[
-        typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-    ]: (
+    Sequence[Union[np.ndarray, Sequence[Number]]]: (
         "A sequence of sequences of numbers (e.g., '(0, 3, 7)'), separated by "
         "commas"
     ),
-    typing.Sequence[typing.Tuple[numbers.Number, numbers.Number]]: (
+    Sequence[Tuple[Number, Number]]: (
         "A sequence of two-tuples of numbers (e.g., '(1, 2)') separated by "
         "commas"
     ),
-    typing.Union[bool, typing.Sequence[bool]]: (
+    Union[bool, Sequence[bool]]: (
         "A boolean (either 'True' or 'False'), or a sequence of booleans "
         "separated by commas"
     ),
-    typing.Union[bool, typing.Sequence[typing.Sequence[int]]]: (
+    Union[bool, Sequence[Sequence[int]]]: (
         "A boolean (either 'True' or 'False'), or a sequence of sequences of "
         "integers"
     ),
-    typing.Union[
-        None,
-        numbers.Number,
-        typing.Sequence[
-            typing.Union[numbers.Number, typing.Sequence[numbers.Number]]
-        ],
-    ]: (
+    Union[None, Number, Sequence[Union[Number, Sequence[Number]]],]: (
         "Blank, or a number, or a sequence of numbers, or a sequence of "
         "sequences of numbers"
     ),
-    typing.Union[
-        int, typing.Sequence[typing.Union[int, typing.Sequence[int]]]
-    ]: (
+    Union[int, Sequence[Union[int, Sequence[int]]]]: (
         "An integer, or a sequence of integers, or a sequence of sequences of "
         "integers"
     ),
-    typing.Tuple[numbers.Number, numbers.Number]: (
-        "Two numbers separated by a comma"
+    Tuple[Number, Number]: ("Two numbers separated by a comma"),
+    Sequence[Union[Number, Sequence[Number]]]: (
+        "A sequence of numbers, or a sequence of sequences of numbers"
     ),
-    typing.Sequence[
-        typing.Union[numbers.Number, typing.Sequence[numbers.Number]]
-    ]: ("A sequence of numbers, or a sequence of sequences of numbers"),
-    typing.Union[
-        None, int, typing.Sequence[typing.Union[int, typing.Sequence[int]]]
-    ]: (
+    Union[None, int, Sequence[Union[int, Sequence[int]]]]: (
         "Blank, or an integer, or a sequence of integers, or a sequence of "
         "sequences of integers"
     ),
-    typing.Union[
-        None,
-        typing.Sequence[
-            typing.Union[numbers.Number, typing.Sequence[numbers.Number]]
-        ],
-    ]: (
+    Union[None, Sequence[Union[Number, Sequence[Number]]],]: (
         "Blank, or a sequence of numbers, or a sequence of sequences of numbers"
+    ),
+    # custom types
+    Optional[ItemOrSequence[Pitch]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
+    ),
+    Optional[ItemOrSequence[Metron]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
+    ),
+    Optional[ItemOrSequence[Tempo]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
+    ),
+    SuperSequence[Pitch]: (
+        "A sequence of sequences of numbers (e.g., '(0, 3, 7)'), separated by "
+        "commas"
+    ),
+    ItemOrSequence[Metron]: (
+        "A number, or a sequence of numbers separated by commas"
+    ),
+    Optional[PerVoiceSequence[Metron]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
+    ),
+    Optional[PerVoiceSequence[Pitch]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
     ),
 }
 

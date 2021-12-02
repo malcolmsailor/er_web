@@ -26,6 +26,13 @@ ALLOWED_OPERATIONS = {
 }
 
 
+def _to_tuple(item):
+    try:
+        return tuple(_to_tuple(i) for i in item)
+    except TypeError:
+        return item
+
+
 def _safe_eval(node):
     if isinstance(node, ast.Num):
         return node.n
@@ -59,4 +66,4 @@ def safe_eval(expr):
         node = ast.parse(expr, "<string>", "eval").body
     except (TypeError, ValueError):
         raise ValueError
-    return _safe_eval(node)
+    return _to_tuple(_safe_eval(node))

@@ -1,5 +1,7 @@
-import numbers
+from numbers import Number
 import typing
+from typing import List, Optional, Sequence, Tuple, Union
+from efficient_rhythms.er_types.types_ import Voice
 
 import wtforms
 import numpy as np
@@ -8,8 +10,23 @@ import er_web
 import er_web.validators as validators
 import er_web.forms as forms
 
+from efficient_rhythms.er_types import (
+    Density,
+    DensityOrQuantity,
+    ItemOrSequence,
+    Metron,
+    PerVoiceSequence,
+    PerVoiceSuperSequence,
+    JustPitch,
+    TemperedPitch,
+    Pitch,
+    SuperSequence,
+    Tempo,
+    VoiceRanges,
+)
 
 from fixtures import client
+
 
 # # TODO update this test
 # def process_er_constants():
@@ -32,19 +49,33 @@ def test_sequence_or_optional_sequence():
     yes = (
         list,
         tuple,
-        typing.Tuple[int, int],
-        typing.Sequence[bool],
-        typing.List,
-        typing.List[bool],
-        typing.Union[None, typing.Sequence[int]],
-        typing.Union[typing.List, None],
+        Tuple[int, int],
+        Sequence[bool],
+        List,
+        List[bool],
+        Union[None, Sequence[int]],
+        Union[List, None],
+        ItemOrSequence,
+        # OptItemOrSequence,
+        # OptPerVoiceSequence,
+        # OptPerVoiceSuperSequence,
+        PerVoiceSequence,
+        PerVoiceSuperSequence,
+        Optional[PerVoiceSequence[int]],
+        Sequence[Pitch],
+        SuperSequence[Pitch],
+        VoiceRanges,
     )
     no = (
         int,
-        typing.Union[None, int],
-        typing.Union[int, typing.Sequence[int]],
-        typing.Union[bool, int],
-        typing.Union[None, typing.Sequence[int], int],
+        Union[None, int],
+        Union[int, Sequence[int]],
+        Union[bool, int],
+        Union[None, Sequence[int], int],
+        Metron,
+        DensityOrQuantity,
+        Pitch,
+        Tempo,
     )
     for type_hint in yes:
         assert validators.sequence_or_optional_sequence(type_hint)
@@ -84,80 +115,95 @@ class DummyField:
 
 def test_type_validation():
     to_pass = [
-        (str, "foo"),
-        (typing.Tuple[int, int], "(2, 3)"),
-        (numbers.Number, "D"),
-        (numbers.Number, "D#"),
-        (numbers.Number, "D_SHARP"),
-        (numbers.Number, "Db"),
-        (int, "SECOND"),
-        (bool, "True"),
-        (typing.Union[None, typing.Sequence[numbers.Number]], "0"),
-        (typing.Union[bool, typing.Sequence[bool]], "True, False, True"),
-        (typing.Union[None, typing.Tuple[int]], ""),
-        (typing.Union[None, typing.Tuple[int]], "(2,)"),
-        (typing.Union[None, typing.Tuple[int]], "2,"),
-        (typing.Union[None, typing.Tuple[int]], "None"),
-        (typing.Union[None, typing.Sequence[numbers.Number]], "(F, A, C)"),
-        (typing.Union[None, typing.Sequence[numbers.Number]], "F, A, C"),
-        (typing.Union[None, typing.Sequence[numbers.Number]], "F#, A, Cb"),
-        (
-            typing.Union[
-                numbers.Number, np.ndarray, typing.Sequence[numbers.Number]
-            ],
-            "MAJOR_TRIAD",
-        ),
-        (
-            typing.Sequence[
-                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-            ],
-            "[NATURAL_MINOR_SCALE]",
-        ),
-        (
-            typing.Sequence[
-                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-            ],
-            "NATURAL_MINOR_SCALE",
-        ),
-        (
-            typing.Sequence[numbers.Number],
-            "(OCTAVE,)",
-        ),
-        (
-            typing.Sequence[numbers.Number],
-            "OCTAVE",
-        ),
-        (
-            typing.Sequence[
-                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-            ],
-            "(MAJOR_TRIAD, MINOR_TRIAD)",
-        ),
+        # (str, "foo"),
+        # (Metron, "0.3"),
+        # (Metron, "15"),
+        # (Pitch, "0.3"),
+        # (Pitch, "15"),
+        # (JustPitch, "0.3"),
+        # (TemperedPitch, "15"),
+        # (Tuple[int, int], "(2, 3)"),
+        # (Number, "D"),
+        # (Number, "D#"),
+        # (Number, "D_SHARP"),
+        # (Number, "Db"),
+        # (int, "SECOND"),
+        # (bool, "True"),
+        # (Union[None, Sequence[Number]], "0"),
+        # (Union[bool, Sequence[bool]], "True, False, True"),
+        # (Union[None, Tuple[int]], ""),
+        # (Union[None, Tuple[int]], "(2,)"),
+        # (Union[None, Tuple[int]], "2,"),
+        # (Union[None, Tuple[int]], "2, "),
+        # (Union[None, Tuple[int]], " 2, 3"),
+        # (Union[None, Tuple[int]], "None"),
+        # (Union[None, Sequence[Number]], "(F, A, C)"),
+        # (Union[None, Sequence[Number]], "F, A, C"),
+        # (Union[None, Sequence[Number]], "F#, A, Cb"),
+        # (
+        #     Union[Number, np.ndarray, Sequence[Number]],
+        #     "MAJOR_TRIAD",
+        # ),
+        # (
+        #     Sequence[Union[np.ndarray, Sequence[Number]]],
+        #     "[NATURAL_MINOR_SCALE]",
+        # ),
+        # (
+        #     Sequence[Union[np.ndarray, Sequence[Number]]],
+        #     "NATURAL_MINOR_SCALE",
+        # ),
+        # (
+        #     Sequence[Number],
+        #     "(OCTAVE,)",
+        # ),
+        # (
+        #     Sequence[Number],
+        #     "OCTAVE",
+        # ),
+        # (
+        #     Sequence[Union[np.ndarray, Sequence[Number]]],
+        #     "(MAJOR_TRIAD, MINOR_TRIAD)",
+        # ),
+        # (ItemOrSequence, "4"),
+        # (ItemOrSequence, "[4, 5]"),
+        # (ItemOrSequence[Pitch], "3.4"),
+        # (Optional[ItemOrSequence[Pitch]], ""),
+        # (Optional[ItemOrSequence[Pitch]], "3.4"),
+        # (SuperSequence[Pitch], "MAJOR_SCALE"),
+        # (PerVoiceSequence[Pitch], "6"),
+        # (PerVoiceSuperSequence[Pitch], "[MAJOR_SCALE]"),
+        # (SuperSequence[Pitch], "[MAJOR_SCALE]"),
+        # (VoiceRanges, "CONTIGUOUS_OCTAVES * OCTAVE3 * C"),
+        # (VoiceRanges, "((16.0, 32.0), (32.0, 64.0), (64.0, 128.0), (128.0, 256.0), (256.0, 512.0), (512.0, 1024.0), (1024.0, 2048.0))"),
+        (VoiceRanges, "((OCTAVE0 * A, OCTAVE8 * C),)"),
     ]
     to_fail = [
-        (typing.Tuple[int, int], "(foo, 3)"),
-        (typing.Union[numbers.Number, typing.Sequence[numbers.Number]], "foo"),
+        (Pitch, "foo"),
+        (TemperedPitch, "0.3"),
+        (JustPitch, "15"),
+        (Tuple[int, int], "(foo, 3)"),
+        (Union[Number, Sequence[Number]], "foo"),
         (float, "SECOND"),
         (
-            typing.Union[
-                numbers.Number,
-                typing.Sequence[numbers.Number],
+            Union[
+                Number,
+                Sequence[Number],
             ],
             "foo",
         ),
-        # Syntax error
+        (ItemOrSequence[Pitch], "foo"),
+        (ItemOrSequence[Pitch], '[3, 4, "foo"]'),
         (
-            typing.Sequence[
-                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-            ],
+            Sequence[Union[np.ndarray, Sequence[Number]]],
             "[[  16.   32.] [  24.   48.]]",
         ),
+        # NB the next text of VoiceRanges will *pass* because we remove "excess"
+        #   parentheses from sequences of len(1) in validators.validate_field()
+        # (VoiceRanges, "(((16.0, 32.0), (32.0, 64.0), (64.0, 128.0), (128.0, 256.0), (256.0, 512.0), (512.0, 1024.0), (1024.0, 2048.0)),)")
     ]
     to_pass_with_val_dict = [
         (
-            typing.Sequence[
-                typing.Union[np.ndarray, typing.Sequence[numbers.Number]]
-            ],
+            Sequence[Union[np.ndarray, Sequence[Number]]],
             {"min_": (0,)},
             "[NATURAL_MINOR_SCALE]",
         ),
@@ -166,6 +212,7 @@ def test_type_validation():
 
     for type_hint, value in to_pass:
         field = DummyField(value)
+        breakpoint()
         validators.validate_field(type_hint, empty_val_dict, None, field)
     for type_hint, val_dict, value in to_pass_with_val_dict:
         field = DummyField(value)
@@ -185,7 +232,8 @@ def test_form_validation(client):
         form = forms.ERForm({})
         form.validate()
         for field, error in form.errors.items():
-            raise AssertionError(f"{field}: {error}")
+            print(f"Validation error: {field}: {error}")
+            raise AssertionError(f"See printed validation errors")
 
 
 if __name__ == "__main__":

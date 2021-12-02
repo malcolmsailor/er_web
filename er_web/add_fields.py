@@ -3,14 +3,24 @@ import functools
 import re
 import typing
 
+
 import markdown
 import wtforms
+import wtforms.fields.html5
 
 import efficient_rhythms
 
 from . import globals_
 from . import validators
 from . import constants
+
+
+def add_density(field_dict, field_type, metadata):
+    has_density = efficient_rhythms.er_types.has_density(field_type)
+    field_dict["has_density"] = has_density
+    if has_density:
+        field_dict["more_density"] = metadata["more"]
+        field_dict["less_density"] = metadata["less"]
 
 
 def _add_boolean_field(form_cls, field_name, default_val):
@@ -170,8 +180,18 @@ def get_doc(field_name, metadata):
         return markdown.markdown(metadata["mutable_attrs"]["doc"])
 
 
+def get_pretty_name(field_name, abbrevs=globals_.FIELD_NAME_ABBREVS):
+    bits = field_name.split("_")
+    return " ".join(
+        abbrevs[bit] if bit in abbrevs else bit for bit in bits
+    ).capitalize()
+
+
 def add_fields_to_form(cls_or_obj, form_cls):
     for field_name, field_args in cls_or_obj.__dataclass_fields__.items():
+        if field_name[0] == "_":
+            # ignore private fields
+            continue
 
         metadata = field_args.metadata
         category = metadata["category"]
@@ -188,6 +208,7 @@ def add_fields_to_form(cls_or_obj, form_cls):
         field_dict["doc"] = get_doc(field_name, metadata)
         field_dict["priority"] = priority
         field_dict["category"] = category
+        field_dict["pretty_name"] = get_pretty_name(field_name)
 
         if category not in globals_.MAX_PRIORITY_DICT:
             globals_.MAX_PRIORITY_DICT[category] = priority
@@ -205,11 +226,15 @@ def add_fields_to_form(cls_or_obj, form_cls):
         if field_type is bool:
             _add_boolean_field(form_cls, field_name, default)
             continue
+        # elif efficient_rhythms.er_types.has_density(field_type):
+        #     _add_density_field(form_cls, field_type, field_name, default)
+        #     continue
         elif "possible_values" in metadata:
             _add_select_field(
                 form_cls, field_name, metadata["possible_values"], default
             )
             continue
+        add_density(field_dict, field_type, metadata)
 
         val_dict = get_val_dict(metadata, field_name, field_type)
         field_dict["typing_string"] = get_typing_string(field_args, val_dict)

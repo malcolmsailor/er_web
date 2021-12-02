@@ -50,7 +50,7 @@ def make_music(form):
             else:
                 raise
     user_settings["timeout"] = globals_.TIMEOUT
-    settings = efficient_rhythms.preprocess_settings(user_settings)
+    settings = efficient_rhythms.get_settings(user_settings)
     try:
         pattern = efficient_rhythms.make_super_pattern(settings)
         temp_mid = temp_path(".mid")

@@ -3,64 +3,159 @@
 {% macro format_label(text) %}
 {{ text | capitalize | replace("_", " ") }}
 {%- endmacro %}
-<div class="field-div{% if field.errors %} has-error{% endif %}" data-priority-level="{{ priority }}" 
+{% macro label_contents(field) %}
+  {{ format_label(field.id) }}
+  {{ changed_tooltip(field.id)}}
+{%- endmacro %}
+{# I don't think I actually use this macro, yet anyways? #}
+{% macro bool_label_contents(field) %}
+<div class="input-container">
+  <div class="bool-label-div">
+    <span class="bool-label-span">
+      {{ label_contents(field) }}
+    </span>
+  </div>
+  <div class="input-div">
+    <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
+      class="er-setting" id="{{ field.id }}" name="{{ field.id }}"
+      type="checkbox" value="y">
+    <span class="checkmark"></span>
+  </div>
+</div>
+{%- endmacro %}
+{% macro info_density(more_or_less, text) %}
+<div class="{{ more_or_less }}-density-div info-density-div" id="{{ field.id }}-{{ more_or_less }}-density-div">
+  <div class="density-info">
+    <div class="density-info-arrow">
+      {% if more_or_less == "less" %}&#10229;{% else %}&#10230;{% endif %}
+    </div>
+    <div class="density-info-text">
+      {{ text }}
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+{% macro range_datalist(field_id, min, max, step) %}
+<datalist id="{{ field_id }}-datalist">
+  {% set n_steps = ((max - min) // step + 2) | int %}
+  {% for i in range(n_steps) %}
+    <option value="{{ min + i * step }}"></option>
+  {% endfor %}
+</datalist>
+{%- endmacro %}
+<div class="field-div{% if field.errors %} has-error{% endif %}{% if attr_dict[field.id]['has_density'] %} has-density{% endif %}" data-priority-level="{{ priority }}" 
 id="{{ field.id }}-div" 
 style="display:{{ 'none' if priority > 1 else 'block' }}">
   {% if field.type == "BooleanField" %}
     <label class="bool-label" for="{{ field.id }}">
-      <span class="bool-label-span">
-        {{ format_label(field.id) }}
-        {{ changed_tooltip(field.id)}}
-      </span>
-      <div class="input-div">
-        <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
-          class="er_setting" id="{{ field.id }}" name="{{ field.id }}"
-          type="checkbox" value="y">
-        <span class="checkmark"></span>
+      <div class="input-container">
+        <div class="bool-label-div">
+          <div class="centered">
+            <span class="bool-label-span">
+              {# {{ format_label(field.id) }} #}
+              {{ attr_dict[field.id]["pretty_name"] }}
+              {{ changed_tooltip(field.id)}}
+            </span>
+            <div class="help-button" id="{{ field.id }}-help-button" 
+              onClick="toggleHelp('{{ field.id }}')">
+              ?
+              {{ tooltip( field.id, "help", "Click to show help" ) }}
+            </div>
+          </div>
+        </div>
+        <div class="input-div">
+          <input {% if field.data and field.data != 'False' %}checked=""{% endif %} 
+            class="er-setting" id="{{ field.id }}" name="{{ field.id }}"
+            type="checkbox" value="y">
+          <span class="checkmark"></span>
+        </div>
       </div>
     </label>
   {% else %}
-    <label class="other-label" for="{{ field.id }}">
-      {{ format_label(field.id) }}
-      {{ changed_tooltip(field.id) }}
-    </label>
-    <div class="input-div">
-      {{ field(class_="er_setting") }}
-      {% if attr_dict[field.id]["typing_string"] %}
-        <div class="typing-string" id="{{ field.id }}-typing-string">
-          {{ attr_dict[field.id]["typing_string"] }}
+    <div class="input-container" id="{{ field.id }}-input-container">
+      <div class="field-label-div">
+        <div class="centered">
+          <label class="other-label" for="{{ field.id }}">
+            {# {{ format_label(field.id) }} #}
+            {{ attr_dict[field.id]["pretty_name"] }}
+            {{ changed_tooltip(field.id) }}
+          </label>
+          <div class="help-button" id="{{ field.id }}-help-button" 
+            onClick="toggleHelp('{{ field.id }}')">
+            ?
+            {{ tooltip( field.id, "help", "Click to show help" ) }}
+          </div>
         </div>
-      {% endif %}
-      {% if attr_dict[field.id]["expected_constants"] %}
-        <div class="constants-div" id="{{ field.id }}-constants-div">
-          {% for group, constants in attr_dict[field.id]["expected_constants"].items() %}
-            {% set group_id = group | lower | replace(" ", "-") %}
-            <div id="{{ group_id }}-{{ field.id}}-constant-group" class="constant-group">
-              <div id="{{ group_id }}-{{ field.id}}-constant-group-label" class="constant-group-label">
-                {{ group }}
-              </div>
-              {% for constant in constants %}
-                <div class="constant-button-div">
-                  <button class="constant-button" type="button"
-                      id="{{ field.id}}-{{ constant.name }}-constant-button"
-                      onClick="addConstant('{{ constant.name }}', '{{ field.id }}')">
-                    {{ constant.name }}
-                  </button>
-                  {{ tooltip( field.id + "-" + constant.name, "constant", constant.value ) }}
-                </div>
-              {% endfor %}
+      </div>
+      {% if attr_dict[field.id]["has_density"] %}
+        <div class="density-div" id="{{ field.id }}-density-div">
+          {{ info_density("less", attr_dict[field.id]["less_density"]) }}
+          <div class="ranges-div" id="{{ field.id }}-ranges-div" 
+              data-num-ranges="1">
+            <div class="range-div" id="{{ field.id }}-range-div-1">
+
+              <label for="{{ field.id }}-density-1" 
+                class="range-label" id="{{ field.id }}-range-label-1">
+                  All voices
+              </label>
+              <input class="density-range" id="{{ field.id }}-density-1" 
+                name="{{ field.id }}-density-1" min="0" max="1" step="0.01" 
+                type="range" value="{{ field.data }}" 
+                list="{{ field.id }}-datalist"
+                data-text-target="{{ field.id }}" data-range-i="1">
             </div>
-          {% endfor %}
+          </div>
+          {{ range_datalist(field.id, 0, 1, 0.1) }}
+          {{ info_density("more", attr_dict[field.id]["more_density"]) }}
+        </div>
+        <div class="slider-button-div">
+          <div class="slider-button-inner-div">
+            <button class="add-slider-button more-sliders" type="button"
+              id="{{ field.id }}-more-sliders" 
+              onClick="addRange('{{ field.id }}-ranges-div')">
+              Add slider
+            </button>
+            <button class="add-slider-button less-sliders" type="button"
+              id="{{ field.id }}-less-sliders" 
+              onClick="subtractRange('{{ field.id }}-ranges-div')">
+              Remove slider
+            </button>
+          </div>
         </div>
       {% endif %}
+      {% set input_classes = "er-setting density-input" if attr_dict[field.id]["has_density"] else "er-setting" %}
+      <div class="input-div">
+        {{ field(class_=input_classes) }}
+        {% if attr_dict[field.id]["typing_string"] %}
+          <div class="typing-string" id="{{ field.id }}-typing-string">
+            {{ attr_dict[field.id]["typing_string"] }}
+          </div>
+        {% endif %}
+        {% if attr_dict[field.id]["expected_constants"] %}
+          <div class="constants-div" id="{{ field.id }}-constants-div">
+            {% for group, constants in attr_dict[field.id]["expected_constants"].items() %}
+              {% set group_id = group | lower | replace(" ", "-") %}
+              <div id="{{ group_id }}-{{ field.id}}-constant-group" class="constant-group">
+                <div id="{{ group_id }}-{{ field.id}}-constant-group-label" class="constant-group-label">
+                  {{ group }}
+                </div>
+                {% for constant in constants %}
+                  <div class="constant-button-div">
+                    <button class="constant-button" type="button"
+                        id="{{ field.id}}-{{ constant.name }}-constant-button"
+                        onClick="addConstant('{{ constant.name }}', '{{ field.id }}')">
+                      {{ constant.name }}
+                    </button>
+                    {{ tooltip( field.id + "-" + constant.name, "constant", constant.value ) }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
     </div>
   {% endif %}
-  {# TODO make button #}
-  <div class="help-button" id="{{ field.id }}-help-button" 
-    onClick="toggleHelp('{{ field.id }}')">
-    ?
-    {{ tooltip( field.id, "help", "Click to show help" ) }}
-  </div>
   {% if field.errors %}
   <ul class="error-list">
     {% for error in field.errors %}

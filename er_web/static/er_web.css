@@ -21,19 +21,29 @@ body {
   margin: 1rem 0.2rem;;
 }
 
-a, .a-button {
+a, .a-button, .add-slider-button, .help-button {
   color: #729cb1;
   text-decoration: underline;
   background-color: initial;
   border: initial;
 }
 
-a:hover, .a-button:hover,
-a:focus, .a-button:focus {
+a:hover, .a-button:hover, .add-slider-button:hover, .help-button:hover {
   color:#4a6782;
   outline: none;
   background-color: initial;
   border: initial;
+}
+
+a:focus, .a-button:focus, .add-slider-button:focus, .help-button:focus {
+  color: #729cb1;
+  text-decoration: underline;
+  background-color: initial;
+  border: initial;
+}
+
+.help-button {
+  text-decoration: none;
 }
 
 .error-list {
@@ -70,7 +80,7 @@ a:focus, .a-button:focus {
   margin: 0 2rem;
 }
 
-.help-button {
+/* .help-button {
   color: #009688;
   font-weight: bold;
   display: inline-block;
@@ -81,7 +91,7 @@ a:focus, .a-button:focus {
 .help-button:hover {
   color: #07c3ab;
 }
-
+ */
 .small-button,
 .button,
 button,
@@ -129,7 +139,7 @@ input[type='submit']:focus {
 }
 
 .input-div {
-  width: 50%;
+  width: 100%;
   display: inline-block;
   position: relative;
 }
@@ -321,11 +331,18 @@ h1 {
   text-align: justify;
 }
 
+
+
 .other-label, .bool-label-span {
   display: inline-block;
   min-width: 25%;
-  text-align: right;
+  text-align: center;
+  margin: auto;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
+
+
 
 .changed-field-div label {
   color: #2196F3;
@@ -504,4 +521,64 @@ input[type="checkbox"]:not(:disabled)+span:hover:before {
   font-family: monospace;
   font-size: 0.8rem;
   max-width: 100%;
+}
+
+.range-label {
+  display: block;
+  color:#757575;
+  font-size: 0.9rem;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.field-div.has-density {
+  border: 1px solid #9E9E9E;
+  border-radius: 1rem;
+  padding: 5px 0px;
+}
+
+.input-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+.field-label-div, .bool-label-div {
+  grid-row-start:1;
+  grid-row-end: 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.density-div {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+}
+
+.info-density-div {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.slider-button-div {
+  display: flex;
+  align-items: center;
+}
+
+.density-info {
+}
+.density-info-arrow {
+  color: #2e75ff;
+  font-size: 1.8rem;
+}
+
+.less-sliders {
+  margin-top: 0.2rem;
+}
+
+.centered {
+  margin: auto;
+  text-align: center;
 }
