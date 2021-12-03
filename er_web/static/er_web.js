@@ -272,6 +272,18 @@ function revealShareableLink() {
   }
 }
 
+function revealDetailedSettings() {
+  var div = document.getElementById("non-basic");
+  var button = document.getElementById("show-detailed-settings");
+  if (div.style.display === "none") {
+    div.style.display = "inline-block";
+    button.innerHTML = button.innerHTML.replace("Show", "Hide");
+  } else {
+    div.style.display = "none";
+    button.innerHTML = button.innerHTML.replace("Hide", "Show");
+  }
+}
+
 function clearQueryFromUrl() {
   // executed on page load, clears any query string from the url
   window.history.replaceState(
@@ -299,6 +311,16 @@ function initHelpLinks() {
   }
 }
 
+function applyHarmonyPreset(i) {
+  const preset = HARMONY_PRESETS[i];
+  for (const [key, value] of Object.entries(preset)) {
+    const textInput = document.getElementById(key);
+    textInput.value = value;
+    updateField(textInput);
+  }
+  updateShareableLink();
+}
+
 function updateRange(rangeInput) {
   const inputId = rangeInput.getAttribute("data-text-target");
   const rangeI = parseInt(rangeInput.getAttribute("data-range-i")) - 1;
@@ -314,6 +336,8 @@ function updateRange(rangeInput) {
   // call somehow
   enforceFloats(vals);
   textInput.value = vals.join(", ");
+  updateField(textInput);
+  updateShareableLink();
 }
 
 function enforceFloats(vals) {
@@ -488,6 +512,9 @@ function initPage() {
   document
     .getElementById("show-shareable-link")
     .addEventListener("click", revealShareableLink, false);
+  document
+    .getElementById("show-detailed-settings")
+    .addEventListener("click", revealDetailedSettings, false);
   initTraceback();
   clearQueryFromUrl();
   initHelpLinks();

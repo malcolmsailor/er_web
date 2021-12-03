@@ -22,6 +22,7 @@ categories have the same name (e.g., "transpose")  #}
     {% for field in form if 
       field.id in attr_dict and 
       attr_dict[field.id]["category"] == category 
+      and not attr_dict[field.id]["basic"]
     %}
       {% include "form-field.jinja" %}
     {% endfor %}

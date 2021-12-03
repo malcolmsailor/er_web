@@ -52,6 +52,7 @@ def mainpage():
         max_priority_dict=globals_.MAX_PRIORITY_DICT,
         categories=globals_.CATEGORIES,
         default_field_values=globals_.DEFAULT_FIELD_VALUES,
+        harmony_presets=globals_.HARMONY_PRESETS,
         script_error=script_error,
         error_type=error_type,
         empty=empty,

@@ -115,66 +115,69 @@ class DummyField:
 
 def test_type_validation():
     to_pass = [
-        # (str, "foo"),
-        # (Metron, "0.3"),
-        # (Metron, "15"),
-        # (Pitch, "0.3"),
-        # (Pitch, "15"),
-        # (JustPitch, "0.3"),
-        # (TemperedPitch, "15"),
-        # (Tuple[int, int], "(2, 3)"),
-        # (Number, "D"),
-        # (Number, "D#"),
-        # (Number, "D_SHARP"),
-        # (Number, "Db"),
-        # (int, "SECOND"),
-        # (bool, "True"),
-        # (Union[None, Sequence[Number]], "0"),
-        # (Union[bool, Sequence[bool]], "True, False, True"),
-        # (Union[None, Tuple[int]], ""),
-        # (Union[None, Tuple[int]], "(2,)"),
-        # (Union[None, Tuple[int]], "2,"),
-        # (Union[None, Tuple[int]], "2, "),
-        # (Union[None, Tuple[int]], " 2, 3"),
-        # (Union[None, Tuple[int]], "None"),
-        # (Union[None, Sequence[Number]], "(F, A, C)"),
-        # (Union[None, Sequence[Number]], "F, A, C"),
-        # (Union[None, Sequence[Number]], "F#, A, Cb"),
-        # (
-        #     Union[Number, np.ndarray, Sequence[Number]],
-        #     "MAJOR_TRIAD",
-        # ),
-        # (
-        #     Sequence[Union[np.ndarray, Sequence[Number]]],
-        #     "[NATURAL_MINOR_SCALE]",
-        # ),
-        # (
-        #     Sequence[Union[np.ndarray, Sequence[Number]]],
-        #     "NATURAL_MINOR_SCALE",
-        # ),
-        # (
-        #     Sequence[Number],
-        #     "(OCTAVE,)",
-        # ),
-        # (
-        #     Sequence[Number],
-        #     "OCTAVE",
-        # ),
-        # (
-        #     Sequence[Union[np.ndarray, Sequence[Number]]],
-        #     "(MAJOR_TRIAD, MINOR_TRIAD)",
-        # ),
-        # (ItemOrSequence, "4"),
-        # (ItemOrSequence, "[4, 5]"),
-        # (ItemOrSequence[Pitch], "3.4"),
-        # (Optional[ItemOrSequence[Pitch]], ""),
-        # (Optional[ItemOrSequence[Pitch]], "3.4"),
-        # (SuperSequence[Pitch], "MAJOR_SCALE"),
-        # (PerVoiceSequence[Pitch], "6"),
-        # (PerVoiceSuperSequence[Pitch], "[MAJOR_SCALE]"),
-        # (SuperSequence[Pitch], "[MAJOR_SCALE]"),
-        # (VoiceRanges, "CONTIGUOUS_OCTAVES * OCTAVE3 * C"),
-        # (VoiceRanges, "((16.0, 32.0), (32.0, 64.0), (64.0, 128.0), (128.0, 256.0), (256.0, 512.0), (512.0, 1024.0), (1024.0, 2048.0))"),
+        (str, "foo"),
+        (Metron, "0.3"),
+        (Metron, "15"),
+        (Pitch, "0.3"),
+        (Pitch, "15"),
+        (JustPitch, "0.3"),
+        (TemperedPitch, "15"),
+        (Tuple[int, int], "(2, 3)"),
+        (Number, "D"),
+        (Number, "D#"),
+        (Number, "D_SHARP"),
+        (Number, "Db"),
+        (int, "SECOND"),
+        (bool, "True"),
+        (Union[None, Sequence[Number]], "0"),
+        (Union[bool, Sequence[bool]], "True, False, True"),
+        (Union[None, Tuple[int]], ""),
+        (Union[None, Tuple[int]], "(2,)"),
+        (Union[None, Tuple[int]], "2,"),
+        (Union[None, Tuple[int]], "2, "),
+        (Union[None, Tuple[int]], " 2, 3"),
+        (Union[None, Tuple[int]], "None"),
+        (Union[None, Sequence[Number]], "(F, A, C)"),
+        (Union[None, Sequence[Number]], "F, A, C"),
+        (Union[None, Sequence[Number]], "F#, A, Cb"),
+        (
+            Union[Number, np.ndarray, Sequence[Number]],
+            "MAJOR_TRIAD",
+        ),
+        (
+            Sequence[Union[np.ndarray, Sequence[Number]]],
+            "[NATURAL_MINOR_SCALE]",
+        ),
+        (
+            Sequence[Union[np.ndarray, Sequence[Number]]],
+            "NATURAL_MINOR_SCALE",
+        ),
+        (
+            Sequence[Number],
+            "(OCTAVE,)",
+        ),
+        (
+            Sequence[Number],
+            "OCTAVE",
+        ),
+        (
+            Sequence[Union[np.ndarray, Sequence[Number]]],
+            "(MAJOR_TRIAD, MINOR_TRIAD)",
+        ),
+        (ItemOrSequence, "4"),
+        (ItemOrSequence, "[4, 5]"),
+        (ItemOrSequence[Pitch], "3.4"),
+        (Optional[ItemOrSequence[Pitch]], ""),
+        (Optional[ItemOrSequence[Pitch]], "3.4"),
+        (SuperSequence[Pitch], "MAJOR_SCALE"),
+        (PerVoiceSequence[Pitch], "6"),
+        (PerVoiceSuperSequence[Pitch], "[MAJOR_SCALE]"),
+        (SuperSequence[Pitch], "[MAJOR_SCALE]"),
+        (VoiceRanges, "CONTIGUOUS_OCTAVES * OCTAVE3 * C"),
+        (
+            VoiceRanges,
+            "((16.0, 32.0), (32.0, 64.0), (64.0, 128.0), (128.0, 256.0), (256.0, 512.0), (512.0, 1024.0), (1024.0, 2048.0))",
+        ),
         (VoiceRanges, "((OCTAVE0 * A, OCTAVE8 * C),)"),
     ]
     to_fail = [
@@ -212,7 +215,6 @@ def test_type_validation():
 
     for type_hint, value in to_pass:
         field = DummyField(value)
-        breakpoint()
         validators.validate_field(type_hint, empty_val_dict, None, field)
     for type_hint, val_dict, value in to_pass_with_val_dict:
         field = DummyField(value)

@@ -12,9 +12,18 @@
     <div id="shareable-link-div">
       <p id="shareable-link" style="display:none;"></p>
     </div>
-    {% for category in categories %}
-      {% include "form-category.jinja" %}
-    {% endfor %}
-    {{ form.submit(id="bottom-submit") }}
+    {% include "basic-fields.jinja" %}
+    <div id="detailed-settings-button-div">
+      <button type="button" class="a-button" id="show-detailed-settings">
+        Show detailed settings
+      </button>
+    </div>
+    <div id="non-basic" style="display:none;">
+      {% for category in categories %}
+        {% include "form-category.jinja" %}
+      {% endfor %}
+      {{ form.submit(id="bottom-submit") }}
+    </div>
+    
   </form>
 </div>

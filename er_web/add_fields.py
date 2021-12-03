@@ -209,6 +209,7 @@ def add_fields_to_form(cls_or_obj, form_cls):
         field_dict["priority"] = priority
         field_dict["category"] = category
         field_dict["pretty_name"] = get_pretty_name(field_name)
+        field_dict["basic"] = field_name in globals_.BASIC_FIELDS
 
         if category not in globals_.MAX_PRIORITY_DICT:
             globals_.MAX_PRIORITY_DICT[category] = priority

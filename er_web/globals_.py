@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from numbers import Number
 import types
 from typing import Optional, Sequence, Tuple, Union
@@ -13,6 +14,7 @@ from efficient_rhythms.er_types import (
     PerVoiceSequence,
     PerVoiceSuperSequence,
     Pitch,
+    PitchClass,
     SuperSequence,
     Tempo,
     VoiceRanges,
@@ -31,6 +33,12 @@ CATEGORIES = tuple(
     c for c in efficient_rhythms.CATEGORIES if c not in IGNORED_CATEGORIES
 )
 
+BASIC_FIELDS = (
+    "onset_density",
+    "num_voices",
+    "tempo",
+)
+
 FIELD_NAME_ABBREVS = {
     "num": "number of",
     "len": "length",
@@ -41,7 +49,7 @@ FIELD_NAME_ABBREVS = {
     "cont": "continuous",
     "var": "variation",
     "reps": "repetitions",
-    "vl": "voice leading"
+    "vl": "voice leading",
 }
 DEFAULT_FIELD_VALUES = {}
 
@@ -398,6 +406,9 @@ TYPING_STRINGS = {
     Optional[ItemOrSequence[Pitch]]: (
         "Blank, a number, or a sequence of numbers separated by commas"
     ),
+    Optional[ItemOrSequence[PitchClass]]: (
+        "Blank, a number, or a sequence of numbers separated by commas"
+    ),
     Optional[ItemOrSequence[Metron]]: (
         "Blank, a number, or a sequence of numbers separated by commas"
     ),
@@ -418,8 +429,56 @@ TYPING_STRINGS = {
         "Blank, a number, or a sequence of numbers separated by commas"
     ),
 }
+# TODO check for missing custom types
 
 # TODO deal with force_parallel_motion type
+
+
+# @dataclass
+# class HarmonyPreset:
+#     num_harmonies: int
+#     foot_pcs: Optional[ItemOrSequence[PitchClass]]
+#     scales: SuperSequence[Pitch]
+#     chords: SuperSequence[Pitch]
+
+
+# HARMONY_PRESETS = (
+#     HarmonyPreset(4, (0, 5, 10, 3), "NATURAL_MINOR_SCALE", "MINOR_TRIAD"),
+#     HarmonyPreset(
+#         4,
+#         ("C", "G", "A", "F"),
+#         ("MAJOR_TRIAD", "MAJOR_TRIAD", "MINOR_TRIAD", "MAJOR_TRIAD"),
+#         ("MAJOR_SCALE", "MIXOLYDIAN", "AEOLIAN", "LYDIAN"),
+#     ),
+#     HarmonyPreset(
+#         4,
+#         ("D",),
+#         ("MAJOR_7TH_NO5", "DOMINANT_7TH_NO3", "MAJOR_64", "MAJOR_63"),
+#         ("MAJOR_SCALE", "MIXOLYDIAN", "DORIAN", "AEOLIAN"),
+#     ),
+# )
+
+HARMONY_PRESET_TUPLES = (
+    # num_harmonies, foot_pcs, scales, chords
+    ("4", "0, 5, 10, 3", "NATURAL_MINOR_SCALE", "MINOR_TRIAD"),
+    (
+        "4",
+        "C, G, A, F",
+        "MAJOR_SCALE, MIXOLYDIAN, AEOLIAN, LYDIAN",
+        "MAJOR_TRIAD, MAJOR_TRIAD, MINOR_TRIAD, MAJOR_TRIAD",
+    ),
+    (
+        "4",
+        "D",
+        "MAJOR_SCALE, MIXOLYDIAN, DORIAN, AEOLIAN",
+        "MAJOR_7TH_NO5, DOMINANT_7TH_NO3, MAJOR_64, MAJOR_63",
+    ),
+)
+
+HARMONY_PRESETS = tuple(
+    {"num_harmonies": a, "foot_pcs": b, "scales": c, "chords": d}
+    for a, b, c, d in HARMONY_PRESET_TUPLES
+)
 
 if __name__ == "__main__":
     out = []

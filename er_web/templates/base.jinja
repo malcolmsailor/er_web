@@ -8,6 +8,17 @@
   <div id="header">
     <h1>Efficient Rhythms</h1>
     {% include "welcome.html" %}
+
+    {% if form.is_submitted() %}
+      {% include "output.jinja" %}
+    {% endif %}
+  </div> {# end header div #}
+  {% include "form.jinja" %}
+  <div id="please-wait-div">
+    <p>Please wait while the script executes...</p>
+    <div class="loader"></div>
+  </div>
+  <div id="todo-div">
     <button type="button" class="a-button" 
       onclick="getElementById('wish-div').style.display = 'block'">
         TODOs and wishlist
@@ -42,17 +53,10 @@
         <li>Tooltips for constants behave strangely</li>
       </ul>
     </div>
-    {% if form.is_submitted() %}
-      {% include "output.jinja" %}
-    {% endif %}
-  </div> {# end header div #}
-  {% include "form.jinja" %}
-  <div id="please-wait-div">
-    <p>Please wait while the script executes...</p>
-    <div class="loader"></div>
-  </div>
+  </div> {# end todo div #}
 </div> {# end container div #}
 <script type=text/javascript>
   const DEFAULT_FIELD_VALUES = {{ default_field_values|tojson }}
   const MAX_PRIORITY_DICT = {{ max_priority_dict|tojson }}
+  const HARMONY_PRESETS = {{ harmony_presets|tojson }}
 </script>

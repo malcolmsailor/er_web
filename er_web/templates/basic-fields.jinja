@@ -1,0 +1,22 @@
+<div id="basic-div">
+  <fieldset class="outer-fieldset" id="basic-fieldset">
+    <legend class="outer-legend">Basic settings</legend>
+    {% for field in form if 
+      field.id in attr_dict and 
+      attr_dict[field.id]["basic"]
+    %}
+      {% include "form-field.jinja" %}
+    {% endfor %}
+    <div id="harmony-presets-div">
+      <div id="harmony-presets-title">Harmony presets</div>
+      {% for i in range(harmony_presets|length) %}
+        {% set visible_i = i + 1 %}
+        <button class="harmony-preset-button" type="button"
+          id="harmony-preset-{{ i }}" 
+          onClick="applyHarmonyPreset({{ i }})">
+          {{ visible_i }}
+        </button>
+      {% endfor %}
+    </div>
+  </fieldset>
+</div>
